@@ -1,5 +1,5 @@
-#ifndef _OBSERVER_H_
-#define _OBSERVER_H_
+#ifndef EVENT_H_
+#define EVENT_H_
 
 class Event {
 
