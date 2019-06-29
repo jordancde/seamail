@@ -1,25 +1,26 @@
-BIN := seamail
+BIN 		:= seamail
 
-SDIR := src
+FLAGS		:= -Wall -std=c++17 -MMD 
+DEV_FLAGS 	:= -g
+LIBS		:= -lncurses 
 
-FLAGS	:= -Wall -std=c++17 -MMD
-DEV_FLAGS := -g
+SDIR 		:= src
 
-SHELL	:= /bin/bash
+CXX 		:= g++
+CXXFLAGS  	:= $(FLAGS) 
 
-CXX 	:= g++
-CXXFLAGS  := $(FLAGS) 
+SOURCES 	:= $(shell find $(SDIR) -name '*.cc')
+OBJECTS		:= $(SOURCES:$(SDIR)/%.cc=$(SDIR)/%.o)
+DEPENDS 	:= $(OBJECTS:.o=.d)
 
-SOURCES := $(shell find $(SDIR) -name '*.cc')
-OBJECTS	:= $(SOURCES:$(SDIR)/%.cc=$(SDIR)/%.o)
-DEPENDS := $(OBJECTS:.o=.d)
+SHELL		:= /bin/bash
 
 .PHONY: clean all
 
 all: $(BIN)
 
 $(BIN): $(OBJECTS)
-	$(CXX) $(OBJECTS) -o $@
+	$(CXX) $(OBJECTS) -o $@ $(LIBS)
 
 -include $(DEPENDS)
 
