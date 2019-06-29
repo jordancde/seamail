@@ -2,18 +2,16 @@ BIN := seamail
 
 SDIR := src
 
-FLAGS	:= -Wall -std=c++14 -MMD
+FLAGS	:= -Wall -std=c++17 -MMD
 DEV_FLAGS := -g
-LIB := -Lm 
-INC := -I$(IDIR)
 
 SHELL	:= /bin/bash
 
 CXX 	:= g++
-CXXFLAGS  := $(FLAGS) $(LIB) $(INC)
+CXXFLAGS  := $(FLAGS) 
 
 SOURCES := $(shell find $(SDIR) -name '*.cc')
-OBJECTS	:= $(SOURCES:$(SDIR)/%.cc=%.o)
+OBJECTS	:= $(SOURCES:$(SDIR)/%.cc=$(SDIR)/%.o)
 DEPENDS := $(OBJECTS:.o=.d)
 
 .PHONY: clean all
