@@ -1,12 +1,19 @@
 #ifndef _ACCOUNT_H_
 #define _ACCOUNT_H_
 
+#include "session.h"
+#include "../utility/subject.h"
+#include "../utility/serializable.h"
+#include "../models/folder.h"
+#include "../models/email.h"
 #include <vector>
+#include <iostream>
 
 class Account: public Subject, public Serializable {
     Session session;
     EmailProvider provider;
-
+    ostream& serialize(ostream&) override;
+    istream& deserialize(istream&) override;
 public:
     vector<string> getAllFolderPaths();
     Folder getFolderByPath(string, string);
@@ -19,6 +26,5 @@ public:
     bool login(string,string);
     void logout();
 };
-
 
 #endif
