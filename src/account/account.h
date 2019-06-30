@@ -6,6 +6,7 @@
 #include "../utility/serializable.h"
 #include "../models/folder.h"
 #include "../models/email.h"
+#include "../providers/emailProvider.h"
 #include <vector>
 #include <iostream>
 

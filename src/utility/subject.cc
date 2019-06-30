@@ -8,13 +8,15 @@ void Subject::notifyAllObservers() {
     }
 }
 
-void attach(std::shared_ptr<Observer> obs) {
+void Subject::attach(std::shared_ptr<Observer> obs) {
     observers.push_back(obs);
 }
 
-void detach(std::shared_ptr<Observer> obs) {
-    auto it = observers.find(obs, observers.begin(), observers.end());
-    if(it){
-        observers.erase(it);
+void Subject::detach(std::shared_ptr<Observer> obs) {
+    for (auto it = observers.begin(); it != observers.end(); ++it) {
+        if (*it == obs) {
+            observers.erase(it);
+            break;
+        }
     }
 }
