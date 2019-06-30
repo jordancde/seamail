@@ -12,7 +12,7 @@
 
 class Account: public Subject, public Serializable {
     Session session;
-    EmailProvider provider;
+    EmailProvider& provider;
     ostream& serialize(ostream&) override;
     istream& deserialize(istream&) override;
 public:
@@ -27,7 +27,7 @@ public:
     bool login(string,string);
     void logout();
 
-    Account();
+    Account(EmailProvider& provider);
     ~Account();
 };
 
