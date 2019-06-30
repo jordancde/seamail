@@ -2,15 +2,22 @@
 #ifndef VIEW_H_
 #define VIEW_H_
 
-#include <utility/observer.h>
 #include <memory>
 
-class View : Observer {
+#include <ncurses.h>
+
+#include <utility/observer.h>
+#include <graphics/nwindow.h>
+
+class View : public Observer, public NWindow {
 protected:
-    std::shared_ptr<Account> account;
+    //std::shared_ptr<Account> account;
 
 public:
-    void draw(/* */);
+
+    View();
+    virtual ~View();
+
 };
 
 
