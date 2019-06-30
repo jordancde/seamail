@@ -6,6 +6,7 @@
 #include <string>
 
 #include "session.h"
+#include "../utility/observer.h"
 #include "../utility/subject.h"
 #include "../utility/serializable.h"
 #include "../models/folder.h"
@@ -17,6 +18,7 @@ class Account: public Subject, public Serializable {
     EmailProvider& provider;
     std::ostream& serialize(std::ostream&) override;
     std::istream& deserialize(std::istream&) override;
+    void notifyObserver(Observer&) override;
 
 public:
     std::vector<std::string> getAllFolderPaths();
@@ -24,7 +26,7 @@ public:
     Email getEmailById(std::string id);
     void sendEmail(Email email);
     void addEmailToFolder(std::string emailId, std::string folderPath);
-    void removeEmailFromFolder(std::string emailId, std::string folderId);
+    void removeEmailFromFolder(std::string emailId, std::string folderPath);
     std::string addFolder(std::string folderName, std::string parentPath);
     void removeFolder(std::string folderPath);
 
