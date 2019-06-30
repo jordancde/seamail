@@ -12,7 +12,7 @@ public:
     std::string username;
     std::string key;
 
-    Session(std::string, std::string);
+    Session(std::string username, std::string key);
     ~Session();
 };
 

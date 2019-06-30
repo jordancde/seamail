@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <string>
 #include "../utility/serializable.h"
 
 class Thread: public Serializable {
