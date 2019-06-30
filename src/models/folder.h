@@ -6,21 +6,17 @@
 #include "../utility/serializable.h"
 
 class Folder: public Serializable {
+    std::string path;
+    std::vector<std::string> threadIds;
 
-    vector<string> threadIds;
-    string id;
-    string folderName;
-
-    vector<string> subFolderIds;
+    std::ostream& serialize(std::ostream&) override;
+    std::istream& deserialize(std::istream&) override;
 
 public:
-    ostream& serialize(ostream&) override;
-    istream& deserialize(istream&) override;
+    std::vector<std::string>::iterator begin();
+    std::vector<std::string>::iterator end();
 
-    vector<string>::Iterator begin();
-    vector<string>::Iterator end();
-
-    Folder(string id, string folderName, vector<string> threadIds = {}, vector<string> subFolderIds = {});
+    Folder(std::string path, std::vector<std::string> threadIds = {});
     ~Folder();
 };
 

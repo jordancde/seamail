@@ -8,11 +8,15 @@
 class Session: public Serializable {
     std::ostream& serialize(std::ostream&) override;
     std::istream& deserialize(std::istream&) override;
-public:
+
     std::string username;
     std::string key;
 
-    Session(std::string, std::string);
+public:
+    std::string getUsername();
+    std::string getKey();
+
+    Session(std::string username, std::string key);
     ~Session();
 };
 

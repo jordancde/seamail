@@ -14,15 +14,16 @@ enum AccountEventType {
 };
 
 class AccountEvent: public Event {
+    AccountEventType type;
+    std::string affectedId;
+    Account& affectedAccount;
 
 public:
     AccountEventType getType();
-    std::string getAffectedEmailId();
+    std::string getAffectedId();
     Account& getAffectedAccount();
-    std::string getAffectedFolderName();
 
-    AccountEvent(AccountEventType, std::string);
-    AccountEvent(AccountEventType, Account&);
+    AccountEvent(AccountEventType type, Account& acc, std::string id);
     ~AccountEvent();
 };
 

@@ -8,14 +8,10 @@
 #include "../utility/serializable.h"
 
 class Email: public Serializable {
-
-    
-
-public:
-
     std::ostream& serialize(std::ostream&) override;
     std::istream& deserialize(std::istream&) override;
 
+public:
     std::string id;
     std::string from;
     std::vector<std::string> to;
@@ -30,7 +26,6 @@ public:
     Email(std::string id, std::string from, std::vector<std::string> to,time_t dateTime, std::vector<std::string> cc = {}, 
         std::vector<std::string> bcc = {}, std::string subject = "", std::string body = "", bool unread = false,
         std::vector<std::string> imagePaths = {});
-    
     ~Email();
 };
 

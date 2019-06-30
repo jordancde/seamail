@@ -4,10 +4,11 @@
 #include <iostream>
 
 class Serializable {
-
-public:
+protected:
     virtual std::ostream& serialize(std::ostream&)=0;
     virtual std::istream& deserialize(std::istream&)=0;
+
+public:
     friend std::ostream& operator<<(std::ostream&, const Serializable&);
     friend std::istream& operator>>(std::istream&, const Serializable&);
 };

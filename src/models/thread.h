@@ -3,21 +3,21 @@
 
 #include <vector>
 #include <iostream>
+#include <string>
 #include "../utility/serializable.h"
 
 class Thread: public Serializable {
+    std::vector<std::string> emailIds;
+    std::string id;
 
-    vector<string> emailIds;
-    string id;
+    std::ostream& serialize(std::ostream&) override;
+    std::istream& deserialize(std::istream&) override;
 
 public:
-    ostream& serialize(ostream&) override;
-    istream& deserialize(istream&) override;
-    
-    vector<string>::Iterator begin();
-    vector<string>::Iterator end();
+    std::vector<std::string>::iterator begin();
+    std::vector<std::string>::iterator end();
 
-    Thread(string id, vector<string> emailIds = {});
+    Thread(std::string id, std::vector<std::string> emailIds = {});
     ~Thread();
 };
 
