@@ -12,22 +12,23 @@
 #include "../models/email.h"
 #include "../providers/emailProvider.h"
 
-
 class Account: public Subject, public Serializable {
-    Session session;
+    Session* session;
     EmailProvider& provider;
     std::ostream& serialize(std::ostream&) override;
     std::istream& deserialize(std::istream&) override;
+
 public:
     std::vector<std::string> getAllFolderPaths();
-    Folder getFolderByPath(std::string, std::string);
-    Email getEmailById(std::string);
-    void sendEmail(Email);
-    void addEmailToFolder(std::string, std::string);
-    void removeEmailFromFolder(std::string, std::string);
-    std::string addFolder(std::string, std::string);
-    void removeFolder(std::string);
-    bool login(std::string, std::string);
+    Folder getFolderByPath(std::string path, std::string sort);
+    Email getEmailById(std::string id);
+    void sendEmail(Email email);
+    void addEmailToFolder(std::string emailId, std::string folderPath);
+    void removeEmailFromFolder(std::string emailId, std::string folderId);
+    std::string addFolder(std::string folderName, std::string parentPath);
+    void removeFolder(std::string folderPath);
+
+    bool login(std::string username, std::string password);
     void logout();
 
     Account(EmailProvider& provider);
