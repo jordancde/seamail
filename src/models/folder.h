@@ -7,20 +7,21 @@
 
 class Folder: public Serializable {
 
-    vector<string> threadIds;
-    string id;
-    string folderName;
+    std::vector<std::string> threadIds;
+    std::string id;
+    std::string folderName;
 
-    vector<string> subFolderIds;
+    std::vector<std::string> subFolderIds;
 
 public:
-    ostream& serialize(ostream&) override;
-    istream& deserialize(istream&) override;
+    std::ostream& serialize(std::ostream&) override;
+    std::istream& deserialize(std::istream&) override;
 
-    vector<string>::Iterator begin();
-    vector<string>::Iterator end();
+    std::vector<std::string>::iterator begin();
+    std::vector<std::string>::iterator end();
 
-    Folder(string id, string folderName, vector<string> threadIds = {}, vector<string> subFolderIds = {});
+    Folder(std::string id, std::string folderName, std::vector<std::string> threadIds = {},
+        std::vector<std::string> subFolderIds = {});
     ~Folder();
 };
 
