@@ -26,6 +26,9 @@ public:
     void removeFolder(string);
     bool login(string,string);
     void logout();
+
+    Account();
+    ~Account();
 };
 
 #endif

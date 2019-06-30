@@ -19,6 +19,9 @@ public:
 
     vector<string>::Iterator begin();
     vector<string>::Iterator end();
+
+    Folder(string id, string folderName, vector<string> threadIds = {}, vector<string> subFolderIds = {});
+    ~Folder();
 };
 
 #endif

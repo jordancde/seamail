@@ -16,6 +16,9 @@ public:
     
     vector<string>::Iterator begin();
     vector<string>::Iterator end();
+
+    Thread(string id, vector<string> emailIds = {});
+    ~Thread();
 };
 
 #endif
