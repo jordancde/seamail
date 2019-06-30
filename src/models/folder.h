@@ -16,7 +16,7 @@ public:
     std::vector<std::string>::iterator begin();
     std::vector<std::string>::iterator end();
 
-    Folder(std::string path, std::string folderName, std::vector<std::string> threadIds = {});
+    Folder(std::string path, std::vector<std::string> threadIds = {});
     ~Folder();
 };
 
