@@ -1,12 +1,12 @@
 #ifndef _OBSERVER_H_
 #define _OBSERVER_H_
 
-class Event;
+#include "../events/event.h"
 
 class Observer {
 public:
     virtual void notify(Event) = 0;
-    virtual ~Observer() = default;
+    virtual ~Observer();
 };
 
 #endif

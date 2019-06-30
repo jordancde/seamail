@@ -1,4 +1,4 @@
 seamail
 *.o
 *.d
-
+.vscode

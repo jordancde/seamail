@@ -6,12 +6,13 @@
 #include "../utility/serializable.h"
 #include "../models/folder.h"
 #include "../models/email.h"
+#include "../providers/emailProvider.h"
 #include <vector>
 #include <iostream>
 
 class Account: public Subject, public Serializable {
     Session session;
-    EmailProvider provider;
+    EmailProvider& provider;
     ostream& serialize(ostream&) override;
     istream& deserialize(istream&) override;
 public:
@@ -25,6 +26,9 @@ public:
     void removeFolder(string);
     bool login(string,string);
     void logout();
+
+    Account(EmailProvider& provider);
+    ~Account();
 };
 
 #endif

@@ -18,6 +18,10 @@ public:
     string getAffectedEmailId();
     Account& getAffectedAccount();
     string getAffectedFolderName();
+
+    AccountEvent(AccountEventType,string);
+    AccountEvent(AccountEventType,Account&);
+    ~AccountEvent();
 };
 
 #endif

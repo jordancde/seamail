@@ -10,6 +10,9 @@ class Session: public Serializable {
 public:
     string username;
     string key;
+
+    Session(string,string);
+    ~Session();
 };
 
 #endif
