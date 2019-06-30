@@ -7,14 +7,13 @@
 #include "../utility/serializable.h"
 
 class Thread: public Serializable {
-
     std::vector<std::string> emailIds;
     std::string id;
 
-public:
     std::ostream& serialize(std::ostream&) override;
     std::istream& deserialize(std::istream&) override;
-    
+
+public:
     std::vector<std::string>::iterator begin();
     std::vector<std::string>::iterator end();
 
