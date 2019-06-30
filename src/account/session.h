@@ -2,16 +2,17 @@
 #define _SESSION_H_
 
 #include <iostream>
+#include <string>
 #include "../utility/serializable.h"
 
 class Session: public Serializable {
-    ostream& serialize(ostream&) override;
-    istream& deserialize(istream&) override;
+    std::ostream& serialize(std::ostream&) override;
+    std::istream& deserialize(std::istream&) override;
 public:
-    string username;
-    string key;
+    std::string username;
+    std::string key;
 
-    Session(string,string);
+    Session(std::string, std::string);
     ~Session();
 };
 

@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <iostream>
+#include <string>
+
 #include "../utility/serializable.h"
 
 class Email: public Serializable {
@@ -11,23 +13,23 @@ class Email: public Serializable {
 
 public:
 
-    ostream& serialize(ostream&) override;
-    istream& deserialize(istream&) override;
+    std::ostream& serialize(std::ostream&) override;
+    std::istream& deserialize(std::istream&) override;
 
-    string id;
-    string from;
-    vector<string> to;
+    std::string id;
+    std::string from;
+    std::vector<std::string> to;
     time_t dateTime;
-    vector<string> cc;
-    vector<string> bcc;
-    string subject;
-    string body;
+    std::vector<std::string> cc;
+    std::vector<std::string> bcc;
+    std::string subject;
+    std::string body;
     bool unread;
-    vector<string> imagePaths;
+    std::vector<std::string> imagePaths;
 
-    Email(string id, string from, vector<string> to,time_t dateTime, vector<string> cc = {}, 
-        vector<string> bcc = {}, string subject = "", string body = "", bool unread = false,
-        vector<string> imagePaths = {});
+    Email(std::string id, std::string from, std::vector<std::string> to,time_t dateTime, std::vector<std::string> cc = {}, 
+        std::vector<std::string> bcc = {}, std::string subject = "", std::string body = "", bool unread = false,
+        std::vector<std::string> imagePaths = {});
     
     ~Email();
 };

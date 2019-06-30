@@ -6,10 +6,10 @@
 class Serializable {
 
 public:
-    virtual ostream& serialize(ostream&)=0;
-    virtual istream& deserialize(istream&)=0;
-    friend ostream& operator<<(ostream&,const Serializable&);
-    friend istream& operator>>(istream&,const Serializable&);
+    virtual std::ostream& serialize(std::ostream&)=0;
+    virtual std::istream& deserialize(std::istream&)=0;
+    friend std::ostream& operator<<(std::ostream&, const Serializable&);
+    friend std::istream& operator>>(std::istream&, const Serializable&);
 };
 
 #endif
