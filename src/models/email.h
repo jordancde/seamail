@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#include "../utility/serializable.h"
+#include "utility/serializable.h"
 
 class Email: public Serializable {
     std::ostream& serialize(std::ostream&) override;
@@ -30,8 +30,6 @@ public:
         std::vector<std::string> imagePaths = {});
 
     Email(const Email&);
-    //CC needs new id generated base on nikhils function
-    //seed with time
     ~Email();
 };
 

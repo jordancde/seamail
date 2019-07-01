@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <memory>
 #include <string>
 
 #include "event.h"
@@ -15,7 +16,7 @@
 #include "../providers/emailProvider.h"
 
 class Account: public Subject, public Serializable {
-    Session* session;
+    Session session;
     EmailProvider& provider;
     std::ostream& serialize(std::ostream&) override;
     std::istream& deserialize(std::istream&) override;

@@ -4,7 +4,7 @@
 #include <string>
 
 #include "event.h"
-#include "../account/account.h"
+#include "account/account.h"
 
 enum AccountEventType {
     FOLDER_CONTENTS_CHANGED,

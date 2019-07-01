@@ -1,6 +1,6 @@
 #include "account.h"
-#include "../providers/emailProvider.h"
-#include "../events/accountEvent.h"
+#include "providers/emailProvider.h"
+#include "events/accountEvent.h"
 #include <nlohmann/json.hpp>
 #include <string>
 
@@ -22,7 +22,7 @@ ostream& Account::serialize(ostream& out){
 istream& Account::deserialize(istream& in) {
     nlohmann::json account;
     in >> account;
-    session = new Session();
+    session = Session();
     account["session"] >> session;
     return in;
 }

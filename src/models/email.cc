@@ -36,3 +36,6 @@ Email::Email(
     ): id{genRandomId()}, threadId{threadId}, from{from}, to{to}, dateTime{dateTime}, cc{cc}, bcc{bcc},
         subject{subject}, body{body}, unread{unread}, imagePaths{imagePaths}{}
 
+Email::Email(const Email& other): id{genRandomId()}, threadId{other.threadId}, from{other.from}, to{other.to},
+    dateTime{other.dateTime}, cc{other.cc}, bcc{other.bcc}, subject{other.subject}, body{other.body},
+    unread{other.unread}, imagePaths{other.imagePaths}{}
