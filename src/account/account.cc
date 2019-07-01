@@ -1,8 +1,12 @@
-#include "account.h"
-#include "providers/emailProvider.h"
-#include "events/accountEvent.h"
+#include "./account.h"
+
 #include <nlohmann/json.hpp>
 #include <string>
+#include <sstream>
+
+#include "../providers/emailProvider.h"
+#include "../events/accountEvent.h"
+#include "../exceptions/authenticationFailedException.h"
 
 using namespace std;
 
@@ -11,11 +15,14 @@ string Account::deletedPath = "deleted";
 string Account::inboxPath = "inbox";
 
 Account::Account(EmailProvider& provider):provider{provider}{}
-Account::~Account(){ delete session; }
+Account::~Account(){}
 
 ostream& Account::serialize(ostream& out){
     nlohmann::json account;
-    account["session"] << session;
+
+    stringstream ss;
+    ss << session;
+    account["session"] << ss;
     return out << account;
 }
 
@@ -23,7 +30,9 @@ istream& Account::deserialize(istream& in) {
     nlohmann::json account;
     in >> account;
     session = Session();
-    account["session"] >> session;
+    stringstream ss;
+    account["session"] >> ss;
+    ss >> session;
     return in;
 }
 
@@ -79,5 +88,7 @@ bool Account::login(string emailAddress, string password){
     }
 }
 
-void Account::logout(){ delete session; }
+void Account::logout(){
+    session = Session();
+}
 

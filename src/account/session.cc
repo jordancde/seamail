@@ -1,4 +1,6 @@
 #include "session.h"
+
+#include <nlohmann/json.hpp>
 #include <iostream>
 
 using namespace std;
@@ -23,4 +25,4 @@ string Session::getKey(){ return key; }
 
 Session::Session():emailAddress{""}, key{""}{}
 Session::Session(string emailAddress, string key):emailAddress{emailAddress}, key{key}{}
-Session::~Session();
+Session::~Session() {}

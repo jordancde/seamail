@@ -4,7 +4,8 @@
 #include <vector>
 #include <iostream>
 #include <string>
-#include "utility/serializable.h"
+
+#include "../utility/serializable.h"
 
 class Thread: public Serializable {
 
@@ -20,6 +21,7 @@ public:
     std::vector<std::string>::iterator end();
 
     Thread(std::string title, std::vector<std::string> emailIds = {});
+    Thread();
     ~Thread();
 };
 

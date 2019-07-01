@@ -1,6 +1,7 @@
 #ifndef _OBSERVER_H_
 #define _OBSERVER_H_
 
+#include <memory>
 #include "../events/event.h"
 
 class Observer {

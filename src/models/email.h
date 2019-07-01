@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#include "utility/serializable.h"
+#include "../utility/serializable.h"
 
 class Email: public Serializable {
     std::ostream& serialize(std::ostream&) override;
@@ -30,6 +30,7 @@ public:
         std::vector<std::string> imagePaths = {});
 
     Email(const Email&);
+    Email();
     ~Email();
 };
 

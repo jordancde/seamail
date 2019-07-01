@@ -90,7 +90,6 @@ void Compositor::run() {
             break;
         case 'p':
             break;
-        case KEY_TAB:
         default:
             activeWindow->onInput(ch);
             break;

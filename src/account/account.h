@@ -6,7 +6,7 @@
 #include <memory>
 #include <string>
 
-#include "session.h"
+#include "./session.h"
 #include "../events/event.h"
 #include "../utility/observer.h"
 #include "../utility/subject.h"

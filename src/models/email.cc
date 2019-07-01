@@ -1,5 +1,7 @@
 #include "email.h"
 
+using namespace std;
+
 ostream& Email::serialize(ostream& out){
 
 }
@@ -26,16 +28,18 @@ Email::Email(
     std::string from,
     std::vector<std::string> to,
     time_t dateTime,
-    std::vector<std::string> cc = {}, 
-    std::vector<std::string> bcc = {},
-    std::string subject = "",
-    std::string body = "",
-    bool unread = false,
-    std::vector<std::string> imagePaths = {}
+    std::vector<std::string> cc, 
+    std::vector<std::string> bcc,
+    std::string subject,
+    std::string body,
+    bool unread,
+    std::vector<std::string> imagePaths
     
     ): id{genRandomId()}, threadId{threadId}, from{from}, to{to}, dateTime{dateTime}, cc{cc}, bcc{bcc},
         subject{subject}, body{body}, unread{unread}, imagePaths{imagePaths}{}
 
-Email::Email(const Email& other): id{genRandomId()}, threadId{other.threadId}, from{other.from}, to{other.to},
-    dateTime{other.dateTime}, cc{other.cc}, bcc{other.bcc}, subject{other.subject}, body{other.body},
-    unread{other.unread}, imagePaths{other.imagePaths}{}
+Email::Email(const Email& other): 
+    id{genRandomId()}, threadId{other.threadId}, from{other.from}, 
+    to{other.to}, dateTime{other.dateTime}, cc{other.cc}, 
+    bcc{other.bcc}, subject{other.subject}, body{other.body},
+    unread{other.unread}, imagePaths{other.imagePaths} {}

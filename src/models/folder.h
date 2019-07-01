@@ -3,7 +3,8 @@
 
 #include <vector>
 #include <iostream>
-#include "utility/serializable.h"
+
+#include "../utility/serializable.h"
 
 class Folder: public Serializable {
     std::string path;
@@ -16,7 +17,8 @@ public:
     std::vector<std::string>::iterator begin();
     std::vector<std::string>::iterator end();
 
-    Folder(std::string path="", std::vector<std::string> threadIds = {});
+    Folder(std::string path, std::vector<std::string> threadIds);
+    Folder();
     ~Folder();
 };
 
