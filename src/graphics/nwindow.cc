@@ -2,10 +2,10 @@
 #include "nwindow.h"
 
 #include <utility>
+#include <stdexcept>
 
 NWindow::NWindow(size_t x, size_t y, size_t w, size_t h) {
-    win = newwin(h, w, y, x);
-
+    resize(x, y, w, h);
 }
 
 NWindow::NWindow() {
@@ -34,11 +34,18 @@ void NWindow::swap(NWindow& o) noexcept {
     std::swap(win, o.win);
 }
 
+void NWindow::resize(size_t x, size_t y, size_t w, size_t h) {
+    if(win == stdscr)
+        return;
+    if(win)
+        delwin(win);
+    win = newwin(h, w, y, x);
+}
+
 void NWindow::refresh() const {
-    int nh, nw;
-    getmaxyx(stdscr, nh, nw);
-    draw(nw, nh);
-    wrefresh(win);
+    //wclear(win);
+    onDraw();
+    wnoutrefresh(win);
 }
 
 int NWindow::getKey() const {
