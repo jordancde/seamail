@@ -5,7 +5,7 @@
 
 class Observer {
 public:
-    virtual void notify(Event) = 0;
+    virtual void notify(std::shared_ptr<Event>) = 0;
     virtual ~Observer();
 };
 

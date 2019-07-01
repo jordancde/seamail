@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 
+#include "event.h"
 #include "session.h"
 #include "../utility/observer.h"
 #include "../utility/subject.h"
@@ -18,23 +19,26 @@ class Account: public Subject, public Serializable {
     EmailProvider& provider;
     std::ostream& serialize(std::ostream&) override;
     std::istream& deserialize(std::istream&) override;
-    void notifyObserver(Observer&) override;
+
+    static std::string sentPath;
+    static std::string inboxPath;
+    static std::string deletedPath;
 
 public:
     std::vector<std::string> getAllFolderPaths();
     Folder getFolderByPath(std::string path, std::string sort);
     Email getEmailById(std::string id);
     void sendEmail(Email email);
-    void addEmailToFolder(std::string emailId, std::string folderPath);
-    void removeEmailFromFolder(std::string emailId, std::string folderPath);
-    std::string addFolder(std::string folderName, std::string parentPath);
+    void addThreadToFolder(std::string threadId, std::string folderPath);
+    void removeThreadFromFolder(std::string threadId, std::string folderPath);
+    std::string addFolder(std::string folderPath);
     void removeFolder(std::string folderPath);
 
-    bool login(std::string username, std::string password);
+    bool login(std::string emailAddress, std::string password);
     void logout();
 
     Account(EmailProvider& provider);
-    ~Account();
+    virtual ~Account();
 };
 
 #endif

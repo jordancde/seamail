@@ -9,8 +9,7 @@
 enum AccountEventType {
     FOLDER_CONTENTS_CHANGED,
     ACCOUNT_FOLDERS_CHANGED,
-    THREAD_CHANGED,
-    EMAIL_CHANGED
+    THREAD_CHANGED
 };
 
 class AccountEvent: public Event {

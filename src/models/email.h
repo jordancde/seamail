@@ -10,6 +10,7 @@
 class Email: public Serializable {
     std::ostream& serialize(std::ostream&) override;
     std::istream& deserialize(std::istream&) override;
+    std::string genRandomId();
 
 public:
     std::string id;
@@ -22,10 +23,15 @@ public:
     std::string body;
     bool unread;
     std::vector<std::string> imagePaths;
+    std::string threadId;
 
-    Email(std::string id, std::string from, std::vector<std::string> to,time_t dateTime, std::vector<std::string> cc = {}, 
+    Email(std::string threadId, std::string from, std::vector<std::string> to,time_t dateTime, std::vector<std::string> cc = {}, 
         std::vector<std::string> bcc = {}, std::string subject = "", std::string body = "", bool unread = false,
         std::vector<std::string> imagePaths = {});
+
+    Email(const Email&);
+    //CC needs new id generated base on nikhils function
+    //seed with time
     ~Email();
 };
 
