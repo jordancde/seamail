@@ -6,8 +6,8 @@
 #include <memory>
 #include <string>
 
-#include "event.h"
 #include "session.h"
+#include "../events/event.h"
 #include "../utility/observer.h"
 #include "../utility/subject.h"
 #include "../utility/serializable.h"
