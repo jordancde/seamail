@@ -1,13 +1,23 @@
 
 
 #include "graphics/compositor.h"
+#include "graphics/toolbar.h"
+
+#include <iostream>
 
 class MyDummyWindow : public NWindow {
 public:
-	MyDummyWindow() 
-		: NWindow() {}
-	void draw(size_t nw, size_t nh) const override {
+	MyDummyWindow() : NWindow(0,0,0,0) {
+		onResize();
+	}
+
+	void onDraw() const override {
 		box(win, 0, 0);
+		mvwprintw(win, 1, 1, "%zu %zu", maxx(), maxy());
+	}
+
+	void onResize() override {
+		resize(0, 1, maxx() / 2, maxy()-1);
 	}
 
 	void onInput(int key) override {
@@ -25,18 +35,22 @@ public:
 			move(cx() + 1, cy());
 			break;
 		}
-
 	}
-
 };
+
 int main()
 {	
 	Compositor& com = Compositor::instance();
 
+	auto mytoolbar = std::make_shared<Toolbar>(0, std::list<std::string>{"File", "Edit", "View"}, [](std::string selected){
+
+	});
+	com.addWindow(mytoolbar);
 	auto mywin = std::make_shared<MyDummyWindow>();
 	com.addWindow(mywin);
-	com.setActiveWindow(mywin);
-	mywin->refresh();
+	//com.setActiveWindow(mywin);
+	com.setActiveWindow(mytoolbar);
+	com.refresh();
 	com.run();
 
 	return 0;

@@ -2,12 +2,15 @@ BIN 		:= seamail
 
 FLAGS		:= -Wall -std=c++17 -MMD 
 DEV_FLAGS 	:= -g
-LIBS		:= -lncurses 
 
 SDIR 		:= src
+DDIR		:= dep
+
+INC		:= -I$(DDIR)/json
+LIBS		:= -lncurses 
 
 CXX 		:= g++
-CXXFLAGS  	:= $(FLAGS) -I$(SDIR)
+CXXFLAGS  	:= $(FLAGS) -I$(SDIR) $(INC)
 
 SOURCES 	:= $(shell find $(SDIR) -name '*.cc')
 OBJECTS		:= $(SOURCES:$(SDIR)/%.cc=$(SDIR)/%.o)
