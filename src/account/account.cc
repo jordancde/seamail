@@ -22,7 +22,7 @@ ostream& Account::serialize(ostream& out) const {
 
     stringstream ss;
     ss << session;
-    account["session"] << ss;
+    ss >> account["session"];
     return out << account;
 }
 
@@ -31,7 +31,7 @@ istream& Account::deserialize(istream& in) {
     in >> account;
     session = Session();
     stringstream ss;
-    account["session"] >> ss;
+    ss << account["session"];
     ss >> session;
     return in;
 }

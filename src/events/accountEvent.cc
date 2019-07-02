@@ -15,6 +15,6 @@ Account& AccountEvent::getAffectedAccount() {
 }
 
 AccountEvent::AccountEvent(AccountEventType type, Account& acc, std::string id):
-    type{type}, affectedId{affectedId}, affectedAccount{acc}{}
+    type{type}, affectedAccount{acc},affectedId{id}{}
 
 AccountEvent::~AccountEvent(){}
