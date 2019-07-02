@@ -1,13 +1,38 @@
 #include "email.h"
-
+#include <nlohmann/json.hpp>
+#include <vector>
+#include <string>
 using namespace std;
 
 ostream& Email::serialize(ostream& out) const {
-
+    nlohmann::json email;
+    email["id"] = id;
+    email["from"] = from;
+    email["to"] = to;
+    email["dateTime"] = dateTime;
+    email["cc"] = cc;
+    email["bcc"] = bcc;
+    email["subject"] = subject;
+    email["body"] = body;
+    email["unread"] = unread;
+    email["imagePaths"] = imagePaths;
+    email["threadId"] = threadId;
+    return out << email;
 }
 
 istream& Email::deserialize(istream& in){
-    
+    nlohmann::json email;
+    in >> email;
+    id = email["id"];
+    from = email["from"];
+    dateTime = email["dateTime"];
+    cc = email["cc"].get<vector<string>>();
+    bcc = email["bcc"].get<vector<string>>();
+    subject = email["subject"];
+    body = email["body"];
+    imagePaths = email["imagePaths"].get<vector<string>>();
+    threadId = email["threadId"];
+    return in;
 }
 
 string Email::genRandomId() {
