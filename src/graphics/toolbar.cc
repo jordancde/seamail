@@ -10,12 +10,9 @@ Toolbar::Toolbar(size_t line,
     selected = this->menuItems.begin();
 }
 
-void Toolbar::onDraw(bool isActive) const {
+void Toolbar::onDraw() const {
     wmove(win, 0, 0);
-    if(isActive)
-        wattron(win, A_REVERSE);
     waddch(win, ACS_VLINE);
-    wattroff(win, A_REVERSE);
     for(auto item = menuItems.begin(); item != menuItems.end(); ++item) {
         if(item == selected)
             wattron(win, A_REVERSE);

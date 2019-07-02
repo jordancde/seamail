@@ -11,11 +11,8 @@ public:
 		onResize();
 	}
 
-	void onDraw(bool isActive) const override {
-		if(isActive)
-			wattron(win, A_REVERSE);
+	void onDraw() const override {
 		box(win, 0, 0);
-		wattroff(win, A_REVERSE);
 		mvwprintw(win, 1, 1, "%zu %zu", maxx(), maxy());
 	}
 

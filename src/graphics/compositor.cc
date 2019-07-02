@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <csignal>
 #include <stdexcept>
-#include <utility>
 
 
 std::unique_ptr<Compositor> Compositor::_instance;
@@ -19,8 +18,7 @@ void Compositor::resizeHandler(int sig){
     Compositor::instance().refresh();
 }
 
-Compositor::Compositor() {
-    activeWindow = windows.end();
+Compositor::Compositor(){
     std::signal(SIGWINCH, resizeHandler);
 
 	initscr();			
@@ -47,7 +45,7 @@ void Compositor::addWindow(std::shared_ptr<NWindow> window) {
 void Compositor::removeWindow(std::shared_ptr<NWindow> window) {
     auto it = std::find(windows.begin(), windows.end(), window);
     if(it != windows.end()){
-        if(it == activeWindow)
+        if(*it == activeWindow)
             throw std::logic_error("Cannot remove active window!");
         windows.erase(it); 
     } else {
@@ -58,14 +56,10 @@ void Compositor::removeWindow(std::shared_ptr<NWindow> window) {
 void Compositor::setActiveWindow(std::shared_ptr<NWindow> window) {
     auto it = std::find(windows.begin(), windows.end(), window);
     if(it != windows.end()) {
-        activeWindow = it;
+        activeWindow = *it;
     } else {
         throw std::out_of_range("Window being set as active does not exist!");
     }
-}
-
-NWindow* Compositor::getActiveWindow() {
-    return (*activeWindow).get();
 }
 
 void Compositor::resize() {
@@ -85,10 +79,10 @@ void Compositor::update() {
 void Compositor::run() {
     bool quit = false;
     while(!quit){
-        if(activeWindow == windows.end())
+        if(!activeWindow)
             throw std::logic_error("No active window is defined!");
 
-        int ch = (*activeWindow)->get();
+        int ch = activeWindow->getKey();
 
         switch(ch){
         case 'q':
@@ -96,48 +90,8 @@ void Compositor::run() {
             break;
         case 'p':
             break;
-        case 27:
-            (*activeWindow)->nodelay(TRUE);
-            ch = (*activeWindow)->get();
-            (*activeWindow)->nodelay(FALSE);
-            if(ch == ERR) {     // escape
-                activeWindow = windows.begin();
-                refresh();
-            } else { // ALT + ch
-
-            }
-            break;
-        case ']':
-            if(activeWindow != (--windows.end()))
-                ++activeWindow;
-            refresh();
-            break;
-        case '[':
-            if(activeWindow != windows.begin())
-                --activeWindow;
-            refresh();
-            break;
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        {
-            int idx = ch - '0';
-            if((size_t) idx < windows.size()){
-                activeWindow = windows.begin();
-                std::advance(activeWindow, idx);
-            }
-            refresh();
-            break;
-        }
         default:
-            (*activeWindow)->onInput(ch);
+            activeWindow->onInput(ch);
             break;
         }
 

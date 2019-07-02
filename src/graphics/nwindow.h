@@ -31,13 +31,12 @@ public:
     size_t maxy() const { return getmaxy(stdscr); }
 
     void move(size_t x, size_t y) { wmove(win, y, x); }
-    int get() const { return ::wgetch(win); }
-    void nodelay(bool b) { ::nodelay(win, b); }
 
     // Redraw the ncurses window to screen
     void refresh() const;
+    int getKey() const;
 
-    virtual void onDraw(bool isActive) const {}
+    virtual void onDraw() const {}
     virtual void onInput(int key) {}
     virtual void onResize() {}
 };

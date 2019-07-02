@@ -4,8 +4,6 @@
 #include <utility>
 #include <stdexcept>
 
-#include "graphics/compositor.h"
-
 NWindow::NWindow(size_t x, size_t y, size_t w, size_t h) {
     resize(x, y, w, h);
 }
@@ -42,12 +40,14 @@ void NWindow::resize(size_t x, size_t y, size_t w, size_t h) {
     if(win)
         delwin(win);
     win = newwin(h, w, y, x);
-    keypad(win, TRUE);
 }
 
 void NWindow::refresh() const {
     //wclear(win);
-
-    onDraw(Compositor::instance().getActiveWindow() == this);
+    onDraw();
     wnoutrefresh(win);
+}
+
+int NWindow::getKey() const {
+    return wgetch(win);
 }
