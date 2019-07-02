@@ -11,6 +11,7 @@ class Thread: public Serializable {
 
     std::ostream& serialize(std::ostream&) override;
     std::istream& deserialize(std::istream&) override;
+    std::string genRandomId();
 
 public:
     std::string id;
@@ -21,6 +22,7 @@ public:
     std::vector<std::string>::iterator end();
 
     Thread(std::string title, std::vector<std::string> emailIds = {});
+    Thread(const Thread&);
     Thread();
     ~Thread();
 };
