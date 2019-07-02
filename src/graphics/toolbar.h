@@ -20,7 +20,7 @@ public:
     Toolbar(size_t line, 
         std::list<std::string> menuItems, std::function<void(std::string)> handler);
 
-    void onDraw() const override;
+    void onDraw(bool isActive) const override;
     void onInput(int key) override;
     void onResize() override;
 };
