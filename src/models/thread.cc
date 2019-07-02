@@ -43,7 +43,7 @@ vector<string>::iterator Thread::end(){
     return emailIds.end();
 }
 
-Thread::Thread(string path, vector<string> emailIds):id{genRandomId()}, title{title}, emailIds{emailIds}{}
+Thread::Thread(string title, vector<string> emailIds):id{genRandomId()}, title{title}, emailIds{emailIds}{}
 Thread::Thread(const Thread& other): id{genRandomId()}, title{other.title}, emailIds{other.emailIds}{}
 
 Thread::Thread(){}

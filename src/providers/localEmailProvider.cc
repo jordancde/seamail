@@ -82,6 +82,7 @@ void LocalEmailProvider::removeThreadFromFolder(Session& ctx, std::string thread
 
 std::string LocalEmailProvider::addFolder(Session& ctx, std::string folderPath) {
     folders[ctx.getEmailAddress() + "/" + folderPath] = Folder();
+    return folderPath;
 }
 
 void LocalEmailProvider::removeFolder(Session& ctx, std::string folderPath) {

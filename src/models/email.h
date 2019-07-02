@@ -14,6 +14,7 @@ class Email: public Serializable {
 
 public:
     std::string id;
+    std::string threadId;
     std::string from;
     std::vector<std::string> to;
     time_t dateTime;
@@ -23,7 +24,7 @@ public:
     std::string body;
     bool unread;
     std::vector<std::string> imagePaths;
-    std::string threadId;
+    
 
     Email(std::string threadId, std::string from, std::vector<std::string> to,time_t dateTime, std::vector<std::string> cc = {}, 
         std::vector<std::string> bcc = {}, std::string subject = "", std::string body = "", bool unread = false,
