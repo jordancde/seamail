@@ -12,7 +12,7 @@ class Compositor {
     static void resizeHandler(int sig);
 
     std::list<std::shared_ptr<NWindow>> windows;
-    std::shared_ptr<NWindow> activeWindow; 
+    std::list<std::shared_ptr<NWindow>>::iterator activeWindow;
 
     Compositor();
 public:
@@ -28,6 +28,7 @@ public:
     void addWindow(std::shared_ptr<NWindow> window);
     void removeWindow(std::shared_ptr<NWindow> window);
     void setActiveWindow(std::shared_ptr<NWindow> window);
+    NWindow* getActiveWindow();
 
     // force all child windows to handle resizing
     void resize();
