@@ -4,18 +4,18 @@
 
 #include <memory>
 
-#include <ncurses.h>
+#include "utility/observer.h"
+#include "graphics/nwindow.h"
 
-#include <utility/observer.h>
-#include <graphics/nwindow.h>
+#include "account/account.h"
 
 class View : public Observer, public NWindow {
 protected:
-    //std::shared_ptr<Account> account;
+    std::shared_ptr<Account> account;
 
 public:
 
-    View();
+    View(std::shared_ptr<Account> account) : account(account) {}
     virtual ~View();
 
 };
