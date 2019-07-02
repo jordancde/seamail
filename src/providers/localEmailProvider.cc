@@ -30,7 +30,7 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
     emails[user + "/" + email.id] = email;
     std::string threadId = email.threadId;
     if (threadId == "new") {
-        Thread t = Thread();
+        Thread t = Thread(email.subject);
         threads[user + "/" + t.id] = t;
         threadId = t.id;
         folders[user + "/sent"].threadIds.emplace_back(threadId);
@@ -41,7 +41,7 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
     for (auto recipient: email.to) {
         emails[recipient + "/" + email.id] = email;
         if (email.threadId == "new") {
-            Thread t = Thread();
+            Thread t = Thread(email.subject);
             t.emailIds.emplace_back(email.id);
             threads[recipient + "/" + t.id] = t;
             folders[recipient + "/inbox"].threadIds.emplace_back(threadId);
@@ -61,8 +61,8 @@ Thread LocalEmailProvider::getThreadById(Session& ctx, std::string threadId) {
 }
 
 void LocalEmailProvider::addThreadToFolder(Session& ctx, std::string threadId, std::string folderPath) {
-    Thread& t = threads[ctx.getEmailAddress() + "/" + threadId];
-    folders[ctx.getEmailAddress() + "/" folderPath].threadIds.emplace_back(t);
+    folders[ctx.getEmailAddress() + "/" + folderPath].
+        threadIds.emplace_back(threads[ctx.getEmailAddress() + "/" + threadId].id);
 }
 
 void LocalEmailProvider::removeThreadFromFolder(Session& ctx, std::string threadId, std::string folderPath) {
@@ -77,7 +77,7 @@ void LocalEmailProvider::removeThreadFromFolder(Session& ctx, std::string thread
         }
     }
 
-    folders[ctx.getEmailAddress() + "/deleted"].threadIds.emplace_back(t);
+    folders[ctx.getEmailAddress() + "/deleted"].threadIds.emplace_back(t.id);
 }
 
 std::string LocalEmailProvider::addFolder(Session& ctx, std::string folderPath) {
@@ -87,10 +87,10 @@ std::string LocalEmailProvider::addFolder(Session& ctx, std::string folderPath) 
 void LocalEmailProvider::removeFolder(Session& ctx, std::string folderPath) {
     auto f = folders.find(ctx.getEmailAddress() + "/" + folderPath);
     if (f != folders.end()) {
-        for (auto& threadId: f->threadIds) {
+        for (auto& threadId: f->second.threadIds) {
             auto t = threads.find(ctx.getEmailAddress() + "/" + threadId);
             if (t != threads.end()) {
-                for (auto& emailId: t->emailIds) {
+                for (auto& emailId: t->second.emailIds) {
                     emails.erase(ctx.getEmailAddress() + "/" + emailId);
                 }
                 threads.erase(t);
@@ -112,4 +112,12 @@ Session LocalEmailProvider::getSession(std::string emailAddress, std::string pas
 void LocalEmailProvider::addAccount(std::string emailAddress, std::string password) {
     // unsecure hash!
     accounts[emailAddress] = std::hash<std::string>{}(password);
+}
+
+std::ostream& LocalEmailProvider::serialize(std::ostream& sout) const {
+    return sout;
+}
+
+std::istream& LocalEmailProvider::deserialize(std::istream& sin) {
+    return sin;
 }

@@ -3,14 +3,13 @@
 
 #include <string>
 
-#include "event.h"
+#include "./event.h"
 #include "../account/account.h"
 
 enum AccountEventType {
     FOLDER_CONTENTS_CHANGED,
     ACCOUNT_FOLDERS_CHANGED,
-    THREAD_CHANGED,
-    EMAIL_CHANGED
+    THREAD_CHANGED
 };
 
 class AccountEvent: public Event {
