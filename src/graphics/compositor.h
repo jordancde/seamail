@@ -6,8 +6,8 @@
 #include <memory>
 #include <list>
 
-
 class Compositor {
+
     static std::unique_ptr<Compositor> _instance;
     static void resizeHandler(int sig);
 
@@ -29,12 +29,14 @@ public:
     void removeWindow(std::shared_ptr<NWindow> window);
     void setActiveWindow(std::shared_ptr<NWindow> window);
 
+    // force all child windows to handle resizing
+    void resize();
+    // force all child windows to redraw
     void refresh();
+    // update virtual screen to terminal
+    void update();
+    // event loop
     void run();
-
-
-
-
 
 };
 

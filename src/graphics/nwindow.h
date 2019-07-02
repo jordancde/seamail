@@ -8,8 +8,9 @@ class NWindow {
     void swap(NWindow&) noexcept;
 
 protected:
-    
     WINDOW *win;
+
+    void resize(size_t x, size_t y, size_t w, size_t h);
 public:
     NWindow(size_t x, size_t y, size_t w, size_t h);
     NWindow();
@@ -20,12 +21,14 @@ public:
     NWindow& operator=(const NWindow&) = delete;
     NWindow& operator=(NWindow&&);
 
-    size_t x() { return getbegx(win); }
-    size_t y() { return getbegy(win); }
-    size_t w() { return getmaxx(win) - x(); }
-    size_t h() { return getmaxy(win) - y(); }
-    size_t cx() { return getcurx(win); }
-    size_t cy() { return getcury(win); }
+    size_t x() const { return getbegx(win); }
+    size_t y() const { return getbegy(win); }
+    size_t w() const { return getmaxx(win) - x(); }
+    size_t h() const { return getmaxy(win) - y(); }
+    size_t cx() const { return getcurx(win); }
+    size_t cy() const { return getcury(win); }
+    size_t maxx() const { return getmaxx(stdscr); }
+    size_t maxy() const { return getmaxy(stdscr); }
 
     void move(size_t x, size_t y) { wmove(win, y, x); }
 
@@ -33,8 +36,9 @@ public:
     void refresh() const;
     int getKey() const;
 
-    virtual void draw(size_t nw, size_t nh) const {}
+    virtual void onDraw() const {}
     virtual void onInput(int key) {}
+    virtual void onResize() {}
 };
 
 #endif

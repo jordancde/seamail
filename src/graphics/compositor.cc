@@ -10,9 +10,11 @@
 std::unique_ptr<Compositor> Compositor::_instance;
 
 void Compositor::resizeHandler(int sig){
+    // refresh stdscr so that getmaxyx works
     endwin();
     ::refresh();
     clear();
+    Compositor::instance().resize();
     Compositor::instance().refresh();
 }
 
@@ -23,6 +25,7 @@ Compositor::Compositor(){
 	raw();				
 	keypad(stdscr, TRUE);		
 	noecho();			
+    curs_set(0);
 }
 
 Compositor::~Compositor() {
@@ -59,9 +62,18 @@ void Compositor::setActiveWindow(std::shared_ptr<NWindow> window) {
     }
 }
 
+void Compositor::resize() {
+    for(auto win : windows)
+        win->onResize();
+}
 void Compositor::refresh() {
     for(auto win : windows)
         win->refresh();
+    update();
+}
+
+void Compositor::update() {
+    doupdate();
 }
 
 void Compositor::run() {
@@ -76,9 +88,13 @@ void Compositor::run() {
         case 'q':
             quit = true;
             break;
+        case 'p':
+            break;
         default:
             activeWindow->onInput(ch);
             break;
         }
+
+        update();
     }
 }

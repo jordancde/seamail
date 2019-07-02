@@ -3,20 +3,22 @@
 
 #include <vector>
 #include <iostream>
+
 #include "../utility/serializable.h"
 
 class Folder: public Serializable {
     std::string path;
-    std::vector<std::string> threadIds;
-
-    std::ostream& serialize(std::ostream&) override;
+    
+    std::ostream& serialize(std::ostream&) const override;
     std::istream& deserialize(std::istream&) override;
 
 public:
+    std::vector<std::string> threadIds;
     std::vector<std::string>::iterator begin();
     std::vector<std::string>::iterator end();
 
-    Folder(std::string path, std::vector<std::string> threadIds = {});
+    Folder(std::string path, std::vector<std::string> threadIds={});
+    Folder();
     ~Folder();
 };
 

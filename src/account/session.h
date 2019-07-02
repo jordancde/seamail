@@ -3,20 +3,22 @@
 
 #include <iostream>
 #include <string>
+
 #include "../utility/serializable.h"
 
 class Session: public Serializable {
-    std::ostream& serialize(std::ostream&) override;
+    std::ostream& serialize(std::ostream&) const override;
     std::istream& deserialize(std::istream&) override;
 
-    std::string username;
+    std::string emailAddress;
     std::string key;
 
 public:
-    std::string getUsername();
+    std::string getEmailAddress();
     std::string getKey();
 
-    Session(std::string username, std::string key);
+    Session();
+    Session(std::string emailAddress, std::string key);
     ~Session();
 };
 
