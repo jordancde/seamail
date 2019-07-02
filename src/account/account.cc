@@ -17,7 +17,7 @@ string Account::inboxPath = "inbox";
 Account::Account(EmailProvider& provider):provider{provider}{}
 Account::~Account(){}
 
-ostream& Account::serialize(ostream& out){
+ostream& Account::serialize(ostream& out) const {
     nlohmann::json account;
 
     stringstream ss;

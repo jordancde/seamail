@@ -5,7 +5,7 @@
 
 using namespace std;
 
-ostream& Thread::serialize(ostream& out) {
+ostream& Thread::serialize(ostream& out) const {
     nlohmann::json thread;
     thread["id"] = id;
     thread["title"] = title;

@@ -9,7 +9,7 @@
 
 class Thread: public Serializable {
 
-    std::ostream& serialize(std::ostream&) override;
+    std::ostream& serialize(std::ostream&) const override;
     std::istream& deserialize(std::istream&) override;
     std::string genRandomId();
 

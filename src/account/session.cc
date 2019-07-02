@@ -5,14 +5,14 @@
 
 using namespace std;
 
-ostream& Session::serialize(ostream& out){
+ostream& Session::serialize(ostream& out) const {
     nlohmann::json session;
     session["emailAddress"] = emailAddress;
     session["key"] = key;
     return out << session;
 }
 
-istream& Session::deserialize(istream& in){
+istream& Session::deserialize(istream& in) {
     nlohmann::json session;
     in >> session;
     emailAddress = session["emailAddress"];

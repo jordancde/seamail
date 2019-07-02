@@ -2,7 +2,7 @@
 
 using namespace std;
 
-ostream& Email::serialize(ostream& out){
+ostream& Email::serialize(ostream& out) const {
 
 }
 
@@ -43,3 +43,6 @@ Email::Email(const Email& other):
     to{other.to}, dateTime{other.dateTime}, cc{other.cc}, 
     bcc{other.bcc}, subject{other.subject}, body{other.body},
     unread{other.unread}, imagePaths{other.imagePaths} {}
+
+Email::Email() {}
+Email::~Email() {}

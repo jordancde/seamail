@@ -18,7 +18,7 @@
 class Account: public Subject, public Serializable {
     Session session;
     EmailProvider& provider;
-    std::ostream& serialize(std::ostream&) override;
+    std::ostream& serialize(std::ostream&) const override;
     std::istream& deserialize(std::istream&) override;
 
     static std::string sentPath;

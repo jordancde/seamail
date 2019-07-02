@@ -2,6 +2,10 @@
 #include <memory>
 #include <algorithm>
 
+Subject::Subject() {} 
+
+Subject::~Subject() {}
+
 void Subject::notifyAllObservers(std::shared_ptr<Event> event) {
     for(auto o : observers){
         o->notify(event);

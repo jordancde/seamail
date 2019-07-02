@@ -5,7 +5,7 @@
 
 using namespace std;
 
-ostream& Folder::serialize(ostream& out) {
+ostream& Folder::serialize(ostream& out) const {
     nlohmann::json folder;
     folder["path"] = path;
     folder["threadIds"] = threadIds;

@@ -113,3 +113,11 @@ void LocalEmailProvider::addAccount(std::string emailAddress, std::string passwo
     // unsecure hash!
     accounts[emailAddress] = std::hash<std::string>{}(password);
 }
+
+std::ostream& LocalEmailProvider::serialize(std::ostream& sout) const {
+    return sout;
+}
+
+std::istream& LocalEmailProvider::deserialize(std::istream& sin) {
+    return sin;
+}

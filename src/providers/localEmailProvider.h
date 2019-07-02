@@ -16,6 +16,9 @@ class LocalEmailProvider: public EmailProvider {
     // email to pwd hash
     std::unordered_map<std::string, std::size_t> accounts;
 
+    std::ostream& serialize(std::ostream&) const override;
+    std::istream& deserialize(std::istream&) override;
+
 public:
     LocalEmailProvider();
     ~LocalEmailProvider() override;

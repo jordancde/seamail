@@ -9,7 +9,7 @@
 class Folder: public Serializable {
     std::string path;
     
-    std::ostream& serialize(std::ostream&) override;
+    std::ostream& serialize(std::ostream&) const override;
     std::istream& deserialize(std::istream&) override;
 
 public:

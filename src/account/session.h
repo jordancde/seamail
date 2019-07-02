@@ -7,7 +7,7 @@
 #include "../utility/serializable.h"
 
 class Session: public Serializable {
-    std::ostream& serialize(std::ostream&) override;
+    std::ostream& serialize(std::ostream&) const override;
     std::istream& deserialize(std::istream&) override;
 
     std::string emailAddress;
