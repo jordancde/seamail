@@ -12,8 +12,8 @@ LIBS		:= -lncurses
 CXX 		:= g++
 CXXFLAGS  	:= $(FLAGS) -I$(SDIR) $(INC)
 
-#SOURCES 	:= $(shell find $(SDIR) -name '*.cc')
-SOURCES 	:= src/main.cc $(shell find $(SDIR)/graphics -name '*.cc')
+SOURCES 	:= $(shell find $(SDIR) -name '*.cc')
+#SOURCES 	:= src/main.cc $(shell find $(SDIR)/graphics -name '*.cc')
 
 OBJECTS		:= $(SOURCES:$(SDIR)/%.cc=$(SDIR)/%.o)
 DEPENDS 	:= $(OBJECTS:.o=.d)
