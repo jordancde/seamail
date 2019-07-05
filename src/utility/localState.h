@@ -18,12 +18,7 @@ public:
     std::vector<std::shared_ptr<Account>> getAccounts();
     void removeAccount(Account&);
 
-    void storeProvider(std::shared_ptr<EmailProvider>);
-    std::vector<std::shared_ptr<EmailProvider>> getProviders();
-    void removeProvider(EmailProvider&);
-
     LocalState(std::vector<std::shared_ptr<Account>> accounts, std::vector<std::shared_ptr<EmailProvider>> providers);
-    LocalState(const LocalState&);
     LocalState();
     ~LocalState();
 };
