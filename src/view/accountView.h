@@ -11,7 +11,7 @@
 
 class AccountView : public View {
 
-    static std::pair<int, std::string> folderPathToDisplayName(const std::string &path);
+    static std::pair<size_t, std::string> folderPathToDisplayName(const std::string &path);
 public:
     AccountView(std::shared_ptr<Account> account)
         : View(account) {
