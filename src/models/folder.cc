@@ -1,7 +1,9 @@
 #include "folder.h"
 
-#include <nlohmann/json.hpp>
 #include <iostream>
+#include <sstream>
+
+#include <nlohmann/json.hpp>
 
 using namespace std;
 
@@ -32,3 +34,15 @@ Folder::Folder(string path, vector<string> threadIds):path{path}, threadIds{thre
 Folder::Folder(){}
 
 Folder::~Folder(){}
+
+void to_json(nlohmann::json& j, const Folder& f) {
+    stringstream s;
+    f.serialize(s);
+    s >> j;
+}
+
+void from_json(const nlohmann::json& j, Folder& f) {
+    stringstream s;
+    j >> s;
+    f.deserialize(s);
+}

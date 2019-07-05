@@ -1,7 +1,9 @@
 #include "thread.h"
 
-#include <nlohmann/json.hpp>
 #include <iostream>
+#include <sstream>
+
+#include <nlohmann/json.hpp>
 
 using namespace std;
 
@@ -43,8 +45,20 @@ vector<string>::iterator Thread::end(){
     return emailIds.end();
 }
 
-Thread::Thread(string path, vector<string> emailIds):id{genRandomId()}, title{title}, emailIds{emailIds}{}
+Thread::Thread(string title, vector<string> emailIds):id{genRandomId()}, title{title}, emailIds{emailIds}{}
 Thread::Thread(const Thread& other): id{genRandomId()}, title{other.title}, emailIds{other.emailIds}{}
 
 Thread::Thread(){}
 Thread::~Thread(){}
+
+void to_json(nlohmann::json& j, const Thread& t) {
+    stringstream s;
+    t.serialize(s);
+    s >> j;
+}
+
+void from_json(const nlohmann::json& j, Thread& t) {
+    stringstream s;
+    j >> s;
+    t.deserialize(s);
+}
