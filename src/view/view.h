@@ -15,8 +15,9 @@ protected:
 
 public:
 
-    View(std::shared_ptr<Account> account) : account(account) {}
-    virtual ~View();
+    View(std::shared_ptr<Account> account) : NWindow(0,0,0,0), account(account) {
+    }
+    virtual ~View() {}
 
 };
 

@@ -80,12 +80,8 @@ void Account::removeFolder(string folderPath){
 }
 
 bool Account::login(string emailAddress, string password){
-    try{
-        session = provider.getSession(emailAddress, password);
-        return true;
-    }catch(AuthenticationFailedException e){
-        return false;
-    }
+    session = provider.getSession(emailAddress, password);
+    return true;
 }
 
 void Account::logout(){

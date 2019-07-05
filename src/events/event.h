@@ -2,6 +2,8 @@
 #define EVENT_H_
 
 class Event {
+public:
+    virtual ~Event() = default;
 
 };
 

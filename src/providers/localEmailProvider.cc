@@ -89,6 +89,7 @@ void LocalEmailProvider::removeThreadFromFolder(Session& ctx, string threadId, s
 
 string LocalEmailProvider::addFolder(Session& ctx, string folderPath) {
     folders[ctx.getEmailAddress() + "/" + folderPath] = Folder();
+    accountFolderPaths[ctx.getEmailAddress()].push_back(folderPath);
     return folderPath;
 }
 
