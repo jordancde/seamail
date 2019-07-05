@@ -10,7 +10,7 @@
 using namespace std;
 
 
-pair<int, string> AccountView::folderPathToDisplayName(const std::string &path){
+pair<size_t, string> AccountView::folderPathToDisplayName(const std::string &path){
     auto lastSlash = path.rfind("/");
     string folderName = path;
     if(lastSlash != string::npos)
@@ -25,7 +25,7 @@ void AccountView::onDraw(bool isActive) const {
 
     wmove(win, 1, 0);
     for(const string& s : folderPaths){
-        pair<int, string> dispName = folderPathToDisplayName(s);
+        auto dispName = folderPathToDisplayName(s);
         waddch(win, ' ');
         for(size_t i = 0; i < dispName.first; ++i)
             wprintw(win, "\t");
@@ -46,6 +46,8 @@ void AccountView::notify(std::shared_ptr<Event> event) {
     switch(ptr->getType()){
         case AccountEventType::ACCOUNT_FOLDERS_CHANGED:
             this->refresh();
+            break;
+        default:
             break;
     }
 }
