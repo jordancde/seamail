@@ -1,7 +1,7 @@
 BIN 		:= seamail
 
-FLAGS		:= -Wall -std=c++17 -MMD 
 DEV_FLAGS 	:= -g
+FLAGS		:= -Wall -std=c++17 -MMD $(DEV_FLAGS)
 
 SDIR 		:= src
 DDIR		:= dep
@@ -31,8 +31,8 @@ $(BIN): $(OBJECTS)
 
 clean:
 	rm -rf $(BIN)
-	find $(SDIR) -name '*.o' -delete
-	find $(SDIR) -name '*.d' -delete
+	find $(SDIR) -name '*.o' -delete -print
+	find $(SDIR) -name '*.d' -delete -print
 
 run: all
 	./$(BIN)
