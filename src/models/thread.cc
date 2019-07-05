@@ -59,6 +59,6 @@ void to_json(nlohmann::json& j, const Thread& t) {
 
 void from_json(const nlohmann::json& j, Thread& t) {
     stringstream s;
-    j >> s;
+    s << j; 
     t.deserialize(s);
 }

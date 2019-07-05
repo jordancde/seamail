@@ -84,6 +84,6 @@ void to_json(nlohmann::json& j, const Email& e) {
 
 void from_json(const nlohmann::json& j, Email& e) {
     stringstream s;
-    j >> s;
+    s << j;
     e.deserialize(s);
 }

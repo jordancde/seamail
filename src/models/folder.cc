@@ -43,6 +43,6 @@ void to_json(nlohmann::json& j, const Folder& f) {
 
 void from_json(const nlohmann::json& j, Folder& f) {
     stringstream s;
-    j >> s;
+    s << j;
     f.deserialize(s);
 }
