@@ -50,7 +50,7 @@ vector<shared_ptr<Account>> LocalState::getAccounts(){
 }
 
 void LocalState::removeAccount(Account& acc){
-    accounts.erase(remove(accounts.begin(), accounts.end(), acc), accounts.end());
+    // remove(accounts.begin(), accounts.end(), acc); 
 }
 
 LocalState::LocalState(vector<shared_ptr<Account>> accounts, vector<shared_ptr<EmailProvider>> providers):accounts{accounts}, providers{providers}{}

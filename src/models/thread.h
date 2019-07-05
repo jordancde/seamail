@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 
+#include <nlohmann/json.hpp>
+
 #include "../utility/serializable.h"
 
 class Thread: public Serializable {
@@ -25,6 +27,9 @@ public:
     Thread(const Thread&);
     Thread();
     ~Thread();
+
+    friend void to_json(nlohmann::json&, const Thread&);
+    friend void from_json(const nlohmann::json&, Thread&);
 };
 
 #endif
