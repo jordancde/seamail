@@ -22,7 +22,6 @@ ostream& LocalState::serialize(ostream& out) const{
 
 
     //localState["accounts"] = accs;
-    //localState["providers"] = provs;
 
     return out << localState;
 }
