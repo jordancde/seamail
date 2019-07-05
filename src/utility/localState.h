@@ -11,14 +11,14 @@ class LocalState: public Serializable{
     std::istream& deserialize(std::istream&) override;
 
     std::vector<std::shared_ptr<Account>> accounts;
+    std::vector<std::shared_ptr<EmailProvider>> providers;
 
 public:
     void storeAccount(std::shared_ptr<Account>);
     std::vector<std::shared_ptr<Account>> getAccounts();
     void removeAccount(Account&);
 
-    LocalState(std::vector<std::shared_ptr<Account>> accounts);
-    LocalState(const LocalState&);
+    LocalState(std::vector<std::shared_ptr<Account>> accounts, std::vector<std::shared_ptr<EmailProvider>> providers);
     LocalState();
     ~LocalState();
 };

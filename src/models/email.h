@@ -1,6 +1,7 @@
 #ifndef _EMAIL_H_
 #define _EMAIL_H_
 
+#include <nlohmann/json.hpp>
 #include <vector>
 #include <iostream>
 #include <string>
@@ -33,6 +34,9 @@ public:
     Email(const Email&);
     Email();
     ~Email();
+
+    friend void to_json(nlohmann::json&, const Email&);
+    friend void from_json(const nlohmann::json&, Email&);
 };
 
 #endif

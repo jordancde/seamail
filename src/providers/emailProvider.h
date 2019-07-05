@@ -24,6 +24,9 @@ protected:
     // "/email/emailId" to emails
     std::unordered_map<std::string, Email> emails;
 
+    std::ostream& serialize(std::ostream&) const override;
+    std::istream& deserialize(std::istream&) override;
+
 public:
     EmailProvider();
     virtual ~EmailProvider()=0;

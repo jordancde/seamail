@@ -1,7 +1,11 @@
 #include "email.h"
-#include <nlohmann/json.hpp>
+
 #include <vector>
 #include <string>
+#include <sstream>
+
+#include <nlohmann/json.hpp>
+
 using namespace std;
 
 ostream& Email::serialize(ostream& out) const {
@@ -71,3 +75,15 @@ Email::Email(const Email& other):
 
 Email::Email() {}
 Email::~Email() {}
+
+void to_json(nlohmann::json& j, const Email& e) {
+    stringstream s;
+    e.serialize(s);
+    s >> j;
+}
+
+void from_json(const nlohmann::json& j, Email& e) {
+    stringstream s;
+    j >> s;
+    e.deserialize(s);
+}
