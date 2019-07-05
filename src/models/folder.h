@@ -4,6 +4,8 @@
 #include <vector>
 #include <iostream>
 
+#include <nlohmann/json.hpp>
+
 #include "../utility/serializable.h"
 
 class Folder: public Serializable {
@@ -20,6 +22,9 @@ public:
     Folder(std::string path, std::vector<std::string> threadIds={});
     Folder();
     ~Folder();
+
+    friend void to_json(nlohmann::json&, const Folder&);
+    friend void from_json(const nlohmann::json&, Folder&);
 };
 
 #endif

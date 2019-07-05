@@ -1,6 +1,7 @@
 #ifndef _EMAIL_H_
 #define _EMAIL_H_
 
+#include <nlohmann/json.hpp>
 #include <vector>
 #include <iostream>
 #include <string>
@@ -24,7 +25,6 @@ public:
     std::string body;
     bool unread;
     std::vector<std::string> imagePaths;
-    
 
     Email(std::string threadId, std::string from, std::vector<std::string> to,time_t dateTime, std::vector<std::string> cc = {}, 
         std::vector<std::string> bcc = {}, std::string subject = "", std::string body = "", bool unread = false,
@@ -33,6 +33,9 @@ public:
     Email(const Email&);
     Email();
     ~Email();
+
+    friend void to_json(nlohmann::json&, const Email&);
+    friend void from_json(const nlohmann::json&, Email&);
 };
 
 #endif
