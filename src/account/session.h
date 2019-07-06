@@ -4,11 +4,13 @@
 #include <iostream>
 #include <string>
 
+#include <nlohmann/json.hpp>
+
 #include "../utility/serializable.h"
 
-class Session: public Serializable {
-    std::ostream& serialize(std::ostream&) const override;
-    std::istream& deserialize(std::istream&) override;
+class Session : public Serializable {
+    void serialize(nlohmann::json&) const override;
+    void deserialize(const nlohmann::json&) override;
 
     std::string emailAddress;
     std::string key;

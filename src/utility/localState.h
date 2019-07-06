@@ -1,24 +1,31 @@
+#ifndef LOCALSTATE_H
+#define LOCALSTATE_H
 
-#include <memory>
 #include <iostream>
+#include <memory>
 #include <vector>
 
-#include "./serializable.h"
+#include <nlohmann/json.hpp>
+
 #include "../account/account.h"
+#include "../providers/emailProvider.h"
+#include "./serializable.h"
 
-class LocalState: public Serializable{
-    std::ostream& serialize(std::ostream&) const override;
-    std::istream& deserialize(std::istream&) override;
+class LocalState : public Serializable {
+    void serialize(nlohmann::json&) const override;
+    void deserialize(const nlohmann::json&) override;
 
-    std::vector<std::shared_ptr<Account>> accounts;
-    std::vector<std::shared_ptr<EmailProvider>> providers;
+    std::vector<Account> accounts;
+    std::vector<EmailProvider> providers;
 
 public:
-    void storeAccount(std::shared_ptr<Account>);
-    std::vector<std::shared_ptr<Account>> getAccounts();
+    void storeAccount(Account);
+    std::vector<Account>& getAccounts();
     void removeAccount(Account&);
+    std::vector<EmailProvider>& getProviders();
 
-    LocalState(std::vector<std::shared_ptr<Account>> accounts, std::vector<std::shared_ptr<EmailProvider>> providers);
     LocalState();
     ~LocalState();
 };
+
+#endif

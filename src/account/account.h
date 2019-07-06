@@ -1,24 +1,28 @@
 #ifndef _ACCOUNT_H_
 #define _ACCOUNT_H_
 
-#include <vector>
 #include <iostream>
 #include <string>
+#include <vector>
 
-#include "./session.h"
+#include <nlohmann/json.hpp>
+
 #include "../events/event.h"
-#include "../utility/observer.h"
-#include "../utility/subject.h"
-#include "../utility/serializable.h"
-#include "../models/folder.h"
 #include "../models/email.h"
+#include "../models/folder.h"
 #include "../providers/emailProvider.h"
+#include "../utility/observer.h"
+#include "../utility/serializable.h"
+#include "../utility/subject.h"
+#include "./session.h"
 
-class Account: public Subject, public Serializable {
+class Account : public Subject, public Serializable {
     Session session;
-    EmailProvider& provider;
-    std::ostream& serialize(std::ostream&) const override;
-    std::istream& deserialize(std::istream&) override;
+    std::shared_ptr<EmailProvider> provider;
+    std::string emailAddress;
+
+    void serialize(nlohmann::json&) const override;
+    void deserialize(const nlohmann::json&) override;
 
     static std::string sentPath;
     static std::string inboxPath;
@@ -37,7 +41,10 @@ public:
     bool login(std::string emailAddress, std::string password);
     void logout();
 
-    Account(EmailProvider& provider);
+    bool operator==(const Account&) const;
+
+    Account();
+    Account(std::shared_ptr<EmailProvider> provider, std::string emailAddress);
     virtual ~Account();
 };
 

@@ -5,6 +5,8 @@
 #include <string>
 #include <unordered_map>
 
+#include <nlohmann/json.hpp>
+
 #include "../account/session.h"
 #include "../models/folder.h"
 #include "../models/email.h"
@@ -16,18 +18,12 @@ class LocalEmailProvider: public EmailProvider {
     // email to pwd hash
     std::unordered_map<std::string, std::size_t> accounts;
 
-    std::ostream& serialize(std::ostream&) const override;
-    std::istream& deserialize(std::istream&) override;
+    void serialize(nlohmann::json&) const override;
+    void deserialize(const nlohmann::json&) override;
 
 public:
     LocalEmailProvider();
     ~LocalEmailProvider() override;
-
-    // copy & move not allowed since entity adt
-    LocalEmailProvider(const LocalEmailProvider&) = delete;
-    LocalEmailProvider(LocalEmailProvider&&) = delete;
-    LocalEmailProvider& operator=(const LocalEmailProvider&) = delete;
-    LocalEmailProvider& operator=(LocalEmailProvider&&) = delete;
 
     std::vector<std::string> getAllFolderPaths(Session& ctx) override;
     Folder getFolderByPath(Session& ctx, std::string folderPath, std::string sort) override;
