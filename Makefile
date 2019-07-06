@@ -1,38 +1,24 @@
-BIN 		:= seamail
 
-DEV_FLAGS 	:= -g
-FLAGS		:= -Wall -std=c++17 -MMD $(DEV_FLAGS)
+TEST_DIR 	:= tests
+TESTS 		:= $(shell find $(TEST_DIR) -name '*.cc')
 
-SDIR 		:= src
-DDIR		:= dep
+all:
+	export TEST_MODE=0
+	export TEST_FILE=""
+	$(MAKE) -f core.mk
 
-INC		:= -I$(DDIR)/json
-LIBS		:= -lncurses 
+.PHONY: force clean run
 
-CXX 		:= g++
-CXXFLAGS  	:= $(FLAGS) -I$(SDIR) $(INC)
-
-SOURCES 	:= $(shell find $(SDIR) -name '*.cc')
-#SOURCES 	:= src/main.cc $(shell find $(SDIR)/graphics -name '*.cc')
-
-OBJECTS		:= $(SOURCES:$(SDIR)/%.cc=$(SDIR)/%.o)
-DEPENDS 	:= $(OBJECTS:.o=.d)
-
-SHELL		:= /bin/bash
-
-.PHONY: clean all run
-
-all: $(BIN)
-
-$(BIN): $(OBJECTS)
-	$(CXX) $(OBJECTS) -o $@ $(LIBS)
-
--include $(DEPENDS)
-
+run:
+	$(MAKE) -f core.mk run
 clean:
-	rm -rf $(BIN)
-	find $(SDIR) -name '*.o' -delete -print
-	find $(SDIR) -name '*.d' -delete -print
+	find $(TEST_DIR) -name '*.out' -delete -print
+	find $(TEST_DIR) -name '*.vg' -delete -print
+	$(MAKE) -f core.mk clean
+	
+$(TEST_DIR)/%.cc: force
+	TEST_MODE=1 TEST_FILE=$@ $(MAKE) -f core.mk
 
-run: all
-	./$(BIN)
+test: $(TESTS)
+	@echo completed test suite for all tests in $(TEST_DIR)...
+

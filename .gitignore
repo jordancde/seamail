@@ -2,3 +2,5 @@ seamail
 *.o
 *.d
 .vscode
+*.vg
+*.out
