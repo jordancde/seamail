@@ -23,7 +23,7 @@ SHELL		:= /bin/bash
 # TEST SPECIFIC DEFS
 MAIN_FILE	:= $(SDIR)/main.cc
 TEST_SOURCES	= $(filter-out $(MAIN_FILE),$(SOURCES)) $(TEST_FILE)
-TEST_OBJECTS	= $(TEST_SOURCES:$(SDIR)/%.cc=$(SDIR)/%.o)
+TEST_OBJECTS	= $(TEST_SOURCES:%.cc=%.o)
 
 C_NONE	:= \x1b[0m
 C_OK	:= \x1b[32;01m
