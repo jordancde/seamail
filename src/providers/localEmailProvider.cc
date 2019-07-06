@@ -1,12 +1,7 @@
 #include "./localEmailProvider.h"
 
-#include <string>
-#include <sstream>
-
-#include <nlohmann/json.hpp>
-
-#include "../exceptions/notImplementedException.h"
 #include "../exceptions/authenticationFailedException.h"
+#include "../exceptions/notImplementedException.h"
 
 using namespace std;
 
@@ -45,7 +40,7 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
     threads[user + "/" + threadId].emailIds.emplace_back(email.id);
 
     //receiving
-    for (auto recipient: email.to) {
+    for (auto recipient : email.to) {
         emails[recipient + "/" + email.id] = email;
         if (email.threadId == "new") {
             Thread t = Thread(email.subject);
@@ -53,7 +48,7 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
             threads[recipient + "/" + t.id] = t;
             folders[recipient + "/inbox"].threadIds.emplace_back(threadId);
         } else {
-            for (auto& t: threads) {
+            for (auto& t : threads) {
                 if (t.second.title == email.subject && t.first.substr(1, t.first.find("/", 1)) == recipient) {
                     t.second.emailIds.emplace_back(email.id);
                     break;
@@ -68,14 +63,12 @@ Thread LocalEmailProvider::getThreadById(Session& ctx, string threadId) {
 }
 
 void LocalEmailProvider::addThreadToFolder(Session& ctx, string threadId, string folderPath) {
-    folders[ctx.getEmailAddress() + "/" + folderPath].
-        threadIds.emplace_back(threads[ctx.getEmailAddress() + "/" + threadId].id);
+    folders[ctx.getEmailAddress() + "/" + folderPath].threadIds.emplace_back(threads[ctx.getEmailAddress() + "/" + threadId].id);
 }
 
 void LocalEmailProvider::removeThreadFromFolder(Session& ctx, string threadId, string folderPath) {
     Thread t = threads[ctx.getEmailAddress() + "/" + threadId];
     Folder& f = folders[ctx.getEmailAddress() + "/" + folderPath];
-    
 
     for (auto i = f.threadIds.begin(); i != f.threadIds.end(); ++i) {
         if (*i == t.id) {
@@ -96,10 +89,10 @@ string LocalEmailProvider::addFolder(Session& ctx, string folderPath) {
 void LocalEmailProvider::removeFolder(Session& ctx, string folderPath) {
     auto f = folders.find(ctx.getEmailAddress() + "/" + folderPath);
     if (f != folders.end()) {
-        for (auto& threadId: f->second.threadIds) {
+        for (auto& threadId : f->second.threadIds) {
             auto t = threads.find(ctx.getEmailAddress() + "/" + threadId);
             if (t != threads.end()) {
-                for (auto& emailId: t->second.emailIds) {
+                for (auto& emailId : t->second.emailIds) {
                     emails.erase(ctx.getEmailAddress() + "/" + emailId);
                 }
                 threads.erase(t);
@@ -123,22 +116,13 @@ void LocalEmailProvider::addAccount(string emailAddress, string password) {
     accounts[emailAddress] = hash<string>{}(password);
 }
 
-ostream& LocalEmailProvider::serialize(ostream& sout) const {
-    nlohmann::json provider;
-
+void LocalEmailProvider::serialize(nlohmann::json& provider) const {
+    EmailProvider::serialize(provider);
     provider["accounts"] = accounts;
-    
-    return EmailProvider::serialize(sout) << provider;
 }
 
-istream& LocalEmailProvider::deserialize(istream& sin) {
-    nlohmann::json provider;
-
-    // this is not gonna work. TODO: fix all serialization
-    EmailProvider::deserialize(sin) >> provider;
-
+void LocalEmailProvider::deserialize(const nlohmann::json& provider) {
+    EmailProvider::deserialize(provider);
     accounts = provider["accounts"]
-        .get<unordered_map<string, size_t>>();
-
-    return sin;
+                    .get<unordered_map<string, size_t>>();
 }

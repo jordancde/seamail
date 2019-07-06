@@ -1,18 +1,17 @@
 #ifndef _THREAD_H_
 #define _THREAD_H_
 
-#include <vector>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include <nlohmann/json.hpp>
 
 #include "../utility/serializable.h"
 
-class Thread: public Serializable {
-
-    std::ostream& serialize(std::ostream&) const override;
-    std::istream& deserialize(std::istream&) override;
+class Thread : public Serializable {
+    void serialize(nlohmann::json&) const override;
+    void deserialize(const nlohmann::json&) override;
     std::string genRandomId();
 
 public:
@@ -27,9 +26,6 @@ public:
     Thread(const Thread&);
     Thread();
     ~Thread();
-
-    friend void to_json(nlohmann::json&, const Thread&);
-    friend void from_json(const nlohmann::json&, Thread&);
 };
 
 #endif
