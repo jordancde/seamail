@@ -34,6 +34,8 @@ public:
             std::vector<std::string> imagePaths = {});
 
     Email(const Email&);
+
+    bool operator==(const Email&) const;
     Email();
     ~Email();
 };

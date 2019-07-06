@@ -13,6 +13,8 @@ run:
 	$(MAKE) -f core.mk run
 clean:
 	find $(TEST_DIR) -name '*.out' -delete -print
+	find $(TEST_DIR) -name '*.d' -delete -print
+	find $(TEST_DIR) -name '*.o' -delete -print
 	find $(TEST_DIR) -name '*.vg' -delete -print
 	$(MAKE) -f core.mk clean
 	
