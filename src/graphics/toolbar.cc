@@ -4,9 +4,8 @@
 
 Toolbar::Toolbar(size_t line, 
     std::list<std::string> menuItems, std::function<void(std::string)> handler) 
-    : NWindow(0,0,0,0), line(line), menuItems(std::move(menuItems)),
+    : line(line), menuItems(std::move(menuItems)),
         handler(handler) {
-    onResize();
     selected = this->menuItems.begin();
 }
 
@@ -47,4 +46,5 @@ void Toolbar::onInput(int key) {
 
 void Toolbar::onResize()  {
     resize(0, line, maxx(), 1);    
+    refresh();
 }

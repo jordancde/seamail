@@ -9,9 +9,11 @@
 #include "account/account.h"
 #include "view/accountView.h"
 
+using namespace std;
+
 class MyDummyWindow : public NWindow {
 public:
-	MyDummyWindow() : NWindow(0,0,0,0) {
+	MyDummyWindow() {
 		onResize();
 	}
 
@@ -20,11 +22,15 @@ public:
 			wattron(win, A_REVERSE);
 		box(win, 0, 0);
 		wattroff(win, A_REVERSE);
-		mvwprintw(win, 1, 1, "%zu %zu", maxx(), maxy());
+		mvwprintw(win, 1, 1, "%zu %zu", w(), maxx() * 3 / 4);
 	}
 
 	void onResize() override {
-		resize(maxx() / 4, 1, maxx() * 3 / 4, maxy()-1);
+		int x = maxx() / 4;
+		int y = 1;
+		int w = maxx() * 3 / 4;
+		int h = maxy() - 1; 
+		resize(x, y, w,h);
 	}
 
 	void onInput(int key) override {
@@ -34,8 +40,6 @@ public:
 			break;
 			case KEY_DOWN:
 			move(cx(), cy() + 1);
-			break;
-			case KEY_LEFT:
 			move(cx() - 1, cy());
 			break;
 			case KEY_RIGHT:
@@ -49,13 +53,18 @@ int main()
 {	
 	Compositor& com = Compositor::instance();
 
-	auto mytoolbar = std::make_shared<Toolbar>(0, std::list<std::string>{"File", "Edit", "View"}, [](std::string selected){
-
+	auto mytoolbar = std::make_shared<Toolbar>(0, 
+		std::list<std::string>{"File", "Edit", "View"}, [](std::string selected){
 	});
-	LocalEmailProvider myLocalEmailProvider{};
-	auto myDummyAccount = std::make_shared<Account>(myLocalEmailProvider);
-	myLocalEmailProvider.addAccount("mydummyaccount@example.com", "abc123");
-	myDummyAccount->login("mydummyaccount@example.com", "abc123");
+
+	string myEmailAddress = "mydummyaccount@example.com";
+	auto myLocalEmailProvider = std::make_shared<LocalEmailProvider>();
+	auto myDummyAccount = std::make_shared<Account>(myLocalEmailProvider, myEmailAddress);
+	myLocalEmailProvider->addAccount(myEmailAddress, "abc123");
+	myDummyAccount->login(myEmailAddress, "abc123");
+	myDummyAccount->addFolder("inbox");
+	myDummyAccount->addFolder("sent");
+	myDummyAccount->addFolder("deleted");
 	myDummyAccount->addFolder("Test Folder 1");
 	myDummyAccount->addFolder("Test Folder 2");
 	myDummyAccount->addFolder("Test Folder 3");
@@ -65,14 +74,33 @@ int main()
 	myDummyAccount->addFolder("Test Folder 5");
 	myDummyAccount->addFolder("Test Folder 6");
 	myDummyAccount->addFolder("Test Folder 7");
+	vector<Email> emails {
+		Email{
+			/* threadId	 	*/ string("new"),
+			/* from 		*/ string("test1@example.com"),
+			/* to			*/ vector<string>{"mydummyaccount@example.com"},
+			/* dateTime 	*/ (time_t) 0,
+			/* cc			*/ vector<string>{},
+			/* bcc 			*/ vector<string>{},
+			/* subject  	*/ string("subject"),
+			/* body 		*/ string("body"),
+			/* unread 		*/ true,
+			/* imagePaths 	*/ vector<string>{}
+		}
+	};
+
+	std::for_each(emails.begin(), emails.end(), [&](Email &e){
+		myDummyAccount->sendEmail(e);
+	});
 
 
 	auto myAccountView = std::make_shared<AccountView>(myDummyAccount);
 	com.addWindow(mytoolbar);
 	auto mywin = std::make_shared<MyDummyWindow>();
+
+	//com.addWindow(myAccountView);
 	com.addWindow(mywin);
 	//com.setActiveWindow(mywin);
-	com.addWindow(myAccountView);
 
 	com.setActiveWindow(mytoolbar);
 

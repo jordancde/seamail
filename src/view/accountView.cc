@@ -24,19 +24,31 @@ void AccountView::onDraw(bool isActive) const {
     sort(folderPaths.begin(), folderPaths.end());
 
     wmove(win, 1, 0);
-    for(const string& s : folderPaths){
+    for(size_t fidx = 0; fidx < folderPaths.size(); ++fidx){
+        const string& s = folderPaths.at(fidx);
         auto dispName = folderPathToDisplayName(s);
         waddch(win, ' ');
         for(size_t i = 0; i < dispName.first; ++i)
             wprintw(win, "\t");
+        if(fidx == selectedFolderIndex)
+            wattron(win, A_REVERSE);
         wprintw(win, "%s\n", dispName.second.c_str());
+        wattroff(win, A_REVERSE);
     }
     wmove(win, 0, 2);
     if(isActive)
         wattron(win, A_REVERSE);
     box(win, 0, 0);
-    wattroff(win, A_REVERSE);
     wprintw(win, "Folders");
+    wattroff(win, A_REVERSE);
+}
+
+void AccountView::updateSelectedFolder() {
+    auto folderPaths = account->getAllFolderPaths();
+    if(folderPaths.size() == 0)
+        selectedFolderIndex = SIZE_MAX;
+    else
+        selectedFolderIndex = 0;
 }
 
 void AccountView::notify(std::shared_ptr<Event> event) {
@@ -44,15 +56,39 @@ void AccountView::notify(std::shared_ptr<Event> event) {
     if(!ptr) throw std::logic_error("Pointer to wrong event type!");
 
     switch(ptr->getType()){
-        case AccountEventType::ACCOUNT_FOLDERS_CHANGED:
+        case AccountEventType::ACCOUNT_FOLDERS_CHANGED: {
+            this->updateSelectedFolder();
             this->refresh();
             break;
+        }
         default:
             break;
     }
 }
 
 void AccountView::onResize() {
-    resize(0, 1, maxx()  / 4, maxy()-1);
+    resize(0, 1, maxx() / 4, maxy() - 1);
 }
 
+void AccountView::onInput(int key) {
+    size_t max = account->getAllFolderPaths().size();
+    switch(key){
+    case 'k':
+        if(selectedFolderIndex > 0){
+            --selectedFolderIndex;
+            refresh();
+        }
+        break;
+    case 'j':
+        if(selectedFolderIndex < max - 1){
+            ++selectedFolderIndex;
+            refresh();
+        }
+        break;
+    }
+    // catch-all failsafe
+    if(selectedFolderIndex < 0 || selectedFolderIndex >= max){
+        selectedFolderIndex = 0;
+        refresh();
+    }
+}

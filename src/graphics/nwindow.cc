@@ -6,16 +6,13 @@
 
 #include "graphics/compositor.h"
 
-NWindow::NWindow(size_t x, size_t y, size_t w, size_t h) {
-    resize(x, y, w, h);
-}
-
 NWindow::NWindow() {
-    win = stdscr;
+    // hack
+    resize(0, 0, 0, 0);
 }
 
 NWindow::~NWindow() {
-    if(win && win != stdscr) {
+    if(win) {
         delwin(win);
     }
     win = nullptr;
@@ -37,8 +34,6 @@ void NWindow::swap(NWindow& o) noexcept {
 }
 
 void NWindow::resize(size_t x, size_t y, size_t w, size_t h) {
-    if(win == stdscr)
-        return;
     if(win)
         delwin(win);
     win = newwin(h, w, y, x);

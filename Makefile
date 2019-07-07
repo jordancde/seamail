@@ -3,9 +3,7 @@ TEST_DIR 	:= tests
 TESTS 		:= $(shell find $(TEST_DIR) -name '*.cc')
 
 all:
-	export TEST_MODE=0
-	export TEST_FILE=""
-	$(MAKE) -f core.mk
+	TEST_MODE=0 TEST_FILE="" $(MAKE) -f core.mk
 
 .PHONY: force clean run
 

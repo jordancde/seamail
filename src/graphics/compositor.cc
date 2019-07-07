@@ -42,6 +42,7 @@ Compositor& Compositor::instance(){
 
 void Compositor::addWindow(std::shared_ptr<NWindow> window) {
     windows.push_back(window);
+    window->onResize();
 }
 
 void Compositor::removeWindow(std::shared_ptr<NWindow> window) {
