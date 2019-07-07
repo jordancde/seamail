@@ -1,14 +1,14 @@
-#include "providers/localEmailProvider.h"
+#include <iostream>
 #include "account/account.h"
 #include "account/session.h"
 #include "exceptions/authenticationFailedException.h"
-#include <iostream>
+#include "providers/localEmailProvider.h"
 
 using namespace std;
 
 int main() {
     LocalEmailProvider myLocalEmailProvider{};
-	auto myDummyAccount = std::make_shared<Account>(myLocalEmailProvider);
+    auto myDummyAccount = std::make_shared<Account>(myLocalEmailProvider);
     myLocalEmailProvider.addAccount("mydummyaccount@example.com", "abc123");
 
     try {
@@ -21,7 +21,7 @@ int main() {
 
         bool emailValid = email == "";
         bool keyValid = key == "";
-        return !(keyValid&&emailValid);
+        return !(keyValid && emailValid);
     }
 
     return 1;
