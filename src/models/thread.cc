@@ -2,11 +2,8 @@
 
 using namespace std;
 
-Thread::Thread(string title, vector<string> emailIds) : id{genRandomId()}, 
-    title{title}, emailIds{emailIds} {}
-
-Thread::Thread(const Thread& other) : id{genRandomId()}, 
-    title{other.title}, emailIds{other.emailIds} {}
+Thread::Thread(string title, vector<string> emailIds)
+    : id{genRandomId()}, title{title}, emailIds{emailIds} {}
 
 Thread::Thread() {}
 
@@ -37,10 +34,6 @@ string Thread::genRandomId() {
     return s;
 }
 
-vector<string>::iterator Thread::begin() {
-    return emailIds.begin();
-}
+vector<string>::iterator Thread::begin() { return emailIds.begin(); }
 
-vector<string>::iterator Thread::end() {
-    return emailIds.end();
-}
+vector<string>::iterator Thread::end() { return emailIds.end(); }

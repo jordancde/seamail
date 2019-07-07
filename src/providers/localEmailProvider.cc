@@ -13,7 +13,8 @@ vector<string> LocalEmailProvider::getAllFolderPaths(Session& ctx) {
     return folderPaths[ctx.getEmailAddress()];
 }
 
-Folder LocalEmailProvider::getFolderByPath(Session& ctx, string folderPath, string sort) {
+Folder LocalEmailProvider::getFolderByPath(Session& ctx, string folderPath,
+                                           string sort) {
     if (sort == "none") {
         return folders[ctx.getEmailAddress() + "/" + folderPath];
     } else {
@@ -27,7 +28,6 @@ Email LocalEmailProvider::getEmailById(Session& ctx, string emailId) {
 
 void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
     string user = ctx.getEmailAddress();
-
     // sending
     emails[user + "/" + email.id] = email;
     string threadId = email.threadId;
@@ -39,17 +39,19 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
     }
     threads[user + "/" + threadId].emailIds.emplace_back(email.id);
 
-    //receiving
+    // receiving
     for (auto recipient : email.to) {
+        email.changeId();
         emails[recipient + "/" + email.id] = email;
         if (email.threadId == "new") {
             Thread t = Thread(email.subject);
             t.emailIds.emplace_back(email.id);
             threads[recipient + "/" + t.id] = t;
-            folders[recipient + "/inbox"].threadIds.emplace_back(threadId);
+            folders[recipient + "/inbox"].threadIds.emplace_back(t.id);
         } else {
             for (auto& t : threads) {
-                if (t.second.title == email.subject && t.first.substr(1, t.first.find("/", 1)) == recipient) {
+                if (t.second.title == email.subject &&
+                    t.first.substr(1, t.first.find("/", 1)) == recipient) {
                     t.second.emailIds.emplace_back(email.id);
                     break;
                 }
@@ -62,11 +64,14 @@ Thread LocalEmailProvider::getThreadById(Session& ctx, string threadId) {
     return threads[ctx.getEmailAddress() + "/" + threadId];
 }
 
-void LocalEmailProvider::addThreadToFolder(Session& ctx, string threadId, string folderPath) {
-    folders[ctx.getEmailAddress() + "/" + folderPath].threadIds.emplace_back(threads[ctx.getEmailAddress() + "/" + threadId].id);
+void LocalEmailProvider::addThreadToFolder(Session& ctx, string threadId,
+                                           string folderPath) {
+    folders[ctx.getEmailAddress() + "/" + folderPath].threadIds.emplace_back(
+        threads[ctx.getEmailAddress() + "/" + threadId].id);
 }
 
-void LocalEmailProvider::removeThreadFromFolder(Session& ctx, string threadId, string folderPath) {
+void LocalEmailProvider::removeThreadFromFolder(Session& ctx, string threadId,
+                                                string folderPath) {
     Thread t = threads[ctx.getEmailAddress() + "/" + threadId];
     Folder& f = folders[ctx.getEmailAddress() + "/" + folderPath];
 
@@ -123,6 +128,5 @@ void LocalEmailProvider::serialize(nlohmann::json& provider) const {
 
 void LocalEmailProvider::deserialize(const nlohmann::json& provider) {
     EmailProvider::deserialize(provider);
-    accounts = provider["accounts"]
-                    .get<unordered_map<string, size_t>>();
+    accounts = provider["accounts"].get<unordered_map<string, size_t>>();
 }

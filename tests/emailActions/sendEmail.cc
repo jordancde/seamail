@@ -21,26 +21,25 @@ int main() {
     myDummyAccount->login("mydummyaccount@example.com", "abc123");
     myDummyAccount2->login("mydummyaccount2@example.com", "abc123");
 
-    Email e = Email("", "mydummyaccount@example.com",
+    Email e = Email("new", "mydummyaccount@example.com",
                     vector<string>{"mydummyaccount2@example.com"}, time(NULL),
                     vector<string>{}, vector<string>{}, "test subject",
                     "test body", false, vector<string>{});
+
     myDummyAccount->sendEmail(e);
 
     Folder sent = myDummyAccount->getFolderByPath("sent", "none");
     Thread thread = myDummyAccount->getThreadById(sent.threadIds.at(0));
     string sentEmailId = thread.emailIds.at(0);
     Email sentEmail = myDummyAccount->getEmailById(sentEmailId);
-
     bool senderSideValid = sentEmail == e && e.id == sentEmail.id;
 
     Folder inbox = myDummyAccount2->getFolderByPath("inbox", "none");
     Thread recievedThread =
-        myDummyAccount2->getThreadById(inbox.threadIds.at(0));
-    string recievedEmailId = recievedThread.emailIds.at(0);
+        myDummyAccount2->getThreadById(inbox.threadIds.front());
+    string recievedEmailId = recievedThread.emailIds.front();
     Email recievedEmail = myDummyAccount2->getEmailById(recievedEmailId);
 
     bool recieverSideValid = recievedEmail == e;
-
     return !(senderSideValid && recieverSideValid);
 }

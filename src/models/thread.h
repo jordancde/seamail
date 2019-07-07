@@ -14,7 +14,7 @@ class Thread : public Serializable {
     void deserialize(const nlohmann::json&) override;
     std::string genRandomId();
 
-public:
+   public:
     std::string id;
     std::string title;
 
@@ -23,7 +23,6 @@ public:
     std::vector<std::string>::iterator end();
 
     Thread(std::string title, std::vector<std::string> emailIds = {});
-    Thread(const Thread&);
     Thread();
     ~Thread();
 };

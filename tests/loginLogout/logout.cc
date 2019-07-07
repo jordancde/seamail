@@ -14,12 +14,5 @@ int main() {
     myDummyAccount->login("mydummyaccount@example.com", "abc123");
     myDummyAccount->logout();
 
-    Session s = myDummyAccount->getSession();
-    string email = s.getEmailAddress();
-    string key = s.getKey();
-
-    bool emailValid = email == "";
-    bool keyValid = key == "";
-
-    return !(keyValid && emailValid);
+    return myDummyAccount->loggedIn;
 }
