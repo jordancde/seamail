@@ -6,17 +6,6 @@
 
 using namespace std;
 
-string Account::sentPath = "sent";
-string Account::deletedPath = "deleted";
-string Account::inboxPath = "inbox";
-
-Account::Account(shared_ptr<EmailProvider> provider, string emailAddress)
-    : provider{provider}, emailAddress{emailAddress} {}
-
-Account::Account() {}
-
-Account::~Account() {}
-
 void Account::serialize(nlohmann::json& account) const {
     account["session"] = session;
 }
@@ -24,6 +13,13 @@ void Account::serialize(nlohmann::json& account) const {
 void Account::deserialize(const nlohmann::json& account) {
     session = account["session"].get<Session>();
 }
+
+Account::Account(shared_ptr<EmailProvider> provider, string emailAddress)
+    : provider{provider}, emailAddress{emailAddress} {}
+
+Account::Account() {}
+
+Account::~Account() {}
 
 vector<string> Account::getAllFolderPaths() {
     return provider->getAllFolderPaths(session);
@@ -39,22 +35,19 @@ Email Account::getEmailById(string id) {
 
 void Account::sendEmail(Email email) {
     provider->sendEmail(session, email);
-    shared_ptr<Event> e(
-        make_shared<AccountEvent>(FOLDER_CONTENTS_CHANGED, *this, sentPath));
+    auto e = make_shared<AccountEvent>(FOLDER_CONTENTS_CHANGED, *this, provider->sentPath);
     notifyAllObservers(e);
 }
 
 void Account::addThreadToFolder(string threadId, string folderPath) {
     provider->addThreadToFolder(session, threadId, folderPath);
-    shared_ptr<Event> e(
-        make_shared<AccountEvent>(FOLDER_CONTENTS_CHANGED, *this, folderPath));
+    auto e = make_shared<AccountEvent>(FOLDER_CONTENTS_CHANGED, *this, folderPath);
     notifyAllObservers(e);
 }
 
 void Account::removeThreadFromFolder(string threadId, string folderPath) {
     provider->removeThreadFromFolder(session, threadId, folderPath);
-    shared_ptr<Event> e(
-        make_shared<AccountEvent>(FOLDER_CONTENTS_CHANGED, *this, folderPath));
+    auto e = make_shared<AccountEvent>(FOLDER_CONTENTS_CHANGED, *this, folderPath);
     notifyAllObservers(e);
 }
 
@@ -64,27 +57,27 @@ Thread Account::getThreadById(string threadId) {
 
 string Account::addFolder(string folderPath) {
     string newPath = provider->addFolder(session, folderPath);
-    shared_ptr<Event> e(
-        make_shared<AccountEvent>(ACCOUNT_FOLDERS_CHANGED, *this, folderPath));
+    auto e = make_shared<AccountEvent>(ACCOUNT_FOLDERS_CHANGED, *this, folderPath);
     notifyAllObservers(e);
     return newPath;
 }
 
 void Account::removeFolder(string folderPath) {
     provider->removeFolder(session, folderPath);
-    shared_ptr<Event> e(
-        make_shared<AccountEvent>(ACCOUNT_FOLDERS_CHANGED, *this, folderPath));
+    auto e = make_shared<AccountEvent>(ACCOUNT_FOLDERS_CHANGED, *this, folderPath);
     notifyAllObservers(e);
 }
 
-bool Account::login(string emailAddress, string password) {
+void Account::login(string emailAddress, string password) {
     session = provider->getSession(emailAddress, password);
-    return true;
+    loggedIn = true;
 }
 
-void Account::logout() { session = Session(); }
+void Account::logout() { 
+    session = Session(); 
+    loggedIn = false;
+}
 
 bool Account::operator==(const Account& rhs) const {
     return emailAddress == rhs.emailAddress;
 }
-Session Account::getSession() { return session; }

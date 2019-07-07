@@ -10,7 +10,7 @@ LocalEmailProvider::LocalEmailProvider() {}
 LocalEmailProvider::~LocalEmailProvider() {}
 
 vector<string> LocalEmailProvider::getAllFolderPaths(Session& ctx) {
-    return accountFolderPaths[ctx.getEmailAddress()];
+    return folderPaths[ctx.getEmailAddress()];
 }
 
 Folder LocalEmailProvider::getFolderByPath(Session& ctx, string folderPath, string sort) {
@@ -82,7 +82,7 @@ void LocalEmailProvider::removeThreadFromFolder(Session& ctx, string threadId, s
 
 string LocalEmailProvider::addFolder(Session& ctx, string folderPath) {
     folders[ctx.getEmailAddress() + "/" + folderPath] = Folder();
-    accountFolderPaths[ctx.getEmailAddress()].push_back(folderPath);
+    folderPaths[ctx.getEmailAddress()].push_back(folderPath);
     return folderPath;
 }
 

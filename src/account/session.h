@@ -9,19 +9,19 @@
 #include "../utility/serializable.h"
 
 class Session : public Serializable {
-    void serialize(nlohmann::json&) const override;
-    void deserialize(const nlohmann::json&) override;
-
     std::string emailAddress;
     std::string key;
 
-public:
-    std::string getEmailAddress();
-    std::string getKey();
+    void serialize(nlohmann::json&) const override;
+    void deserialize(const nlohmann::json&) override;
 
+public:
     Session();
     Session(std::string emailAddress, std::string key);
     ~Session();
+
+    std::string getEmailAddress() const;
+    std::string getKey() const;
 };
 
 #endif

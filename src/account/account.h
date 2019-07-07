@@ -25,30 +25,30 @@ class Account : public Subject, public Serializable {
     void serialize(nlohmann::json&) const override;
     void deserialize(const nlohmann::json&) override;
 
-    static std::string sentPath;
-    static std::string inboxPath;
-    static std::string deletedPath;
-
 public:
-    std::vector<std::string> getAllFolderPaths();
-    Folder getFolderByPath(std::string path, std::string sort);
-    Email getEmailById(std::string id);
-    void sendEmail(Email email);
-    void addThreadToFolder(std::string threadId, std::string folderPath);
-    void removeThreadFromFolder(std::string threadId, std::string folderPath);
-    Thread getThreadById(std::string threadId);
-    std::string addFolder(std::string folderPath);
-    void removeFolder(std::string folderPath);
-
-    bool login(std::string emailAddress, std::string password);
-    void logout();
-
-    Session getSession();
-    bool operator==(const Account&) const;
+    bool loggedIn;
 
     Account();
     Account(std::shared_ptr<EmailProvider> provider, std::string emailAddress);
     virtual ~Account();
+
+    bool operator==(const Account&) const;
+
+    void login(std::string emailAddress, std::string password);
+    void logout();
+
+    Folder getFolderByPath(std::string path, std::string sort);
+    std::vector<std::string> getAllFolderPaths();
+    std::string addFolder(std::string folderPath);
+    void removeFolder(std::string folderPath);
+
+    Thread getThreadById(std::string threadId);
+    void addThreadToFolder(std::string threadId, std::string folderPath);
+    void removeThreadFromFolder(std::string threadId, std::string folderPath);
+
+    Email getEmailById(std::string id);
+    void sendEmail(Email email);
+
 };
 
 #endif
