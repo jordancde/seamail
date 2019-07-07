@@ -10,13 +10,12 @@ LocalState::~LocalState() {}
 
 void LocalState::serialize(nlohmann::json& state) const {
     state["accounts"] = accounts;
-    state["providers"] = providers;
+    state["localProvider"] = localProvider;
 }
 
 void LocalState::deserialize(const nlohmann::json& state) {
     accounts = state["accounts"].get<vector<Account>>();
-    // TODO
-    // providers = state["providers"].get<vector<EmailProvider>>();
+    localProvider = state["localProvider"].get<LocalEmailProvider>();
 }
 
 void LocalState::storeAccount(Account acc) {
@@ -25,10 +24,6 @@ void LocalState::storeAccount(Account acc) {
 
 vector<Account>& LocalState::getAccounts() {
     return accounts;
-}
-
-vector<EmailProvider>& LocalState::getProviders() {
-    return providers;
 }
 
 void LocalState::removeAccount(Account& acc) {
