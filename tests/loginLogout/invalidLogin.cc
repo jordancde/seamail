@@ -7,9 +7,10 @@
 using namespace std;
 
 int main() {
-    LocalEmailProvider myLocalEmailProvider{};
-    auto myDummyAccount = std::make_shared<Account>(myLocalEmailProvider);
-    myLocalEmailProvider.addAccount("mydummyaccount@example.com", "abc123");
+    auto myLocalEmailProvider = std::make_shared<LocalEmailProvider>();
+    auto myDummyAccount = std::make_shared<Account>(
+        myLocalEmailProvider, "mydummyaccount@example.coms");
+    myLocalEmailProvider->addAccount("mydummyaccount@example.com", "abc123");
 
     try {
         myDummyAccount->login("mydummyaccount@example.com", "wrongpw");

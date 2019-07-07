@@ -8,11 +8,15 @@
 using namespace std;
 
 int main() {
-    LocalEmailProvider myLocalEmailProvider{};
-    auto myDummyAccount = std::make_shared<Account>(myLocalEmailProvider);
-    auto myDummyAccount2 = std::make_shared<Account>(myLocalEmailProvider);
-    myLocalEmailProvider.addAccount("mydummyaccount@example.com", "abc123");
-    myLocalEmailProvider.addAccount("mydummyaccount2@example.com", "abc123");
+    auto myLocalEmailProvider = std::make_shared<LocalEmailProvider>();
+
+    auto myDummyAccount = std::make_shared<Account>(
+        myLocalEmailProvider, "mydummyaccount@example.com");
+    auto myDummyAccount2 = std::make_shared<Account>(
+        myLocalEmailProvider, "mydummyaccount2@example.com");
+
+    myLocalEmailProvider->addAccount("mydummyaccount@example.com", "abc123");
+    myLocalEmailProvider->addAccount("mydummyaccount2@example.com", "abc123");
 
     myDummyAccount->login("mydummyaccount@example.com", "abc123");
     myDummyAccount2->login("mydummyaccount2@example.com", "abc123");
