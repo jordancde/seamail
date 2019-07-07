@@ -19,7 +19,6 @@ public:
     const std::string affectedId;
 
     AccountEvent(AccountEventType type, Account& acc, std::string id);
-    ~AccountEvent();
 };
 
 #endif

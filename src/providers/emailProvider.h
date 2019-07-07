@@ -29,8 +29,8 @@ public:
     static std::string inboxPath;
     static std::string deletedPath;
 
-    EmailProvider();
-    virtual ~EmailProvider() = 0;
+    EmailProvider() = default;
+    virtual ~EmailProvider() = default;
 
     virtual Session getSession(std::string emailAddress, std::string password) = 0;
 

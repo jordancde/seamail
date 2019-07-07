@@ -28,9 +28,8 @@ class Account : public Subject, public Serializable {
 public:
     bool loggedIn;
 
-    Account();
     Account(std::shared_ptr<EmailProvider> provider, std::string emailAddress);
-    virtual ~Account();
+    Account() = default;
 
     bool operator==(const Account&) const;
 

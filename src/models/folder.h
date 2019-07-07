@@ -15,12 +15,9 @@ class Folder : public Serializable {
 public:
     std::string path;
     std::vector<std::string> threadIds;
-    std::vector<std::string>::iterator begin();
-    std::vector<std::string>::iterator end();
 
     Folder(std::string path, std::vector<std::string> threadIds = {});
-    Folder();
-    ~Folder();
+    Folder() = default;
 };
 
 #endif

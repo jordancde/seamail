@@ -4,7 +4,7 @@ using namespace std;
 
 Email::Email(string threadId, string from, vector<string> to, time_t dateTime,
              vector<string> cc, vector<string> bcc, string subject, string body,
-             bool unread, vector<string> imagePaths
+             bool read, vector<string> imagePaths
 
              )
     : id{genRandomId()},
@@ -16,12 +16,8 @@ Email::Email(string threadId, string from, vector<string> to, time_t dateTime,
       bcc{bcc},
       subject{subject},
       body{body},
-      unread{unread},
+      read{read},
       imagePaths{imagePaths} {}
-
-Email::Email() {}
-
-Email::~Email() {}
 
 void Email::serialize(nlohmann::json& email) const {
     email["id"] = id;
@@ -32,7 +28,7 @@ void Email::serialize(nlohmann::json& email) const {
     email["bcc"] = bcc;
     email["subject"] = subject;
     email["body"] = body;
-    email["unread"] = unread;
+    email["read"] = read;
     email["imagePaths"] = imagePaths;
     email["threadId"] = threadId;
 }

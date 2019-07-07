@@ -6,10 +6,6 @@ string EmailProvider::sentPath = "sent";
 string EmailProvider::deletedPath = "deleted";
 string EmailProvider::inboxPath = "inbox";
 
-EmailProvider::EmailProvider() {}
-
-EmailProvider::~EmailProvider() {}
-
 void EmailProvider::serialize(nlohmann::json& provider) const {
     provider["folderPaths"] = folderPaths;
     provider["folders"] = folders;

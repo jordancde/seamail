@@ -17,25 +17,38 @@ void Account::deserialize(const nlohmann::json& account) {
 Account::Account(shared_ptr<EmailProvider> provider, string emailAddress)
     : provider{provider}, emailAddress{emailAddress} {}
 
-Account::Account() {}
+bool Account::operator==(const Account& rhs) const {
+    return emailAddress == rhs.emailAddress;
+}
 
-Account::~Account() {}
+void Account::login(string emailAddress, string password) {
+    session = provider->getSession(emailAddress, password);
+    loggedIn = true;
+}
 
-vector<string> Account::getAllFolderPaths() {
-    return provider->getAllFolderPaths(session);
+void Account::logout() { 
+    session = Session(); 
+    loggedIn = false;
 }
 
 Folder Account::getFolderByPath(string path, string sort) {
     return provider->getFolderByPath(session, path, sort);
 }
 
-Email Account::getEmailById(string id) {
-    return provider->getEmailById(session, id);
+vector<string> Account::getAllFolderPaths() {
+    return provider->getAllFolderPaths(session);
 }
 
-void Account::sendEmail(Email email) {
-    provider->sendEmail(session, email);
-    auto e = make_shared<AccountEvent>(FOLDER_CONTENTS_CHANGED, *this, provider->sentPath);
+string Account::addFolder(string folderPath) {
+    string newPath = provider->addFolder(session, folderPath);
+    auto e = make_shared<AccountEvent>(ACCOUNT_FOLDERS_CHANGED, *this, folderPath);
+    notifyAllObservers(e);
+    return newPath;
+}
+
+void Account::removeFolder(string folderPath) {
+    provider->removeFolder(session, folderPath);
+    auto e = make_shared<AccountEvent>(ACCOUNT_FOLDERS_CHANGED, *this, folderPath);
     notifyAllObservers(e);
 }
 
@@ -55,29 +68,13 @@ Thread Account::getThreadById(string threadId) {
     return provider->getThreadById(session, threadId);
 }
 
-string Account::addFolder(string folderPath) {
-    string newPath = provider->addFolder(session, folderPath);
-    auto e = make_shared<AccountEvent>(ACCOUNT_FOLDERS_CHANGED, *this, folderPath);
+
+Email Account::getEmailById(string id) {
+    return provider->getEmailById(session, id);
+}
+
+void Account::sendEmail(Email email) {
+    provider->sendEmail(session, email);
+    auto e = make_shared<AccountEvent>(FOLDER_CONTENTS_CHANGED, *this, provider->sentPath);
     notifyAllObservers(e);
-    return newPath;
-}
-
-void Account::removeFolder(string folderPath) {
-    provider->removeFolder(session, folderPath);
-    auto e = make_shared<AccountEvent>(ACCOUNT_FOLDERS_CHANGED, *this, folderPath);
-    notifyAllObservers(e);
-}
-
-void Account::login(string emailAddress, string password) {
-    session = provider->getSession(emailAddress, password);
-    loggedIn = true;
-}
-
-void Account::logout() { 
-    session = Session(); 
-    loggedIn = false;
-}
-
-bool Account::operator==(const Account& rhs) const {
-    return emailAddress == rhs.emailAddress;
 }

@@ -21,8 +21,7 @@ class LocalEmailProvider: public EmailProvider {
     void deserialize(const nlohmann::json&) override;
 
 public:
-    LocalEmailProvider();
-    ~LocalEmailProvider() override;
+    LocalEmailProvider() = default;
 
     void addAccount(std::string emailAddress, std::string password);
 

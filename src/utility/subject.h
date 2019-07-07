@@ -8,7 +8,8 @@ class Subject {
     std::vector<std::shared_ptr<Observer>> observers;
 
 public:
-    Subject();
+    Subject() = default;
+    
     void attach(std::shared_ptr<Observer>);
     void detach(std::shared_ptr<Observer>);
 

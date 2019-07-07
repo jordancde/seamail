@@ -20,12 +20,11 @@ class LocalState : public Serializable {
 public:
     LocalEmailProvider localProvider;
 
-    void storeAccount(Account);
-    std::vector<Account>& getAccounts();
+    void storeAccount(Account&);
     void removeAccount(Account&);
+    std::vector<Account>& getAccounts();
 
-    LocalState();
-    ~LocalState();
+    LocalState() = default;
 };
 
 #endif

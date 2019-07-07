@@ -12,11 +12,7 @@ void Session::deserialize(const nlohmann::json& session) {
     key = session["key"];
 }
 
-Session::Session() {}
-
 Session::Session(string emailAddress, string key) : emailAddress{emailAddress}, key{key} {}
-
-Session::~Session() {}
 
 string Session::getEmailAddress() const { 
     return emailAddress; 

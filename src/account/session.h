@@ -16,10 +16,9 @@ class Session : public Serializable {
     void deserialize(const nlohmann::json&) override;
 
 public:
-    Session();
     Session(std::string emailAddress, std::string key);
-    ~Session();
-
+    Session() = default;
+    
     std::string getEmailAddress() const;
     std::string getKey() const;
 };

@@ -5,10 +5,6 @@
 
 using namespace std;
 
-LocalEmailProvider::LocalEmailProvider() {}
-
-LocalEmailProvider::~LocalEmailProvider() {}
-
 vector<string> LocalEmailProvider::getAllFolderPaths(Session& ctx) {
     return folderPaths[ctx.getEmailAddress()];
 }
