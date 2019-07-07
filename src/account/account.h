@@ -9,6 +9,7 @@
 
 #include "../events/event.h"
 #include "../models/email.h"
+#include "../models/thread.h"
 #include "../models/folder.h"
 #include "../providers/emailProvider.h"
 #include "../utility/observer.h"
@@ -35,12 +36,14 @@ public:
     void sendEmail(Email email);
     void addThreadToFolder(std::string threadId, std::string folderPath);
     void removeThreadFromFolder(std::string threadId, std::string folderPath);
+    Thread getThreadById(std::string threadId);
     std::string addFolder(std::string folderPath);
     void removeFolder(std::string folderPath);
 
     bool login(std::string emailAddress, std::string password);
     void logout();
 
+    Session getSession();
     bool operator==(const Account&) const;
 
     Account();

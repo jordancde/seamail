@@ -54,6 +54,10 @@ void Account::removeThreadFromFolder(string threadId, string folderPath) {
     notifyAllObservers(e);
 }
 
+Thread Account::getThreadById(string threadId){
+    return provider->getThreadById(session, threadId);
+}
+
 string Account::addFolder(string folderPath) {
     string newPath = provider->addFolder(session, folderPath);
     shared_ptr<Event> e(new AccountEvent(ACCOUNT_FOLDERS_CHANGED, *this, folderPath));
@@ -79,3 +83,7 @@ void Account::logout() {
 bool Account::operator==(const Account& rhs) const {
     return emailAddress == rhs.emailAddress;
 }
+Session Account::getSession(){
+    return session;
+}
+
