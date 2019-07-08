@@ -8,7 +8,8 @@
 
 NWindow::NWindow() {
     // hack
-    resize(0, 0, 0, 0);
+    reframe(0,0,0,0,0,0);
+    resize(0, 0);
 }
 
 NWindow::~NWindow() {
@@ -33,10 +34,19 @@ void NWindow::swap(NWindow& o) noexcept {
     std::swap(win, o.win);
 }
 
-void NWindow::resize(size_t x, size_t y, size_t w, size_t h) {
+void NWindow::reframe(size_t wx, size_t wy, size_t x, size_t y, size_t w, size_t h) {
+    _wx = wx;
+    _wy = wy;
+    _x = x;
+    _y = y;
+    _w = w;
+    _h = h;
+}
+
+void NWindow::resize(size_t w, size_t h) {
     if(win)
         delwin(win);
-    win = newwin(h, w, y, x);
+    win = newpad(h, w);
     keypad(win, TRUE);
 }
 
@@ -44,5 +54,5 @@ void NWindow::refresh() const {
     //wclear(win);
 
     onDraw(Compositor::instance().getActiveWindow() == this);
-    wnoutrefresh(win);
+    pnoutrefresh(win, y(), x(), wy(), wx(), wy() + h(), wx() + w());
 }

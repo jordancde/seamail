@@ -10,9 +10,12 @@ class NWindow {
 protected:
     WINDOW *win;
 
+    void reframe(size_t wx, size_t wy, size_t x, size_t y, size_t w, size_t h);
 
     // Resizes the ncurses pad to the specified dimensions
-    void resize(size_t x, size_t y, size_t w, size_t h);
+    void resize(size_t w, size_t h);
+
+    size_t _wx, _wy;
     size_t _x, _y, _w, _h;
 public:
     NWindow();
@@ -23,8 +26,10 @@ public:
     NWindow& operator=(const NWindow&) = delete;
     NWindow& operator=(NWindow&&);
 
-    size_t x() const { return getbegx(win); }                 // frame x
-    size_t y() const { return getbegy(win); }                 // frame y
+    size_t wx() const { return _wx; }                 // pad x
+    size_t wy() const { return _wy; }                 // pad y
+    size_t x() const { return _x; }                 // frame x
+    size_t y() const { return _y; }                 // frame y
     size_t w() const { return getmaxx(win) - x(); }                 // frame width
     size_t h() const { return getmaxy(win) - y(); }                 // frame height
     size_t cx() const { return getcurx(win); }      // cursor x

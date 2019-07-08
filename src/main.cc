@@ -3,11 +3,13 @@
 #include "graphics/compositor.h"
 #include "graphics/toolbar.h"
 
+#include <cstdio>
 #include <iostream>
 
 #include "providers/localEmailProvider.h"
 #include "account/account.h"
 #include "view/accountView.h"
+#include "view/folderView.h"
 
 using namespace std;
 
@@ -26,11 +28,12 @@ public:
 	}
 
 	void onResize() override {
-		int x = maxx() / 4;
+		int x = maxx() / 2;
 		int y = 1;
-		int w = maxx() * 3 / 4;
+		int w = maxx() / 2;
 		int h = maxy() - 1; 
-		resize(x, y, w,h);
+		resize(w,h);
+		reframe(x,y,0,0,w,h);
 	}
 
 	void onInput(int key) override {
@@ -93,12 +96,24 @@ int main()
 		myDummyAccount->sendEmail(e);
 	});
 
+	std::shared_ptr<FolderView> myActiveFolderView;
 
-	auto myAccountView = std::make_shared<AccountView>(myDummyAccount);
-	com.addWindow(mytoolbar);
+	auto myAccountView = std::make_shared<AccountView>(myDummyAccount, [&](std::string folderPath){
+		printf("WHY\n");
+		if(myActiveFolderView)
+			com.removeWindow(myActiveFolderView);
+		myActiveFolderView = std::make_shared<FolderView>(myDummyAccount, folderPath, 
+			[&](std::string threadId){
+				//todo;
+			});
+		com.addWindow(myActiveFolderView);
+
+
+	});
 	auto mywin = std::make_shared<MyDummyWindow>();
 
-	//com.addWindow(myAccountView);
+	com.addWindow(mytoolbar);
+	com.addWindow(myAccountView);
 	com.addWindow(mywin);
 	//com.setActiveWindow(mywin);
 

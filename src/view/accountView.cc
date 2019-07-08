@@ -43,21 +43,23 @@ void AccountView::onDraw(bool isActive) const {
     wattroff(win, A_REVERSE);
 }
 
-void AccountView::updateSelectedFolder() {
+void AccountView::updateSelectedFolder(size_t idx) {
     auto folderPaths = account->getAllFolderPaths();
     if(folderPaths.size() == 0)
         selectedFolderIndex = SIZE_MAX;
     else
-        selectedFolderIndex = 0;
+        selectedFolderIndex = idx;
+    folderChangeHandler(folderPaths.at(selectedFolderIndex));
+    if(win) refresh();
 }
 
 void AccountView::notify(std::shared_ptr<Event> event) {
     auto ptr = std::dynamic_pointer_cast<AccountEvent>(event);
     if(!ptr) throw std::logic_error("Pointer to wrong event type!");
 
-    switch(ptr->getType()){
+    switch(ptr->type){
         case AccountEventType::ACCOUNT_FOLDERS_CHANGED: {
-            this->updateSelectedFolder();
+            this->updateSelectedFolder(0);
             this->refresh();
             break;
         }
@@ -67,7 +69,12 @@ void AccountView::notify(std::shared_ptr<Event> event) {
 }
 
 void AccountView::onResize() {
-    resize(0, 1, maxx() / 4, maxy() - 1);
+    int x = 0;
+    int y = 1;
+    int w = maxx() / 6;
+    int h = maxy() - 1;
+    resize(w,h);
+    reframe(x,y,0,0,w,h);
 }
 
 void AccountView::onInput(int key) {
@@ -75,20 +82,20 @@ void AccountView::onInput(int key) {
     switch(key){
     case 'k':
         if(selectedFolderIndex > 0){
-            --selectedFolderIndex;
+            updateSelectedFolder(selectedFolderIndex - 1);
             refresh();
         }
         break;
     case 'j':
         if(selectedFolderIndex < max - 1){
-            ++selectedFolderIndex;
+            updateSelectedFolder(selectedFolderIndex + 1);
             refresh();
         }
         break;
     }
     // catch-all failsafe
     if(selectedFolderIndex < 0 || selectedFolderIndex >= max){
-        selectedFolderIndex = 0;
+        updateSelectedFolder(0);
         refresh();
     }
 }

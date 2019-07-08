@@ -15,7 +15,7 @@ void Account::deserialize(const nlohmann::json& account) {
 }
 
 Account::Account(shared_ptr<EmailProvider> provider, string emailAddress)
-    : provider{provider}, emailAddress{emailAddress} {}
+    : provider{provider}, emailAddress{emailAddress}, loggedIn(false) {}
 
 bool Account::operator==(const Account& rhs) const {
     return emailAddress == rhs.emailAddress;

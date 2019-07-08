@@ -14,7 +14,7 @@ class AccountView : public View {
     static std::pair<size_t, std::string> folderPathToDisplayName(const std::string &path);
     size_t selectedFolderIndex = SIZE_MAX;
 
-    void updateSelectedFolder();
+    void updateSelectedFolder(size_t idx);
 
     std::function<void(std::string folderPath)> folderChangeHandler;
 
@@ -22,8 +22,7 @@ public:
     AccountView(std::shared_ptr<Account> account,
                 std::function<void(std::string folderPath)> folderChangeHandler = [](std::string){})
         : View(account), folderChangeHandler(folderChangeHandler) {
-        onResize();
-        updateSelectedFolder();
+        updateSelectedFolder(0);
     }
     
     void onResize() override;
