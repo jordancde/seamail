@@ -36,16 +36,15 @@ public:
 
     virtual Folder getFolderByPath(Session& ctx, std::string folderPath, std::string sort) = 0;
     virtual std::vector<std::string> getAllFolderPaths(Session& ctx) = 0;
-    virtual std::string addFolder(Session& ctx, std::string folderPath) = 0;
+    virtual void addFolder(Session& ctx, std::string folderPath) = 0;
     virtual void removeFolder(Session& ctx, std::string folderPath) = 0;
 
     virtual Thread getThreadById(Session& ctx, std::string threadId) = 0;
     virtual void addThreadToFolder(Session& ctx, std::string threadId, std::string folderPath) = 0;
     virtual void removeThreadFromFolder(Session& ctx, std::string threadId, std::string folderPath) = 0;
-    
+    virtual void setEmailStatus(Session& ctx, std::string emailId, bool read) = 0;
     virtual Email getEmailById(Session& ctx, std::string emailId) = 0;
     virtual void sendEmail(Session& ctx, Email email) = 0;
-
 };
 
 #endif
