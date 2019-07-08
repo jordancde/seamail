@@ -83,10 +83,9 @@ void LocalEmailProvider::removeThreadFromFolder(Session& ctx, string threadId,
     folders[ctx.getEmailAddress() + "/deleted"].threadIds.emplace_back(t.id);
 }
 
-string LocalEmailProvider::addFolder(Session& ctx, string folderPath) {
+void LocalEmailProvider::addFolder(Session& ctx, string folderPath) {
     folders[ctx.getEmailAddress() + "/" + folderPath] = Folder(folderPath);
     folderPaths[ctx.getEmailAddress()].push_back(folderPath);
-    return folderPath;
 }
 
 void LocalEmailProvider::removeFolder(Session& ctx, string folderPath) {
@@ -117,6 +116,10 @@ Session LocalEmailProvider::getSession(string emailAddress, string password) {
     } else {
         throw AuthenticationFailedException();
     }
+}
+
+void LocalEmailProvider::setEmailStatus(Session& ctx, string emailId, bool read){
+    emails[ctx.getEmailAddress() + "/" + emailId].read = read;
 }
 
 void LocalEmailProvider::addAccount(string emailAddress, string password) {

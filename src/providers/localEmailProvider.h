@@ -29,13 +29,15 @@ public:
 
     Folder getFolderByPath(Session& ctx, std::string folderPath, std::string sort) override;
     std::vector<std::string> getAllFolderPaths(Session& ctx) override;
-    std::string addFolder(Session& ctx, std::string folderPath) override;
+    void addFolder(Session& ctx, std::string folderPath) override;
     void removeFolder(Session& ctx, std::string folderPath) override;
 
     Thread getThreadById(Session& ctx, std::string threadId) override;
     void addThreadToFolder(Session& ctx, std::string threadId, std::string folderPath) override;
     void removeThreadFromFolder(Session& ctx, std::string threadId, std::string folderPath) override;
-
+    
+    void setEmailStatus(Session& ctx, std::string emailId, bool read) override;
+    
     Email getEmailById(Session& ctx, std::string emailId) override;
     void sendEmail(Session& ctx, Email email) override;
 };

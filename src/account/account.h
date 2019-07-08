@@ -9,8 +9,8 @@
 
 #include "../events/event.h"
 #include "../models/email.h"
-#include "../models/thread.h"
 #include "../models/folder.h"
+#include "../models/thread.h"
 #include "../providers/emailProvider.h"
 #include "../utility/observer.h"
 #include "../utility/serializable.h"
@@ -25,7 +25,7 @@ class Account : public Subject, public Serializable {
     void serialize(nlohmann::json&) const override;
     void deserialize(const nlohmann::json&) override;
 
-public:
+   public:
     bool loggedIn;
 
     Account(std::shared_ptr<EmailProvider> provider, std::string emailAddress);
@@ -38,16 +38,17 @@ public:
 
     Folder getFolderByPath(std::string path, std::string sort);
     std::vector<std::string> getAllFolderPaths();
-    std::string addFolder(std::string folderPath);
+    void addFolder(std::string folderPath);
     void removeFolder(std::string folderPath);
 
     Thread getThreadById(std::string threadId);
     void addThreadToFolder(std::string threadId, std::string folderPath);
     void removeThreadFromFolder(std::string threadId, std::string folderPath);
 
+    void setEmailStatus(std::string emailId, bool read);
+
     Email getEmailById(std::string id);
     void sendEmail(Email email);
-
 };
 
 #endif
