@@ -20,6 +20,5 @@ int main() {
     Folder f = myDummyAccount->getFolderByPath("Test2", "none");
 
     string expected = "Test2";
-    cout << f.path << endl;
     return f.path != expected;
 }

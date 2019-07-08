@@ -3,6 +3,8 @@
 #include "../exceptions/authenticationFailedException.h"
 #include "../exceptions/notImplementedException.h"
 
+#include <algorithm>
+
 using namespace std;
 
 vector<string> LocalEmailProvider::getAllFolderPaths(Session& ctx) {
@@ -82,7 +84,7 @@ void LocalEmailProvider::removeThreadFromFolder(Session& ctx, string threadId,
 }
 
 string LocalEmailProvider::addFolder(Session& ctx, string folderPath) {
-    folders[ctx.getEmailAddress() + "/" + folderPath] = Folder();
+    folders[ctx.getEmailAddress() + "/" + folderPath] = Folder(folderPath);
     folderPaths[ctx.getEmailAddress()].push_back(folderPath);
     return folderPath;
 }
@@ -100,6 +102,11 @@ void LocalEmailProvider::removeFolder(Session& ctx, string folderPath) {
             }
         }
         folders.erase(f);
+
+        folderPaths[ctx.getEmailAddress()].erase(
+            remove(folderPaths[ctx.getEmailAddress()].begin(),
+                   folderPaths[ctx.getEmailAddress()].end(), folderPath),
+            folderPaths[ctx.getEmailAddress()].end());
     }
 }
 
