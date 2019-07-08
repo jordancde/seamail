@@ -13,7 +13,7 @@ int main() {
     myLocalEmailProvider->addAccount("mydummyaccount@example.com", "abc123");
     myDummyAccount->login("mydummyaccount@example.com", "abc123");
 
-    Email e = Email("", "mydummyaccount@example.com",
+    Email e = Email("new", "mydummyaccount@example.com",
                     vector<string>{"mydummyaccount2@example.com"}, time(NULL),
                     vector<string>{}, vector<string>{}, "test subject",
                     "test body", false, vector<string>{});
@@ -26,10 +26,6 @@ int main() {
     myDummyAccount->addThreadToFolder(thread.id, "Test1");
 
     Folder test1 = myDummyAccount->getFolderByPath("Test1", "none");
-    sent = myDummyAccount->getFolderByPath("sent", "none");
 
-    bool threadMoved = test1.threadIds.at(0) == thread.id;
-    bool threadNotCopied = sent.threadIds.size() == 0;
-
-    return !(threadMoved && threadNotCopied);
+    return !(test1.threadIds.at(0) == thread.id);
 }

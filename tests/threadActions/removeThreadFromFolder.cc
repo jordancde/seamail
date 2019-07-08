@@ -13,7 +13,7 @@ int main() {
     myLocalEmailProvider->addAccount("mydummyaccount@example.com", "abc123");
     myDummyAccount->login("mydummyaccount@example.com", "abc123");
 
-    Email e = Email("", "mydummyaccount@example.com",
+    Email e = Email("new", "mydummyaccount@example.com",
                     vector<string>{"mydummyaccount2@example.com"}, time(NULL),
                     vector<string>{}, vector<string>{}, "test subject",
                     "test body", false, vector<string>{});

@@ -13,17 +13,12 @@ enum AccountEventType {
 };
 
 class AccountEvent: public Event {
-    AccountEventType type;
-    Account& affectedAccount;
-    std::string affectedId;
-
 public:
-    AccountEventType getType();
-    std::string getAffectedId();
-    Account& getAffectedAccount();
+    const AccountEventType type;
+    const Account& affectedAccount;
+    const std::string affectedId;
 
     AccountEvent(AccountEventType type, Account& acc, std::string id);
-    ~AccountEvent();
 };
 
 #endif

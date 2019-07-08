@@ -2,19 +2,19 @@
 
 using namespace std;
 
-EmailProvider::EmailProvider() {}
-
-EmailProvider::~EmailProvider() {}
+string EmailProvider::sentPath = "sent";
+string EmailProvider::deletedPath = "deleted";
+string EmailProvider::inboxPath = "inbox";
 
 void EmailProvider::serialize(nlohmann::json& provider) const {
-    provider["accountFolderPaths"] = accountFolderPaths;
+    provider["folderPaths"] = folderPaths;
     provider["folders"] = folders;
     provider["threads"] = threads;
     provider["emails"] = emails;
 }
 
 void EmailProvider::deserialize(const nlohmann::json& provider) {
-    accountFolderPaths = provider["accountFolderPaths"]
+    folderPaths = provider["folderPaths"]
                                 .get<unordered_map<string, vector<string>>>();
     folders = provider["folders"]
                     .get<unordered_map<string, Folder>>();

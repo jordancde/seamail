@@ -2,15 +2,8 @@
 
 using namespace std;
 
-Thread::Thread(string title, vector<string> emailIds) : id{genRandomId()}, 
-    title{title}, emailIds{emailIds} {}
-
-Thread::Thread(const Thread& other) : id{genRandomId()}, 
-    title{other.title}, emailIds{other.emailIds} {}
-
-Thread::Thread() {}
-
-Thread::~Thread() {}
+Thread::Thread(string title, vector<string> emailIds)
+    : id{genRandomId()}, title{title}, emailIds{emailIds} {}
 
 void Thread::serialize(nlohmann::json& thread) const {
     thread["id"] = id;
@@ -35,12 +28,4 @@ string Thread::genRandomId() {
         s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
     }
     return s;
-}
-
-vector<string>::iterator Thread::begin() {
-    return emailIds.begin();
-}
-
-vector<string>::iterator Thread::end() {
-    return emailIds.end();
 }

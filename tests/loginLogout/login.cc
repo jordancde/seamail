@@ -19,12 +19,5 @@ int main() {
         return 1;
     }
 
-    Session s = myDummyAccount->getSession();
-    string email = s.getEmailAddress();
-    string key = s.getKey();
-
-    bool emailValid = email == "mydummyaccount@example.com";
-    bool keyValid = key == "abc123";
-
-    return !(keyValid && emailValid);
+    return !(myDummyAccount->loggedIn);
 }

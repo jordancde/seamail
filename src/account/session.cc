@@ -2,13 +2,6 @@
 
 using namespace std;
 
-
-Session::Session() : emailAddress{""}, key{""} {}
-
-Session::Session(string emailAddress, string key) : emailAddress{emailAddress}, key{key} {}
-
-Session::~Session() {}
-
 void Session::serialize(nlohmann::json& session) const {
     session["emailAddress"] = emailAddress;
     session["key"] = key;
@@ -19,10 +12,12 @@ void Session::deserialize(const nlohmann::json& session) {
     key = session["key"];
 }
 
-string Session::getEmailAddress() { 
+Session::Session(string emailAddress, string key) : emailAddress{emailAddress}, key{key} {}
+
+string Session::getEmailAddress() const { 
     return emailAddress; 
 }
 
-string Session::getKey() {
+string Session::getKey() const {
     return key; 
 }

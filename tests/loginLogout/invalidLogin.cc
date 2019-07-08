@@ -15,14 +15,7 @@ int main() {
     try {
         myDummyAccount->login("mydummyaccount@example.com", "wrongpw");
     } catch (AuthenticationFailedException &e) {
-        Session s = myDummyAccount->getSession();
-
-        string email = s.getEmailAddress();
-        string key = s.getKey();
-
-        bool emailValid = email == "";
-        bool keyValid = key == "";
-        return !(keyValid && emailValid);
+        return myDummyAccount->loggedIn;
     }
 
     return 1;

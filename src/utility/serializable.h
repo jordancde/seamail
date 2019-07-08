@@ -11,7 +11,7 @@ protected:
     virtual void deserialize(const nlohmann::json&) = 0;
 
 public:
-    virtual ~Serializable() {};
+    virtual ~Serializable() = default;
     friend std::ostream& operator<<(std::ostream&, const Serializable&);
     friend std::istream& operator>>(std::istream&, Serializable&);
     friend void to_json(nlohmann::json&, const Serializable&);

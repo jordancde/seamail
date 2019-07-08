@@ -8,7 +8,7 @@
 #include <nlohmann/json.hpp>
 
 #include "../account/account.h"
-#include "../providers/emailProvider.h"
+#include "../providers/localEmailProvider.h"
 #include "./serializable.h"
 
 class LocalState : public Serializable {
@@ -16,16 +16,15 @@ class LocalState : public Serializable {
     void deserialize(const nlohmann::json&) override;
 
     std::vector<Account> accounts;
-    std::vector<EmailProvider> providers;
 
 public:
-    void storeAccount(Account);
-    std::vector<Account>& getAccounts();
-    void removeAccount(Account&);
-    std::vector<EmailProvider>& getProviders();
+    LocalEmailProvider localProvider;
 
-    LocalState();
-    ~LocalState();
+    void storeAccount(Account&);
+    void removeAccount(Account&);
+    std::vector<Account>& getAccounts();
+
+    LocalState() = default;
 };
 
 #endif

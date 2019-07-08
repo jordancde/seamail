@@ -25,30 +25,29 @@ class Account : public Subject, public Serializable {
     void serialize(nlohmann::json&) const override;
     void deserialize(const nlohmann::json&) override;
 
-    static std::string sentPath;
-    static std::string inboxPath;
-    static std::string deletedPath;
-
 public:
-    std::vector<std::string> getAllFolderPaths();
+    bool loggedIn;
+
+    Account(std::shared_ptr<EmailProvider> provider, std::string emailAddress);
+    Account() = default;
+
+    bool operator==(const Account&) const;
+
+    void login(std::string emailAddress, std::string password);
+    void logout();
+
     Folder getFolderByPath(std::string path, std::string sort);
-    Email getEmailById(std::string id);
-    void sendEmail(Email email);
-    void addThreadToFolder(std::string threadId, std::string folderPath);
-    void removeThreadFromFolder(std::string threadId, std::string folderPath);
-    Thread getThreadById(std::string threadId);
+    std::vector<std::string> getAllFolderPaths();
     std::string addFolder(std::string folderPath);
     void removeFolder(std::string folderPath);
 
-    bool login(std::string emailAddress, std::string password);
-    void logout();
+    Thread getThreadById(std::string threadId);
+    void addThreadToFolder(std::string threadId, std::string folderPath);
+    void removeThreadFromFolder(std::string threadId, std::string folderPath);
 
-    Session getSession();
-    bool operator==(const Account&) const;
+    Email getEmailById(std::string id);
+    void sendEmail(Email email);
 
-    Account();
-    Account(std::shared_ptr<EmailProvider> provider, std::string emailAddress);
-    virtual ~Account();
 };
 
 #endif

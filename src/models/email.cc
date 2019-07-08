@@ -2,33 +2,22 @@
 
 using namespace std;
 
-Email::Email(
-    std::string threadId,
-    std::string from,
-    std::vector<std::string> to,
-    time_t dateTime,
-    std::vector<std::string> cc,
-    std::vector<std::string> bcc,
-    std::string subject,
-    std::string body,
-    bool unread,
-    std::vector<std::string> imagePaths
+Email::Email(string threadId, string from, vector<string> to, time_t dateTime,
+             vector<string> cc, vector<string> bcc, string subject, string body,
+             bool read, vector<string> imagePaths
 
-    ) : id{genRandomId()}, threadId{threadId}, from{from}, 
-        to{to}, dateTime{dateTime}, cc{cc}, bcc{bcc}, 
-        subject{subject}, body{body}, unread{unread}, 
-        imagePaths{imagePaths} {}
-
-Email::Email(const Email& other) : id{genRandomId()}, threadId{other.threadId}, 
-                                    from{other.from}, to{other.to}, 
-                                    dateTime{other.dateTime}, cc{other.cc}, 
-                                    bcc{other.bcc}, subject{other.subject}, 
-                                    body{other.body}, unread{other.unread}, 
-                                    imagePaths{other.imagePaths} {}
-
-Email::Email() {}
-
-Email::~Email() {}
+             )
+    : id{genRandomId()},
+      threadId{threadId},
+      from{from},
+      to{to},
+      dateTime{dateTime},
+      cc{cc},
+      bcc{bcc},
+      subject{subject},
+      body{body},
+      read{read},
+      imagePaths{imagePaths} {}
 
 void Email::serialize(nlohmann::json& email) const {
     email["id"] = id;
@@ -39,7 +28,7 @@ void Email::serialize(nlohmann::json& email) const {
     email["bcc"] = bcc;
     email["subject"] = subject;
     email["body"] = body;
-    email["unread"] = unread;
+    email["read"] = read;
     email["imagePaths"] = imagePaths;
     email["threadId"] = threadId;
 }
@@ -56,13 +45,15 @@ void Email::deserialize(const nlohmann::json& email) {
     threadId = email["threadId"];
 }
 
+void Email::changeId() { id = genRandomId(); }
+
 string Email::genRandomId() {
     static const char alphanum[] =
         "0123456789"
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         "abcdefghijklmnopqrstuvwxyz";
     int len = 16;
-    std::string s(len, ' ');
+    string s(len, ' ');
     for (int i = 0; i < len; ++i) {
         s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
     }
@@ -70,7 +61,7 @@ string Email::genRandomId() {
 }
 
 bool Email::operator==(const Email& rhs) const {
-    return from == rhs.from  &&to == rhs.to 
-        && dateTime == rhs.dateTime && cc == rhs.cc && bcc == rhs.bcc
-        && subject == rhs.subject && body == rhs.body;
+    return from == rhs.from && to == rhs.to && dateTime == rhs.dateTime &&
+           cc == rhs.cc && bcc == rhs.bcc && subject == rhs.subject &&
+           body == rhs.body;
 }

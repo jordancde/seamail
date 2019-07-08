@@ -12,6 +12,7 @@
 class Email : public Serializable {
     void serialize(nlohmann::json&) const override;
     void deserialize(const nlohmann::json&) override;
+
     std::string genRandomId();
 
 public:
@@ -24,20 +25,24 @@ public:
     std::vector<std::string> bcc;
     std::string subject;
     std::string body;
-    bool unread;
+    bool read;
     std::vector<std::string> imagePaths;
 
-    Email(std::string threadId, std::string from, std::vector<std::string> to,
-            time_t dateTime, std::vector<std::string> cc = {},
-            std::vector<std::string> bcc = {}, std::string subject = "",
-            std::string body = "", bool unread = false,
+    Email(std::string threadId, 
+            std::string from, 
+            std::vector<std::string> to,
+            time_t dateTime, 
+            std::vector<std::string> cc = {},
+            std::vector<std::string> bcc = {}, 
+            std::string subject = "",
+            std::string body = "", 
+            bool read = false,
             std::vector<std::string> imagePaths = {});
-
-    Email(const Email&);
+    Email() = default;
 
     bool operator==(const Email&) const;
-    Email();
-    ~Email();
+
+    void changeId();
 };
 
 #endif
