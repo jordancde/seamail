@@ -9,6 +9,10 @@ class FolderView : public View {
     std::string watchingFolder;
     std::function<void(std::string)> threadChangeHandler;
 
+    Folder getFolder() const {
+        return account->getFolderByPath(watchingFolder);
+    }
+
 public:
     FolderView(std::shared_ptr<Account> account,
                 std::string watchingFolder,

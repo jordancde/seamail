@@ -19,9 +19,7 @@ pair<size_t, string> AccountView::folderPathToDisplayName(const std::string &pat
     return make_pair(level, folderName);
 }
 void AccountView::onDraw(bool isActive) const {
-    auto folderPaths = account->getAllFolderPaths();
-
-    sort(folderPaths.begin(), folderPaths.end());
+    auto folderPaths = getCachedFolderPaths();
 
     wmove(win, 1, 0);
     for(size_t fidx = 0; fidx < folderPaths.size(); ++fidx){
@@ -44,7 +42,7 @@ void AccountView::onDraw(bool isActive) const {
 }
 
 void AccountView::updateSelectedFolder(size_t idx) {
-    auto folderPaths = account->getAllFolderPaths();
+    auto folderPaths = getCachedFolderPaths();
     if(folderPaths.size() == 0)
         selectedFolderIndex = SIZE_MAX;
     else
@@ -60,6 +58,7 @@ void AccountView::notify(std::shared_ptr<Event> event) {
     switch(ptr->type){
         case AccountEventType::ACCOUNT_FOLDERS_CHANGED: {
             this->updateSelectedFolder(0);
+            this->updateCachedFolderPaths();
             this->refresh();
             break;
         }
@@ -78,7 +77,7 @@ void AccountView::onResize() {
 }
 
 void AccountView::onInput(int key) {
-    size_t max = account->getAllFolderPaths().size();
+    size_t max = getCachedFolderPaths().size();
     switch(key){
     case 'k':
         if(selectedFolderIndex > 0){

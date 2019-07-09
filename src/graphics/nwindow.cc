@@ -6,12 +6,6 @@
 
 #include "graphics/compositor.h"
 
-NWindow::NWindow() {
-    // hack
-    reframe(0,0,0,0,0,0);
-    resize(0, 0);
-}
-
 NWindow::~NWindow() {
     if(win) {
         delwin(win);

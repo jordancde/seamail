@@ -85,11 +85,24 @@ int main()
 			/* dateTime 	*/ (time_t) 0,
 			/* cc			*/ vector<string>{},
 			/* bcc 			*/ vector<string>{},
-			/* subject  	*/ string("subject"),
-			/* body 		*/ string("body"),
-			/* unread 		*/ true,
+			/* subject  	*/ string("This is supposed to be a subject."),
+			/* body 		*/ string("This is my first body!"),
+			/* unread 		*/ false,
+			/* imagePaths 	*/ vector<string>{}
+		},
+		Email{
+			/* threadId	 	*/ string("new"),
+			/* from 		*/ string("test1@example.com"),
+			/* to			*/ vector<string>{"mydummyaccount@example.com"},
+			/* dateTime 	*/ (time_t) 1000000,
+			/* cc			*/ vector<string>{},
+			/* bcc 			*/ vector<string>{},
+			/* subject  	*/ string("This is supposed to be a subject."),
+			/* body 		*/ string("This is my second body!"),
+			/* unread 		*/ false,
 			/* imagePaths 	*/ vector<string>{}
 		}
+
 	};
 
 	std::for_each(emails.begin(), emails.end(), [&](Email &e){
@@ -99,14 +112,14 @@ int main()
 	std::shared_ptr<FolderView> myActiveFolderView;
 
 	auto myAccountView = std::make_shared<AccountView>(myDummyAccount, [&](std::string folderPath){
-		printf("WHY\n");
 		if(myActiveFolderView)
 			com.removeWindow(myActiveFolderView);
 		myActiveFolderView = std::make_shared<FolderView>(myDummyAccount, folderPath, 
 			[&](std::string threadId){
-				//todo;
+
 			});
 		com.addWindow(myActiveFolderView);
+		myActiveFolderView->refresh();
 
 
 	});

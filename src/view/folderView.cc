@@ -14,8 +14,44 @@ void FolderView::onResize(){
 }
 
 void FolderView::onDraw(bool isActive) const {
-    wmove(win, 1, 0);
+    wmove(win, 1, 1);
     
+    auto folder = getFolder(); 
+    for(auto threadId = folder.threadIds.begin(); threadId != folder.threadIds.end(); ++threadId){
+        auto thread = account->getThreadById(*threadId);
+        time_t latestDate = 0; 
+        bool read = true;
+        for(auto emailId = thread.emailIds.begin(); emailId != thread.emailIds.end(); ++emailId){
+            auto email = account->getEmailById(*emailId);
+            latestDate = max(latestDate, email.dateTime);
+            read &= email.read;
+        }
+        struct tm* timeinfo = localtime(&latestDate);
+        const char* desctime = asctime(timeinfo);
+        auto lastFrom = account->getEmailById(thread.emailIds.back()).from;
+
+        mvwprintw(win, cy(), 1, "%s", lastFrom.c_str());
+        if(!read)
+            wattron(win, A_REVERSE);
+        mvwprintw(win, cy() + 1, 1, "%s", thread.title.c_str());
+        wattroff(win, A_REVERSE);
+        mvwprintw(win, cy(), w() - strlen(desctime), "%s", desctime);
+        mvwhline(win, cy(), 0, ACS_HLINE, w());
+        if(thread.emailIds.size() > 1){
+            string ticker = (thread.emailIds.size()-1) + " more...";
+            mvwprintw(win, cy()+1, w()/2-ticker.length()/2, "%s", ticker.c_str());
+            mvwhline(win, cy()+1, 0, ACS_HLINE, w());
+        }
+
+        size_t displayCount = 0;
+        for(auto emailId = thread.emailIds.begin(); emailId != thread.emailIds.end(); ++emailId){
+            auto email = account->getEmailById(*emailId);
+            if(++displayCount > 2)
+                break;
+        }
+    } 
+
+
     wmove(win, 0, 2);
     if(isActive)
         wattron(win, A_REVERSE);

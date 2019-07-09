@@ -15,8 +15,7 @@ protected:
 
 public:
 
-    View(std::shared_ptr<Account> account) : account(account) {
-    }
+    View(std::shared_ptr<Account> account) : account(account) {}
     virtual ~View() {}
 
 };

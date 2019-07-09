@@ -8,23 +8,33 @@ class NWindow {
     void swap(NWindow&) noexcept;
 
 protected:
+    // Pointer to active ncurses PAD (not WINDOW!)
     WINDOW *win;
 
+    // Modify the active frame of the pad (i.e. region of pad rendered to screen)
     void reframe(size_t wx, size_t wy, size_t x, size_t y, size_t w, size_t h);
 
     // Resizes the ncurses pad to the specified dimensions
     void resize(size_t w, size_t h);
 
+    int zindex;
     size_t _wx, _wy;
     size_t _x, _y, _w, _h;
 public:
-    NWindow();
+    NWindow(int zindex = 0) : zindex(zindex) {
+        reframe(0,0,0,0,0,0);
+        resize(0, 0);
+    }
     virtual ~NWindow() = 0;
 
     NWindow(NWindow&&);
     NWindow(const NWindow&) = delete;
     NWindow& operator=(const NWindow&) = delete;
     NWindow& operator=(NWindow&&);
+
+    int getZindex(){
+        return zindex;
+    }
 
     size_t wx() const { return _wx; }                 // pad x
     size_t wy() const { return _wy; }                 // pad y

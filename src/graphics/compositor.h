@@ -5,14 +5,20 @@
 
 #include <memory>
 #include <list>
+#include <set>
 
 class Compositor {
 
     static std::unique_ptr<Compositor> _instance;
     static void resizeHandler(int sig);
 
-    std::list<std::shared_ptr<NWindow>> windows;
-    std::list<std::shared_ptr<NWindow>>::iterator activeWindow;
+    bool compare(const std::shared_ptr<NWindow>& a, const std::shared_ptr<NWindow>& b){
+        return a->getZindex() > b->getZindex();
+    }
+
+    typedef std::set<std::shared_ptr<NWindow>> WindowSet;
+    WindowSet windows;
+    WindowSet::iterator activeWindow;
 
     Compositor();
 public:

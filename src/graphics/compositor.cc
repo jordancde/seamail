@@ -41,23 +41,36 @@ Compositor& Compositor::instance(){
 }
 
 void Compositor::addWindow(std::shared_ptr<NWindow> window) {
-    windows.push_back(window);
+    if(activeWindow != windows.end()){
+        auto cachedActiveWindow = *activeWindow;
+        windows.insert(window);
+        activeWindow = windows.find(cachedActiveWindow);
+    } else {
+        windows.insert(window);
+    }
     window->onResize();
 }
 
 void Compositor::removeWindow(std::shared_ptr<NWindow> window) {
-    auto it = std::find(windows.begin(), windows.end(), window);
+    auto it = windows.find(window);
     if(it != windows.end()){
         if(it == activeWindow)
             throw std::logic_error("Cannot remove active window!");
-        windows.erase(it); 
+
+        if(activeWindow != windows.end()){
+            auto cachedActiveWindow = *activeWindow;
+            windows.erase(it); 
+            activeWindow = windows.find(cachedActiveWindow);
+        } else {
+            windows.erase(it);
+        }
     } else {
         throw std::out_of_range("Window being removed does not exist!");
     }
 }
 
 void Compositor::setActiveWindow(std::shared_ptr<NWindow> window) {
-    auto it = std::find(windows.begin(), windows.end(), window);
+    auto it = windows.find(window);
     if(it != windows.end()) {
         activeWindow = it;
     } else {

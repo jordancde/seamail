@@ -16,12 +16,22 @@ class AccountView : public View {
 
     void updateSelectedFolder(size_t idx);
 
+    std::vector<std::string> sortedFolderPaths;
+    void updateCachedFolderPaths() {
+        sortedFolderPaths = account->getAllFolderPaths();
+        sort(sortedFolderPaths.begin(), sortedFolderPaths.end());
+    }
+    const std::vector<std::string>& getCachedFolderPaths() const {
+        return sortedFolderPaths;
+    }
+
     std::function<void(std::string folderPath)> folderChangeHandler;
 
 public:
     AccountView(std::shared_ptr<Account> account,
                 std::function<void(std::string folderPath)> folderChangeHandler = [](std::string){})
         : View(account), folderChangeHandler(folderChangeHandler) {
+        updateCachedFolderPaths();
         updateSelectedFolder(0);
     }
     
