@@ -40,7 +40,7 @@ public:
             std::vector<std::string> imagePaths = {});
     Email() = default;
     // Checks equality without id
-    bool equals(const Email&) const;
+    bool same(const Email&) const;
     // Equality with id
     bool operator==(const Email&) const;
 

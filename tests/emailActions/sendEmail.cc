@@ -40,6 +40,6 @@ int main() {
     string recievedEmailId = recievedThread.emailIds.front();
     Email recievedEmail = myDummyAccount2->getEmailById(recievedEmailId);
 
-    bool recieverSideValid = recievedEmail.equals(e);
+    bool recieverSideValid = recievedEmail.same(e);
     return !(senderSideValid && recieverSideValid);
 }

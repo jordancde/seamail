@@ -36,12 +36,6 @@ int main() {
     LocalState inputLS = LocalState();
     inFile >> inputLS;
     inFile.close();
-
-<<<<<<< HEAD
-    
-    return 0;
-}
-=======
+    remove("serialized.txt");
     return !(inputLS==ls);
 }
->>>>>>> Added equality operators everywhere, still fixing

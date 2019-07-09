@@ -35,6 +35,7 @@ void Email::serialize(nlohmann::json& email) const {
 
 void Email::deserialize(const nlohmann::json& email) {
     id = email["id"];
+    to = email["to"].get<vector<string>>();
     from = email["from"];
     dateTime = email["dateTime"];
     cc = email["cc"].get<vector<string>>();
@@ -66,7 +67,7 @@ bool Email::operator==(const Email& rhs) const {
            body == rhs.body && imagePaths == rhs.imagePaths;
 }
 
-bool Email::equals(const Email& rhs) const {
+bool Email::same(const Email& rhs) const {
     return from == rhs.from && to == rhs.to && dateTime == rhs.dateTime &&
            cc == rhs.cc && bcc == rhs.bcc && subject == rhs.subject &&
            body == rhs.body && imagePaths == rhs.imagePaths;
