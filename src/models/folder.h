@@ -18,6 +18,7 @@ public:
 
     Folder(std::string path, std::vector<std::string> threadIds = {});
     Folder() = default;
+    bool operator==(const Folder&) const;
 };
 
 #endif

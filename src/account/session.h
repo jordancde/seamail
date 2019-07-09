@@ -21,6 +21,8 @@ public:
     
     std::string getEmailAddress() const;
     std::string getKey() const;
+
+    bool operator==(const Session&) const;
 };
 
 #endif

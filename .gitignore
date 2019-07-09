@@ -4,3 +4,4 @@ seamail
 .vscode
 *.vg
 *.out
+.DS_Store

@@ -40,6 +40,8 @@ public:
     
     Email getEmailById(Session& ctx, std::string emailId) override;
     void sendEmail(Session& ctx, Email email) override;
+
+    bool operator==(const LocalEmailProvider&) const;
 };
 
 #endif

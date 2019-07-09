@@ -61,7 +61,13 @@ string Email::genRandomId() {
 }
 
 bool Email::operator==(const Email& rhs) const {
+    return id == rhs.id && from == rhs.from && to == rhs.to && dateTime == rhs.dateTime &&
+           cc == rhs.cc && bcc == rhs.bcc && subject == rhs.subject &&
+           body == rhs.body && imagePaths == rhs.imagePaths;
+}
+
+bool Email::equals(const Email& rhs) const {
     return from == rhs.from && to == rhs.to && dateTime == rhs.dateTime &&
            cc == rhs.cc && bcc == rhs.bcc && subject == rhs.subject &&
-           body == rhs.body;
+           body == rhs.body && imagePaths == rhs.imagePaths;
 }

@@ -7,12 +7,12 @@ using namespace std;
 
 int main() {
     LocalState ls = LocalState();
-    ls.localProvider = LocalEmailProvider();
-    shared_ptr<LocalEmailProvider> lmp{&(ls.localProvider)};
+    ls.localProvider = std::make_shared<LocalEmailProvider>();
 
-    auto myDummyAccount =
-        std::make_shared<Account>(lmp, "mydummyaccount@example.com");
-    ls.localProvider.addAccount("mydummyaccount@example.com", "abc123");
+    auto myDummyAccount = std::make_shared<Account>(
+        ls.localProvider, "mydummyaccount@example.com");
+
+    ls.localProvider->addAccount("mydummyaccount@example.com", "abc123");
 
     ls.storeAccount(*myDummyAccount);
     myDummyAccount->login("mydummyaccount@example.com", "abc123");
@@ -37,6 +37,11 @@ int main() {
     inFile >> inputLS;
     inFile.close();
 
+<<<<<<< HEAD
     
     return 0;
 }
+=======
+    return !(inputLS==ls);
+}
+>>>>>>> Added equality operators everywhere, still fixing

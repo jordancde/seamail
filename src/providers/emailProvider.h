@@ -45,6 +45,8 @@ public:
     virtual void setEmailStatus(Session& ctx, std::string emailId, bool read) = 0;
     virtual Email getEmailById(Session& ctx, std::string emailId) = 0;
     virtual void sendEmail(Session& ctx, Email email) = 0;
+
+    bool operator==(const EmailProvider&) const;
 };
 
 #endif

@@ -8,18 +8,16 @@ using namespace std;
 
 void Account::serialize(nlohmann::json& account) const {
     account["session"] = session;
+    account["emailAddress"] = emailAddress;
 }
 
 void Account::deserialize(const nlohmann::json& account) {
     session = account["session"].get<Session>();
+    emailAddress = account["emailAddress"];
 }
 
 Account::Account(shared_ptr<EmailProvider> provider, string emailAddress)
     : provider{provider}, emailAddress{emailAddress}, loggedIn(false) {}
-
-bool Account::operator==(const Account& rhs) const {
-    return emailAddress == rhs.emailAddress;
-}
 
 void Account::login(string emailAddress, string password) {
     session = provider->getSession(emailAddress, password);
@@ -81,4 +79,8 @@ void Account::sendEmail(Email email) {
     provider->sendEmail(session, email);
     auto e = make_shared<AccountEvent>(FOLDER_CONTENTS_CHANGED, *this, provider->sentPath);
     notifyAllObservers(e);
+}
+
+bool Account::operator==(const Account& other) const{
+    return emailAddress == other.emailAddress && session == other.session;
 }

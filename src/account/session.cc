@@ -21,3 +21,7 @@ string Session::getEmailAddress() const {
 string Session::getKey() const {
     return key; 
 }
+
+bool Session::operator==(const Session& other) const{
+    return emailAddress == other.emailAddress && key == other.key;
+}

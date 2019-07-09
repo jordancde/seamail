@@ -15,16 +15,17 @@ class LocalState : public Serializable {
     void serialize(nlohmann::json&) const override;
     void deserialize(const nlohmann::json&) override;
 
-    std::vector<Account> accounts; // MAYBE public?
+    std::vector<Account> accounts;  // MAYBE public?
 
-public:
-    LocalEmailProvider localProvider;
+   public:
+    std::shared_ptr<LocalEmailProvider> localProvider;
 
     void storeAccount(Account&);
     void removeAccount(Account&);
     std::vector<Account>& getAccounts();
 
     LocalState() = default;
+    bool operator==(const LocalState&) const;
 };
 
 #endif
