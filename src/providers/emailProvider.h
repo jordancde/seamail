@@ -34,7 +34,7 @@ public:
 
     virtual Session getSession(std::string emailAddress, std::string password) = 0;
 
-    virtual Folder getFolderByPath(Session& ctx, std::string folderPath, std::string sort) = 0;
+    virtual Folder getFolderByPath(Session& ctx, std::string folderPath) = 0;
     virtual std::vector<std::string> getAllFolderPaths(Session& ctx) = 0;
     virtual void addFolder(Session& ctx, std::string folderPath) = 0;
     virtual void removeFolder(Session& ctx, std::string folderPath) = 0;

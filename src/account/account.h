@@ -36,7 +36,7 @@ class Account : public Subject, public Serializable {
     void login(std::string emailAddress, std::string password);
     void logout();
 
-    Folder getFolderByPath(std::string path, std::string sort);
+    Folder getFolderByPath(std::string path);
     std::vector<std::string> getAllFolderPaths();
     void addFolder(std::string folderPath);
     void removeFolder(std::string folderPath);

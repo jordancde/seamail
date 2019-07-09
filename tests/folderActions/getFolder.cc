@@ -17,7 +17,7 @@ int main() {
     myDummyAccount->addFolder("Test3");
     myDummyAccount->addFolder("Test4");
 
-    Folder f = myDummyAccount->getFolderByPath("Test2", "none");
+    Folder f = myDummyAccount->getFolderByPath("Test2");
 
     string expected = "Test2";
     return f.path != expected;

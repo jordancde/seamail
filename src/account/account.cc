@@ -31,8 +31,8 @@ void Account::logout() {
     loggedIn = false;
 }
 
-Folder Account::getFolderByPath(string path, string sort) {
-    return provider->getFolderByPath(session, path, sort);
+Folder Account::getFolderByPath(string path) {
+    return provider->getFolderByPath(session, path);
 }
 
 vector<string> Account::getAllFolderPaths() {
@@ -51,6 +51,10 @@ void Account::removeFolder(string folderPath) {
     notifyAllObservers(e);
 }
 
+Thread Account::getThreadById(string threadId) {
+    return provider->getThreadById(session, threadId);
+}
+
 void Account::addThreadToFolder(string threadId, string folderPath) {
     provider->addThreadToFolder(session, threadId, folderPath);
     auto e = make_shared<AccountEvent>(FOLDER_CONTENTS_CHANGED, *this, folderPath);
@@ -62,11 +66,6 @@ void Account::removeThreadFromFolder(string threadId, string folderPath) {
     auto e = make_shared<AccountEvent>(FOLDER_CONTENTS_CHANGED, *this, folderPath);
     notifyAllObservers(e);
 }
-
-Thread Account::getThreadById(string threadId) {
-    return provider->getThreadById(session, threadId);
-}
-
 
 Email Account::getEmailById(string id) {
     return provider->getEmailById(session, id);

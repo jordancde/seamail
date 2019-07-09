@@ -27,7 +27,7 @@ public:
 
     Session getSession(std::string emailAddress, std::string password) override;
 
-    Folder getFolderByPath(Session& ctx, std::string folderPath, std::string sort) override;
+    Folder getFolderByPath(Session& ctx, std::string folderPath) override;
     std::vector<std::string> getAllFolderPaths(Session& ctx) override;
     void addFolder(Session& ctx, std::string folderPath) override;
     void removeFolder(Session& ctx, std::string folderPath) override;

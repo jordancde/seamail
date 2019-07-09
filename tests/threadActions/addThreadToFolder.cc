@@ -19,13 +19,13 @@ int main() {
                     "test body", false, vector<string>{});
     myDummyAccount->sendEmail(e);
 
-    Folder sent = myDummyAccount->getFolderByPath("sent", "none");
+    Folder sent = myDummyAccount->getFolderByPath("sent");
     Thread thread = myDummyAccount->getThreadById(sent.threadIds.at(0));
 
     myDummyAccount->addFolder("Test1");
     myDummyAccount->addThreadToFolder(thread.id, "Test1");
 
-    Folder test1 = myDummyAccount->getFolderByPath("Test1", "none");
+    Folder test1 = myDummyAccount->getFolderByPath("Test1");
 
     return !(test1.threadIds.at(0) == thread.id);
 }

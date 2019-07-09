@@ -28,13 +28,13 @@ int main() {
 
     myDummyAccount->sendEmail(e);
 
-    Folder sent = myDummyAccount->getFolderByPath("sent", "none");
+    Folder sent = myDummyAccount->getFolderByPath("sent");
     Thread thread = myDummyAccount->getThreadById(sent.threadIds.at(0));
     string sentEmailId = thread.emailIds.at(0);
     Email sentEmail = myDummyAccount->getEmailById(sentEmailId);
     bool senderSideValid = sentEmail == e && e.id == sentEmail.id;
 
-    Folder inbox = myDummyAccount2->getFolderByPath("inbox", "none");
+    Folder inbox = myDummyAccount2->getFolderByPath("inbox");
     Thread recievedThread =
         myDummyAccount2->getThreadById(inbox.threadIds.front());
     string recievedEmailId = recievedThread.emailIds.front();

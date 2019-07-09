@@ -39,7 +39,7 @@ S_WARN	:= $(C_WARN)[WARNING]$(C_NONE)
 all: $(BIN)
 ifeq ($(TEST_MODE),1)
 $(BIN): $(TEST_OBJECTS) force
-	$(CXX) $(TEST_OBJECTS) -o $@ $(LIBS)
+	@$(CXX) $(TEST_OBJECTS) -o $@ $(LIBS)
 	@valgrind --error-exitcode=1 --log-fd=9 --leak-check=full 9> $(TEST_FILE).vg \
 		./$(BIN) > $(TEST_FILE).out; \
 	if ! [ $$? -eq 0 ]; then \

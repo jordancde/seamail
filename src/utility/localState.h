@@ -15,7 +15,7 @@ class LocalState : public Serializable {
     void serialize(nlohmann::json&) const override;
     void deserialize(const nlohmann::json&) override;
 
-    std::vector<Account> accounts;
+    std::vector<Account> accounts; // MAYBE public?
 
 public:
     LocalEmailProvider localProvider;

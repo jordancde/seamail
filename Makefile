@@ -17,7 +17,7 @@ clean:
 	$(MAKE) -f core.mk clean
 	
 $(TEST_DIR)/%.cc: force
-	TEST_MODE=1 TEST_FILE=$@ $(MAKE) -f core.mk
+	@TEST_MODE=1 TEST_FILE=$@ $(MAKE) -f core.mk --no-print-directory
 
 test: $(TESTS)
 	@echo completed test suite for all tests in $(TEST_DIR)...

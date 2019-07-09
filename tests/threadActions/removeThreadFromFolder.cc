@@ -19,16 +19,16 @@ int main() {
                     "test body", false, vector<string>{});
     myDummyAccount->sendEmail(e);
 
-    Folder sent = myDummyAccount->getFolderByPath("sent", "none");
+    Folder sent = myDummyAccount->getFolderByPath("sent");
     Thread thread = myDummyAccount->getThreadById(sent.threadIds.at(0));
 
     myDummyAccount->removeThreadFromFolder(thread.id, "sent");
 
-    Folder deleted = myDummyAccount->getFolderByPath("deleted", "none");
-    sent = myDummyAccount->getFolderByPath("sent", "none");
+    // Folder deleted = myDummyAccount->getFolderByPath("deleted");
+    sent = myDummyAccount->getFolderByPath("sent");
 
-    bool threadMoved = deleted.threadIds.at(0) == thread.id;
+    // bool threadMoved = deleted.threadIds.at(0) == thread.id;
     bool threadNotCopied = sent.threadIds.size() == 0;
 
-    return !(threadMoved && threadNotCopied);
+    return !threadNotCopied;
 }
