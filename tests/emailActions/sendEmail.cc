@@ -32,7 +32,7 @@ int main() {
     Thread thread = myDummyAccount->getThreadById(sent.threadIds.at(0));
     string sentEmailId = thread.emailIds.at(0);
     Email sentEmail = myDummyAccount->getEmailById(sentEmailId);
-    bool senderSideValid = sentEmail == e && e.id == sentEmail.id;
+    bool senderSideValid = sentEmail == e;
 
     Folder inbox = myDummyAccount2->getFolderByPath("inbox");
     Thread recievedThread =
@@ -40,6 +40,6 @@ int main() {
     string recievedEmailId = recievedThread.emailIds.front();
     Email recievedEmail = myDummyAccount2->getEmailById(recievedEmailId);
 
-    bool recieverSideValid = recievedEmail == e;
+    bool recieverSideValid = recievedEmail.same(e);
     return !(senderSideValid && recieverSideValid);
 }

@@ -23,3 +23,8 @@ void EmailProvider::deserialize(const nlohmann::json& provider) {
     emails = provider["emails"]
                     .get<unordered_map<string, Email>>();
 }
+
+bool EmailProvider::operator==(const EmailProvider& other) const{
+    return folderPaths==other.folderPaths && folders==other.folders
+        && threads == other.threads && emails == other.emails;
+}

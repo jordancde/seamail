@@ -31,8 +31,6 @@ class Account : public Subject, public Serializable {
     Account(std::shared_ptr<EmailProvider> provider, std::string emailAddress);
     Account() = default;
 
-    bool operator==(const Account&) const;
-
     void login(std::string emailAddress, std::string password);
     void logout();
 
@@ -49,6 +47,7 @@ class Account : public Subject, public Serializable {
 
     Email getEmailById(std::string id);
     void sendEmail(Email email);
+    bool operator==(const Account&) const;
 };
 
 #endif

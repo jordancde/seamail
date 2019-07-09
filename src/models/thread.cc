@@ -29,3 +29,7 @@ string Thread::genRandomId() {
     }
     return s;
 }
+
+bool Thread::operator==(const Thread& other) const{
+    return id==other.id && title==other.title && emailIds==other.emailIds;
+}

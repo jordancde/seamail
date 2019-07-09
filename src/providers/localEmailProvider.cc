@@ -148,3 +148,6 @@ void LocalEmailProvider::setEmailStatus(Session& ctx, string emailId, bool read)
     emails[ctx.getEmailAddress() + "/" + emailId].read = read;
 }
 
+bool LocalEmailProvider::operator==(const LocalEmailProvider& other) const{
+    return accounts == other.accounts && EmailProvider::operator==(other);
+}

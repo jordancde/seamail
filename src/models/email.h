@@ -39,7 +39,9 @@ public:
             bool read = false,
             std::vector<std::string> imagePaths = {});
     Email() = default;
-
+    // Checks equality without id
+    bool same(const Email&) const;
+    // Equality with id
     bool operator==(const Email&) const;
 
     void changeId();

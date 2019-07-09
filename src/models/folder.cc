@@ -14,3 +14,7 @@ void Folder::deserialize(const nlohmann::json& folder) {
     path = folder["path"];
     threadIds = folder["threadIds"].get<vector<string>>();
 }
+
+bool Folder::operator==(const Folder& other) const {
+    return path==other.path && threadIds == other.threadIds; 
+}
