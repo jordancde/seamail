@@ -18,7 +18,7 @@ class AccountView : public View {
 
     std::vector<std::string> sortedFolderPaths;
     void updateCachedFolderPaths() {
-        sortedFolderPaths = account->getAllFolderPaths();
+        sortedFolderPaths = account.getAllFolderPaths();
         sort(sortedFolderPaths.begin(), sortedFolderPaths.end());
     }
     const std::vector<std::string>& getCachedFolderPaths() const {
@@ -28,7 +28,7 @@ class AccountView : public View {
     std::function<void(std::string folderPath)> folderChangeHandler;
 
 public:
-    AccountView(std::shared_ptr<Account> account,
+    AccountView(Account& account,
                 std::function<void(std::string folderPath)> folderChangeHandler = [](std::string){})
         : View(account), folderChangeHandler(folderChangeHandler) {
         updateCachedFolderPaths();
@@ -38,7 +38,7 @@ public:
     void onResize() override;
     void onDraw(bool isActive) const override;
     void notify(std::shared_ptr<Event> event) override;
-    void onInput(int key) override;
+    bool onInput(int key) override;
 };
 
 #endif

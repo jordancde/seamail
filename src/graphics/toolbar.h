@@ -21,7 +21,7 @@ public:
         std::list<std::string> menuItems, std::function<void(std::string)> handler);
 
     void onDraw(bool isActive) const override;
-    void onInput(int key) override;
+    bool onInput(int key) override;
     void onResize() override;
 };
 

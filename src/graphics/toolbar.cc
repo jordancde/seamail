@@ -24,7 +24,8 @@ void Toolbar::onDraw(bool isActive) const {
     }
 }
 
-void Toolbar::onInput(int key) {
+bool Toolbar::onInput(int key) {
+    bool handled = false;
     switch(key){
     case KEY_LEFT:
     case 'h':
@@ -32,16 +33,24 @@ void Toolbar::onInput(int key) {
             --selected;
             refresh();
         }
-    break;
+        handled = true;
+        break;
     case KEY_RIGHT:
     case 'l':
         if(selected != --menuItems.end()) {
             ++selected;
             refresh();
         }
+        handled = true;
+        break;
+    case '\n':
+        handler(*selected);
+        handled = true;
+        break;
+    default:
     break;
     }
-
+    return handled;
 }
 
 void Toolbar::onResize()  {

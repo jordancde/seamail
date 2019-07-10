@@ -55,7 +55,9 @@ public:
     void refresh() const;
 
     virtual void onDraw(bool isActive) const {}
-    virtual void onInput(int key) {}
+    
+    // return true if handled
+    virtual bool onInput(int key) { return false; }
     virtual void onResize() {}
 };
 

@@ -10,11 +10,11 @@ class FolderView : public View {
     std::function<void(std::string)> threadChangeHandler;
 
     Folder getFolder() const {
-        return account->getFolderByPath(watchingFolder);
+        return account.getFolderByPath(watchingFolder);
     }
 
 public:
-    FolderView(std::shared_ptr<Account> account,
+    FolderView(Account& account,
                 std::string watchingFolder,
                 std::function<void(std::string)> threadChangeHandler = [](std::string){})
                 : View(account), watchingFolder(watchingFolder), 
@@ -23,7 +23,7 @@ public:
     void onResize() override;
     void onDraw(bool isActive) const override;
     void notify(std::shared_ptr<Event> event) override;
-    void onInput(int key) override;
+    bool onInput(int key) override;
 };
 
 

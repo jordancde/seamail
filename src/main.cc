@@ -6,8 +6,13 @@
 #include <cstdio>
 #include <iostream>
 
+#include "utility/localState.h"
+
 #include "providers/localEmailProvider.h"
 #include "account/account.h"
+
+#include "graphics/accountSelect.h"
+#include "graphics/accountUpsert.h"
 #include "view/accountView.h"
 #include "view/folderView.h"
 
@@ -36,7 +41,7 @@ public:
 		reframe(x,y,0,0,w,h);
 	}
 
-	void onInput(int key) override {
+	bool onInput(int key) override {
 		switch(key){
 			case KEY_UP:
 			move(cx(), cy() - 1);
@@ -49,34 +54,32 @@ public:
 			move(cx() + 1, cy());
 			break;
 		}
+		return false;
 	}
 };
 
 int main()
 {	
-	Compositor& com = Compositor::instance();
-
-	auto mytoolbar = std::make_shared<Toolbar>(0, 
-		std::list<std::string>{"File", "Edit", "View"}, [](std::string selected){
-	});
-
+	LocalState localState;
+	std::vector<Account> accounts;
 	string myEmailAddress = "mydummyaccount@example.com";
 	auto myLocalEmailProvider = std::make_shared<LocalEmailProvider>();
-	auto myDummyAccount = std::make_shared<Account>(myLocalEmailProvider, myEmailAddress);
+	Account myDummyAccount(myLocalEmailProvider, myEmailAddress);
 	myLocalEmailProvider->addAccount(myEmailAddress, "abc123");
-	myDummyAccount->login(myEmailAddress, "abc123");
-	myDummyAccount->addFolder("inbox");
-	myDummyAccount->addFolder("sent");
-	myDummyAccount->addFolder("deleted");
-	myDummyAccount->addFolder("Test Folder 1");
-	myDummyAccount->addFolder("Test Folder 2");
-	myDummyAccount->addFolder("Test Folder 3");
-	myDummyAccount->addFolder("Test Folder 1/Nested Folder 1");
-	myDummyAccount->addFolder("Test Folder 1/Nested Folder 2");
-	myDummyAccount->addFolder("Test Folder 4");
-	myDummyAccount->addFolder("Test Folder 5");
-	myDummyAccount->addFolder("Test Folder 6");
-	myDummyAccount->addFolder("Test Folder 7");
+	myDummyAccount.login(myEmailAddress, "abc123");
+	myDummyAccount.addFolder("inbox");
+	myDummyAccount.addFolder("sent");
+	myDummyAccount.addFolder("deleted");
+	myDummyAccount.addFolder("Test Folder 1");
+	myDummyAccount.addFolder("Test Folder 2");
+	myDummyAccount.addFolder("Test Folder 3");
+	myDummyAccount.addFolder("Test Folder 1/Nested Folder 1");
+	myDummyAccount.addFolder("Test Folder 1/Nested Folder 2");
+	myDummyAccount.addFolder("Test Folder 4");
+	myDummyAccount.addFolder("Test Folder 5");
+	myDummyAccount.addFolder("Test Folder 6");
+	myDummyAccount.addFolder("Test Folder 7");
+	accounts.push_back(myDummyAccount);
 	vector<Email> emails {
 		Email{
 			/* threadId	 	*/ string("new"),
@@ -106,31 +109,88 @@ int main()
 	};
 
 	std::for_each(emails.begin(), emails.end(), [&](Email &e){
-		myDummyAccount->sendEmail(e);
+		myDummyAccount.sendEmail(e);
 	});
 
-	std::shared_ptr<FolderView> myActiveFolderView;
+	Compositor& com = Compositor::instance();
 
-	auto myAccountView = std::make_shared<AccountView>(myDummyAccount, [&](std::string folderPath){
+	std::shared_ptr<AccountView> myAccountView;
+	std::shared_ptr<NWindow> myAccountSelectWindow;
+	std::shared_ptr<FolderView> myActiveFolderView;
+	std::shared_ptr<Toolbar> myToolbar;
+	std::shared_ptr<NWindow> myAccountUpsertWindow;
+
+	auto logoutActiveAccount = [&]{
+		com.setActiveWindow(myToolbar);
 		if(myActiveFolderView)
 			com.removeWindow(myActiveFolderView);
-		myActiveFolderView = std::make_shared<FolderView>(myDummyAccount, folderPath, 
-			[&](std::string threadId){
+		if(myAccountView)
+			com.removeWindow(myAccountView);
+		com.refresh();
+	};
 
-			});
-		com.addWindow(myActiveFolderView);
-		myActiveFolderView->refresh();
+	auto changeActiveAccount = [&](Account& acc){
+		logoutActiveAccount();
+		myAccountView = std::make_shared<AccountView>(acc, [&](std::string folderPath){
+			if(myActiveFolderView)
+				com.removeWindow(myActiveFolderView);
+			myActiveFolderView = std::make_shared<FolderView>(acc, folderPath, 
+				[&](std::string threadId){
 
+				});
+			com.addWindow(myActiveFolderView);
+			myActiveFolderView->refresh();
+		});
+		com.addWindow(myAccountView);
+		com.refresh();
+	};
 
+	auto registerAccount = [&](string username, string password){
+
+	};
+
+	auto loginAccount = [&](string username, string password){
+
+	};
+
+	myToolbar = std::make_shared<Toolbar>(0, 
+		std::list<std::string>{"Accounts", "Login", "Logout", "Exit"}, [&](std::string selected){
+			if(selected == "Accounts"){
+				myAccountSelectWindow = std::make_shared<AccountSelect>(accounts, 
+					[&](Account& selectedAccount){
+						com.setActiveWindow(myToolbar);
+						com.removeWindow(myAccountSelectWindow);
+						changeActiveAccount(selectedAccount);
+					});
+				com.addWindow(myAccountSelectWindow);
+				com.setActiveWindow(myAccountSelectWindow);
+				com.refresh();
+			} else if(selected == "Login") {
+				myAccountUpsertWindow = std::make_shared<AccountUpsert>(
+					[&](std::string username, std::string password, bool newAccount){
+						if(username != "" && password != ""){
+							
+						}
+
+					});
+				com.addWindow(myAccountUpsertWindow);
+				com.setActiveWindow(myAccountUpsertWindow);
+				com.refresh();
+			} else if(selected == "Logout") {
+				logoutActiveAccount();
+			}else if (selected == "Exit"){
+				com.quit();
+			}else {
+				throw exception{};
+			}
 	});
+
 	auto mywin = std::make_shared<MyDummyWindow>();
 
-	com.addWindow(mytoolbar);
-	com.addWindow(myAccountView);
+	com.addWindow(myToolbar);
 	com.addWindow(mywin);
-	//com.setActiveWindow(mywin);
 
-	com.setActiveWindow(mytoolbar);
+	com.setActiveWindow(myToolbar);
 
 	com.refresh();
 	com.run();

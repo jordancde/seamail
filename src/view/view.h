@@ -11,11 +11,11 @@
 
 class View : public Observer, public NWindow {
 protected:
-    std::shared_ptr<Account> account;
+    Account& account;
 
 public:
 
-    View(std::shared_ptr<Account> account) : account(account) {}
+    View(Account& account) : account(account) {}
     virtual ~View() {}
 
 };

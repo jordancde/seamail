@@ -12,6 +12,7 @@ void EmailView::notify(std::shared_ptr<Event> event) {
     // call refresh() on email change event
 }
 
-void EmailView::onInput(int key) {
+bool EmailView::onInput(int key) {
     // controls for replying
+    return false;
 }

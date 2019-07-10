@@ -76,20 +76,23 @@ void AccountView::onResize() {
     reframe(x,y,0,0,w,h);
 }
 
-void AccountView::onInput(int key) {
+bool AccountView::onInput(int key) {
     size_t max = getCachedFolderPaths().size();
+    bool handled = false;
     switch(key){
     case 'k':
         if(selectedFolderIndex > 0){
             updateSelectedFolder(selectedFolderIndex - 1);
             refresh();
         }
+        handled = true;
         break;
     case 'j':
         if(selectedFolderIndex < max - 1){
             updateSelectedFolder(selectedFolderIndex + 1);
             refresh();
         }
+        handled = true;
         break;
     }
     // catch-all failsafe
@@ -97,4 +100,5 @@ void AccountView::onInput(int key) {
         updateSelectedFolder(0);
         refresh();
     }
+    return handled;
 }

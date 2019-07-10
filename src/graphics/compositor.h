@@ -12,13 +12,13 @@ class Compositor {
     static std::unique_ptr<Compositor> _instance;
     static void resizeHandler(int sig);
 
-    bool compare(const std::shared_ptr<NWindow>& a, const std::shared_ptr<NWindow>& b){
-        return a->getZindex() > b->getZindex();
-    }
 
-    typedef std::set<std::shared_ptr<NWindow>> WindowSet;
+    typedef std::set<std::shared_ptr<NWindow>, 
+        bool(*)(const std::shared_ptr<NWindow>&,const std::shared_ptr<NWindow>&)> WindowSet;
     WindowSet windows;
     WindowSet::iterator activeWindow;
+
+    bool shouldquit = false;
 
     Compositor();
 public:
@@ -44,6 +44,8 @@ public:
     void update();
     // event loop
     void run();
+
+    void quit();
 
 };
 

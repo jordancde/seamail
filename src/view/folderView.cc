@@ -18,17 +18,17 @@ void FolderView::onDraw(bool isActive) const {
     
     auto folder = getFolder(); 
     for(auto threadId = folder.threadIds.begin(); threadId != folder.threadIds.end(); ++threadId){
-        auto thread = account->getThreadById(*threadId);
+        auto thread = account.getThreadById(*threadId);
         time_t latestDate = 0; 
         bool read = true;
         for(auto emailId = thread.emailIds.begin(); emailId != thread.emailIds.end(); ++emailId){
-            auto email = account->getEmailById(*emailId);
+            auto email = account.getEmailById(*emailId);
             latestDate = max(latestDate, email.dateTime);
             read &= email.read;
         }
         struct tm* timeinfo = localtime(&latestDate);
         const char* desctime = asctime(timeinfo);
-        auto lastFrom = account->getEmailById(thread.emailIds.back()).from;
+        auto lastFrom = account.getEmailById(thread.emailIds.back()).from;
 
         mvwprintw(win, cy(), 1, "%s", lastFrom.c_str());
         if(!read)
@@ -45,7 +45,7 @@ void FolderView::onDraw(bool isActive) const {
 
         size_t displayCount = 0;
         for(auto emailId = thread.emailIds.begin(); emailId != thread.emailIds.end(); ++emailId){
-            auto email = account->getEmailById(*emailId);
+            auto email = account.getEmailById(*emailId);
             if(++displayCount > 2)
                 break;
         }
@@ -78,6 +78,6 @@ void FolderView::notify(std::shared_ptr<Event> event) {
     }
 }
 
-void FolderView::onInput(int key) {
-
+bool FolderView::onInput(int key) {
+    return false;
 }
