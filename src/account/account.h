@@ -48,6 +48,7 @@ class Account : public Subject, public Serializable {
     Email getEmailById(std::string id);
     void sendEmail(Email email);
     bool operator==(const Account&) const;
+    void setProvider(std::shared_ptr<EmailProvider> provider);
 };
 
 #endif

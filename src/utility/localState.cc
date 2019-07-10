@@ -13,6 +13,8 @@ void LocalState::deserialize(const nlohmann::json& state) {
     accounts = state["accounts"].get<vector<Account>>();
     localProvider = make_shared<LocalEmailProvider>(
         state["localProvider"].get<LocalEmailProvider>());
+
+    for (auto acc : accounts) acc.setProvider(localProvider);
 }
 
 void LocalState::storeAccount(Account& acc) { accounts.emplace_back(acc); }
@@ -23,6 +25,7 @@ void LocalState::removeAccount(Account& acc) {
     accounts.erase(find(accounts.begin(), accounts.end(), acc));
 }
 
-bool LocalState::operator==(const LocalState& other) const{
-    return accounts==other.accounts && *(localProvider) == *(other.localProvider);
+bool LocalState::operator==(const LocalState& other) const {
+    return accounts == other.accounts &&
+           *(localProvider) == *(other.localProvider);
 }

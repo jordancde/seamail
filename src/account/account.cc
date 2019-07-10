@@ -84,3 +84,8 @@ void Account::sendEmail(Email email) {
 bool Account::operator==(const Account& other) const{
     return emailAddress == other.emailAddress && session == other.session;
 }
+
+void Account::setProvider(shared_ptr<EmailProvider> newProvider) {
+    provider = newProvider;
+}
+
