@@ -4,6 +4,7 @@
 #include "../exceptions/notImplementedException.h"
 
 #include <algorithm>
+#include <unordered_set>
 
 using namespace std;
 
@@ -120,13 +121,25 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
     threads[user + "/" + threadId].emailIds.emplace_back(email.id);
 
     // receiving
-    for (auto recipient : email.to) {
+    vector<string> recipients;
+    recipients.reserve(email.to.size() + email.cc.size() + email.bcc.size());
+    recipients.insert(recipients.end(), email.to.begin(), email.to.end());
+    recipients.insert(email.cc.end(), email.cc.begin(), email.cc.end());
+    recipients.insert(email.bcc.end(), email.bcc.begin(), email.bcc.end());
+    unordered_set<string> bcc(email.bcc.begin(), email.bcc.end());
+    
+    for (auto recipient : recipients) {
         if (accounts.find(recipient) == accounts.end()) {
             continue;
         }
 
         email.changeId();
         emails[recipient + "/" + email.id] = email;
+        if (bcc.find(recipient) != bcc.end()) {
+                emails[recipient + "/" + email.id].to = vector<string>();
+                emails[recipient + "/" + email.id].cc = vector<string>();
+                emails[recipient + "/" + email.id].bcc = vector<string>{recipient};
+        }
         if (email.threadId == "new") {
             Thread t = Thread(email.subject);
             t.emailIds.emplace_back(email.id);
