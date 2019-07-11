@@ -22,7 +22,9 @@ void LocalState::storeAccount(Account& acc) { accounts.emplace_back(acc); }
 vector<Account>& LocalState::getAccounts() { return accounts; }
 
 void LocalState::removeAccount(Account& acc) {
-    accounts.erase(find(accounts.begin(), accounts.end(), acc));
+    auto it = find(accounts.begin(), accounts.end(), acc);
+    if(it != accounts.end())
+        accounts.erase(it);
 }
 
 bool LocalState::operator==(const LocalState& other) const {

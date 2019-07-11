@@ -24,7 +24,7 @@ class LocalState : public Serializable {
     void removeAccount(Account&);
     std::vector<Account>& getAccounts();
 
-    LocalState() = default;
+    LocalState() : localProvider(std::make_shared<LocalEmailProvider>()) {}
     bool operator==(const LocalState&) const;
 };
 

@@ -2,6 +2,7 @@
 
 #include "graphics/compositor.h"
 #include "graphics/toolbar.h"
+#include "graphics/dialog.h"
 
 #include <cstdio>
 #include <iostream>
@@ -15,6 +16,8 @@
 #include "graphics/accountUpsert.h"
 #include "view/accountView.h"
 #include "view/folderView.h"
+
+#include "exceptions/authenticationFailedException.h"
 
 using namespace std;
 
@@ -61,6 +64,7 @@ public:
 int main()
 {	
 	LocalState localState;
+
 	
 	// std::vector<Account> accounts;
 	// string myEmailAddress = "mydummyaccount@example.com";
@@ -120,17 +124,31 @@ int main()
 	std::shared_ptr<FolderView> myActiveFolderView;
 	std::shared_ptr<Toolbar> myToolbar;
 	std::shared_ptr<NWindow> myAccountUpsertWindow;
+	std::shared_ptr<NWindow> myActiveDialog;
+
+	// DO NOT USE
+	Account activeAccount;
+
+	auto makeDialog = [&](std::string title, std::string message){
+		myActiveDialog = make_shared<Dialog>(title, message, [&]{
+			com.removeWindow(myActiveDialog);
+		}); 
+		com.addWindow(myActiveDialog);
+		com.setActiveWindow(myActiveDialog);
+	};
 
 	auto logoutActiveAccount = [&]{
 		if(myActiveFolderView)
 			com.removeWindow(myActiveFolderView);
 		if(myAccountView)
 			com.removeWindow(myAccountView);
+		localState.removeAccount(activeAccount);
 		com.refresh();
 	};
 
 	auto changeActiveAccount = [&](Account& acc){
 		logoutActiveAccount();
+		activeAccount = acc;
 		myAccountView = std::make_shared<AccountView>(acc, [&](std::string folderPath){
 			if(myActiveFolderView)
 				com.removeWindow(myActiveFolderView);
@@ -146,11 +164,22 @@ int main()
 	};
 
 	auto registerAccount = [&](string username, string password){
-
+		// TEMP
+		shared_ptr<LocalEmailProvider> provider = localState.localProvider;
+		Account myNewAccount{provider, username};
+		provider->addAccount(username, password);
+		localState.storeAccount(myNewAccount);
 	};
 
 	auto loginAccount = [&](string username, string password){
-
+		try{
+			shared_ptr<LocalEmailProvider> provider = localState.localProvider;
+			Account myExistingAccount{provider, username};
+			myExistingAccount.login(username, password);
+			changeActiveAccount(myExistingAccount);
+		}catch(AuthenticationFailedException &e){
+			makeDialog("Login Failed", "Check your email and password.");
+		}
 	};
 
 	myToolbar = std::make_shared<Toolbar>(0, 
@@ -168,7 +197,8 @@ int main()
 				myAccountUpsertWindow = std::make_shared<AccountUpsert>(
 					[&](std::string username, std::string password, bool newAccount){
 						if(username != "" && password != ""){
-							
+							if(newAccount) registerAccount(username, password);
+							else loginAccount(username, password);
 						}
 						com.removeWindow(myAccountUpsertWindow);
 					});
