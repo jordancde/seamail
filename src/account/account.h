@@ -8,7 +8,7 @@
 #include <nlohmann/json.hpp>
 
 #include "../events/event.h"
-#include "../models/email.h"
+#include "../models/email.h" 
 #include "../models/folder.h"
 #include "../models/thread.h"
 #include "../providers/emailProvider.h"
@@ -49,6 +49,8 @@ class Account : public Subject, public Serializable {
     void sendEmail(Email email);
     bool operator==(const Account&) const;
     void setProvider(std::shared_ptr<EmailProvider> provider);
+
+    std::string getEmailAddress() { return emailAddress; }
 };
 
 #endif

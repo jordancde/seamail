@@ -61,56 +61,57 @@ public:
 int main()
 {	
 	LocalState localState;
-	std::vector<Account> accounts;
-	string myEmailAddress = "mydummyaccount@example.com";
-	auto myLocalEmailProvider = std::make_shared<LocalEmailProvider>();
-	Account myDummyAccount(myLocalEmailProvider, myEmailAddress);
-	myLocalEmailProvider->addAccount(myEmailAddress, "abc123");
-	myDummyAccount.login(myEmailAddress, "abc123");
-	myDummyAccount.addFolder("inbox");
-	myDummyAccount.addFolder("sent");
-	myDummyAccount.addFolder("deleted");
-	myDummyAccount.addFolder("Test Folder 1");
-	myDummyAccount.addFolder("Test Folder 2");
-	myDummyAccount.addFolder("Test Folder 3");
-	myDummyAccount.addFolder("Test Folder 1/Nested Folder 1");
-	myDummyAccount.addFolder("Test Folder 1/Nested Folder 2");
-	myDummyAccount.addFolder("Test Folder 4");
-	myDummyAccount.addFolder("Test Folder 5");
-	myDummyAccount.addFolder("Test Folder 6");
-	myDummyAccount.addFolder("Test Folder 7");
-	accounts.push_back(myDummyAccount);
-	vector<Email> emails {
-		Email{
-			/* threadId	 	*/ string("new"),
-			/* from 		*/ string("test1@example.com"),
-			/* to			*/ vector<string>{"mydummyaccount@example.com"},
-			/* dateTime 	*/ (time_t) 0,
-			/* cc			*/ vector<string>{},
-			/* bcc 			*/ vector<string>{},
-			/* subject  	*/ string("This is supposed to be a subject."),
-			/* body 		*/ string("This is my first body!"),
-			/* unread 		*/ false,
-			/* imagePaths 	*/ vector<string>{}
-		},
-		Email{
-			/* threadId	 	*/ string("new"),
-			/* from 		*/ string("test1@example.com"),
-			/* to			*/ vector<string>{"mydummyaccount@example.com"},
-			/* dateTime 	*/ (time_t) 1000000,
-			/* cc			*/ vector<string>{},
-			/* bcc 			*/ vector<string>{},
-			/* subject  	*/ string("This is supposed to be a subject."),
-			/* body 		*/ string("This is my second body!"),
-			/* unread 		*/ false,
-			/* imagePaths 	*/ vector<string>{}
-		}
+	
+	// std::vector<Account> accounts;
+	// string myEmailAddress = "mydummyaccount@example.com";
+	// auto myLocalEmailProvider = std::make_shared<LocalEmailProvider>();
+	// Account myDummyAccount(myLocalEmailProvider, myEmailAddress);
+	// myLocalEmailProvider->addAccount(myEmailAddress, "abc123");
+	// myDummyAccount.login(myEmailAddress, "abc123");
+	// myDummyAccount.addFolder("inbox");
+	// myDummyAccount.addFolder("sent");
+	// myDummyAccount.addFolder("deleted");
+	// myDummyAccount.addFolder("Test Folder 1");
+	// myDummyAccount.addFolder("Test Folder 2");
+	// myDummyAccount.addFolder("Test Folder 3");
+	// myDummyAccount.addFolder("Test Folder 1/Nested Folder 1");
+	// myDummyAccount.addFolder("Test Folder 1/Nested Folder 2");
+	// myDummyAccount.addFolder("Test Folder 4");
+	// myDummyAccount.addFolder("Test Folder 5");
+	// myDummyAccount.addFolder("Test Folder 6");
+	// myDummyAccount.addFolder("Test Folder 7");
+	// accounts.push_back(myDummyAccount);
+	// vector<Email> emails {
+	// 	Email{
+	// 		/* threadId	 	*/ string("new"),
+	// 		/* from 		*/ string("test1@example.com"),
+	// 		/* to			*/ vector<string>{"mydummyaccount@example.com"},
+	// 		/* dateTime 	*/ (time_t) 0,
+	// 		/* cc			*/ vector<string>{},
+	// 		/* bcc 			*/ vector<string>{},
+	// 		/* subject  	*/ string("This is supposed to be a subject."),
+	// 		/* body 		*/ string("This is my first body!"),
+	// 		/* unread 		*/ false,
+	// 		/* imagePaths 	*/ vector<string>{}
+	// 	},
+	// 	Email{
+	// 		/* threadId	 	*/ string("new"),
+	// 		/* from 		*/ string("test1@example.com"),
+	// 		/* to			*/ vector<string>{"mydummyaccount@example.com"},
+	// 		/* dateTime 	*/ (time_t) 1000000,
+	// 		/* cc			*/ vector<string>{},
+	// 		/* bcc 			*/ vector<string>{},
+	// 		/* subject  	*/ string("This is supposed to be a subject."),
+	// 		/* body 		*/ string("This is my second body!"),
+	// 		/* unread 		*/ false,
+	// 		/* imagePaths 	*/ vector<string>{}
+	// 	}
 
-	};
+	// };
 
-	std::for_each(emails.begin(), emails.end(), [&](Email &e){
-		myDummyAccount.sendEmail(e);
-	});
+	// std::for_each(emails.begin(), emails.end(), [&](Email &e){
+	// 	myDummyAccount.sendEmail(e);
+	// });
 
 	Compositor& com = Compositor::instance();
 
@@ -121,7 +122,6 @@ int main()
 	std::shared_ptr<NWindow> myAccountUpsertWindow;
 
 	auto logoutActiveAccount = [&]{
-		com.setActiveWindow(myToolbar);
 		if(myActiveFolderView)
 			com.removeWindow(myActiveFolderView);
 		if(myAccountView)
@@ -156,9 +156,8 @@ int main()
 	myToolbar = std::make_shared<Toolbar>(0, 
 		std::list<std::string>{"Accounts", "Login", "Logout", "Exit"}, [&](std::string selected){
 			if(selected == "Accounts"){
-				myAccountSelectWindow = std::make_shared<AccountSelect>(accounts, 
+				myAccountSelectWindow = std::make_shared<AccountSelect>(localState.getAccounts(), 
 					[&](Account& selectedAccount){
-						com.setActiveWindow(myToolbar);
 						com.removeWindow(myAccountSelectWindow);
 						changeActiveAccount(selectedAccount);
 					});
@@ -171,7 +170,7 @@ int main()
 						if(username != "" && password != ""){
 							
 						}
-
+						com.removeWindow(myAccountUpsertWindow);
 					});
 				com.addWindow(myAccountUpsertWindow);
 				com.setActiveWindow(myAccountUpsertWindow);
