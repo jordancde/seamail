@@ -2,6 +2,7 @@
 
 #include "../exceptions/authenticationFailedException.h"
 #include "../exceptions/notImplementedException.h"
+#include "../exceptions/accountAlreadyExistsException.h"
 
 #include <algorithm>
 #include <unordered_set>
@@ -19,6 +20,9 @@ void LocalEmailProvider::deserialize(const nlohmann::json& provider) {
 }
 
 void LocalEmailProvider::addAccount(string emailAddress, string password) {
+    if (accounts.find(emailAddress) != accounts.end()) {
+        throw AccountAlreadyExists();
+    }
     accounts[emailAddress] = hash<string>{}(password); // unsecure hash!
 }
 
