@@ -9,10 +9,11 @@
 
 using namespace std;
 
-Composer::Composer(Email e) : email{e} {}
+Composer::Composer(Email e, bool readOnly) : email{e}, readOnly{readOnly} {}
 
 string Composer::fileName = "/tmp/.out." + to_string(getpid());
-string Composer::cmd = "nano " + fileName;
+string Composer::editCmd = "nano " + fileName;
+string Composer::viewCmd = "less " + fileName;
 
 string Composer::commaSeperate(vector<string> vec) {
     string separator;
@@ -102,7 +103,7 @@ void Composer::writeEmail() {
 
 void Composer::compose() {
     writeEmail();
-    system(cmd.c_str());
+    (readOnly) ? system(viewCmd.c_str()) : system(editCmd.c_str());
     unlink(fileName.c_str());
     readEmail();
 }
