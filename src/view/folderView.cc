@@ -17,6 +17,7 @@ void FolderView::onDraw(bool isActive) const {
     wmove(win, 1, 1);
     
     auto folder = getFolder(); 
+    size_t cindex = 0;
     for(auto threadId = folder.threadIds.begin(); threadId != folder.threadIds.end(); ++threadId){
         auto thread = account.getThreadById(*threadId);
         time_t latestDate = 0; 
@@ -50,6 +51,7 @@ void FolderView::onDraw(bool isActive) const {
                 break;
         }
         wmove(win, cy()+1, cx());
+        ++cindex;
     } 
 
 

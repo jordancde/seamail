@@ -82,6 +82,7 @@ bool AccountView::onInput(int key) {
     bool handled = false;
     switch(key){
     case 'k':
+    case KEY_UP:
         if(selectedFolderIndex > 0){
             updateSelectedFolder(selectedFolderIndex - 1);
             refresh();
@@ -89,6 +90,7 @@ bool AccountView::onInput(int key) {
         handled = true;
         break;
     case 'j':
+    case KEY_DOWN:
         if(selectedFolderIndex < max - 1){
             updateSelectedFolder(selectedFolderIndex + 1);
             refresh();

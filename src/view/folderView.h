@@ -13,6 +13,25 @@ class FolderView : public View {
         return account.getFolderByPath(watchingFolder);
     }
 
+    size_t selectedThreadIndex = SIZE_MAX;
+
+    void selectNextThread(){
+        size_t threads = getFolder().threadIds.size();
+        if(threads < 1)
+            selectedThreadIndex = SIZE_MAX;
+        else if(selectedThreadIndex < threads - 1)
+            ++selectedThreadIndex;
+    }
+
+    void selectPreviousThread(){
+        size_t threads = getFolder().threadIds.size();
+        if(threads < 1)
+            selectedThreadIndex == SIZE_MAX;
+        else if(selectedThreadIndex > 0)
+            --selectedThreadIndex;
+    }
+
+
 public:
     FolderView(Account& account,
                 std::string watchingFolder,

@@ -10,7 +10,7 @@ using namespace std;
 
 string ThreadView::getDisplayString(const Email& email) const {
     string displayString = "";
-    displayString += (email.read) ? "  " : "⬤ ";
+    displayString += (email.read) ? "  " : ACS_DIAMOND + " ";
     displayString += email.dateTime;
     displayString += email.from;
     return displayString;
@@ -23,21 +23,20 @@ void ThreadView::openEmail() {
 
 void ThreadView::onResize() {
     int x = maxx() / 6 + maxx() / 3;
-    int y = 1;
+    int y = 2;
     int w = maxx() / 2;
-    int h = maxy() - 1;
+    int h = maxy() - y;
     resize(w, h);
     reframe(x, y, 0, 0, w, h);
 }
 
 void ThreadView::onDraw(bool isActive) const {
-    wmove(win, 1, 0);
+    wmove(win, 2, 0);
     for (size_t eidx = 0; eidx < emails.size(); ++eidx) {
         Email e = emails.at(eidx);
         string dispName = getDisplayString(e);
-        waddch(win, ' ');
         if (eidx == selectedEmailIndex) wattron(win, A_REVERSE);
-        wprintw(win, "%s\n", dispName.c_str());
+        mvwprintw(win, cy()+1, cx()+2, "%s\n", dispName.c_str());
         wattroff(win, A_REVERSE);
     }
     wmove(win, 0, 2);
