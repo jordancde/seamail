@@ -25,6 +25,7 @@ class ThreadView : public View {
     }
 
     void openEmail();
+    void openAttachments();
     std::string getDisplayString(const Email& email) const;
 
    public:
