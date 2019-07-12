@@ -61,27 +61,40 @@ void Compositor::removeWindow(std::shared_ptr<NWindow> window) {
     auto it = windows.find(window);
     if(it != windows.end()){
         if(it == activeWindow){
+            windows.erase(it);
             if(windows.size() < 1)
                 throw std::logic_error{"No windows remaining!"};
-            else 
-                setActiveWindow(*windows.begin());
-        }
-        if(activeWindow != windows.end()){
-            auto cachedActiveWindow = *activeWindow;
-            windows.erase(it); 
-            activeWindow = windows.find(cachedActiveWindow);
+            else {
+                bool set = false;
+                while(!(set = setActiveWindow(activeWindowStack.top()))){
+                    activeWindowStack.pop();
+                }
+                if(set)
+                    activeWindowStack.pop();
+                else
+                    setActiveWindow(*windows.begin());
+            }
         } else {
-            windows.erase(it);
+            if(activeWindow != windows.end()){
+                auto cachedActiveWindow = *activeWindow;
+                windows.erase(it); 
+                activeWindow = windows.find(cachedActiveWindow);
+            } else {
+                windows.erase(it);
+            }
         }
     } 
     refresh();
 }
 
-void Compositor::setActiveWindow(std::shared_ptr<NWindow> window) {
+bool Compositor::setActiveWindow(std::shared_ptr<NWindow> window) {
     auto it = windows.find(window);
     if(it != windows.end()) {
         activeWindow = it;
+        activeWindowStack.push(window);
+        return true;
     }
+    return false;
 }
 
 NWindow* Compositor::getActiveWindow() {

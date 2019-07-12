@@ -2,13 +2,13 @@
 
 void AccountSelect::onDraw(bool isActive) const {
 
-    wmove(win, 0,1);
+    wmove(win, 1,1);
     for(auto acciter = accounts.begin(); acciter != accounts.end(); ++acciter){
         auto acc = *acciter;
         auto email = acc.getEmailAddress();
         if(acciter == selectedAccount)
             wattron(win, A_REVERSE);
-        mvwprintw(win, cy()+1,1,"%s",email.c_str());
+        mvwprintw(win, cy()+1,2,"%s",email.c_str());
         wattroff(win, A_REVERSE);
     }
 
@@ -22,30 +22,28 @@ void AccountSelect::onDraw(bool isActive) const {
 }
 
 bool AccountSelect::onInput(int key) {
-    bool handled = false;
     switch(key){
-        case 'k':
+        case 'j':
+        case KEY_DOWN:
         if(selectedAccount != --accounts.end()){
             ++selectedAccount;
             refresh();
         }
-        handled = true;
         break;
-        case 'j':
+        case 'k':
+        case KEY_UP:
         if(selectedAccount != accounts.begin()){
             --selectedAccount;
             refresh();
         }
-        handled = true;
         break;
         case '\n':
         accountSelectedHandler(*selectedAccount);
-        handled = true;
         break;
         default:
         break;
     }
-    return handled;
+    return true;
 }
 
 void AccountSelect::onResize() {

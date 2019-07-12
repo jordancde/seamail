@@ -21,14 +21,15 @@ void AccountUpsert::onDraw(bool isActive) const {
         ++index;
     }
 
+    wmove(win, cy()+2,0);
     if(tabIndex == 3)
         wattron(win, A_REVERSE);
-    mvwprintw(win, cy()+2,2,"%s", "Cancel");
+    mvwprintw(win, cy(),w()/2-12,"%s", " [ Cancel ] ");
     wattroff(win, A_REVERSE);
 
     if(tabIndex == 4)
         wattron(win, A_REVERSE);
-    mvwprintw(win, cy()+1,2,"%s", "Login");
+    wprintw(win, "%s", " [ Login ] ");
     wattroff(win, A_REVERSE);
     
     wmove(win, 0,1);
@@ -42,73 +43,84 @@ void AccountUpsert::onDraw(bool isActive) const {
 
 }
 
+void AccountUpsert::selectNextItem(){
+    tabIndex = (tabIndex + 1) % 5;
+    refresh();
+}
+
+void AccountUpsert::selectPreviousItem(){
+    tabIndex = (tabIndex + 5 - 1) % 5;
+    refresh();
+}
+
 bool AccountUpsert::onInput(int key) {
-    bool handled = false;
     switch(key){
         case '\t':
-        tabIndex = (tabIndex + 1) % 5;
-        refresh();
-        handled = true;
-        break;
+        case KEY_DOWN:
+            selectNextItem();
+            break;
+        case KEY_UP:
+            selectPreviousItem();
+            break;
         default:
-        switch(tabIndex){
-            case 3:
-            authHandler("","",false);
-            handled = true;
-            break;
-            case 4:
-            authHandler(username,password,newAccount);
-            handled = true;
-            break;
-            case 0:{
-                switch(key){
-                    case KEY_BACKSPACE:
-                    if(username.length() > 0)
-                        username = username.substr(0, username.length() - 1);
+            switch(tabIndex){
+                case 3:
+                    authHandler("","",false);
                     break;
-                    default:
-                    char c = (char) key;
-                    if(isprint(c))
-                        username += c;
-                    handled = true;
+                case 4:
+                    authHandler(username,password,newAccount);
                     break;
-                }
-                refresh();
+                case 0:
+                    switch(key){
+                        case '\n':
+                            selectNextItem();
+                            break;
+                        case KEY_BACKSPACE:
+                            if(username.length() > 0)
+                                username = username.substr(0, username.length() - 1);
+                            break;
+                        default:
+                            char c = (char) key;
+                            if(isprint(c))
+                                username += c;
+                            break;
+                    }
+                    refresh();
+                    break;
+                case 1:
+                    switch(key){
+                        case '\n':
+                            selectNextItem();
+                            break;
+                        case KEY_BACKSPACE:
+                            if(password.length() > 0)
+                                password = password.substr(0, password.length() - 1);
+                            break;
+                        default:
+                            char c = (char) key;
+                            if(isprint(c))
+                                password += c;
+                            break;
+                    }
+                    refresh();
+                    break;
+                case 2:
+                    switch(key){
+                        case '\n':
+                        newAccount = !newAccount;
+                        break;
+                    }
+                    refresh();
+                break;
             }
             break;
-            case 1:
-                switch(key){
-                    case KEY_BACKSPACE:
-                    if(password.length() > 0)
-                        password = password.substr(0, password.length() - 1);
-                    break;
-                    default:
-                    char c = (char) key;
-                    if(isprint(c))
-                        password += c;
-                    handled = true;
-                    break;
-                }
-                refresh();
-            break;
-            case 2:
-                switch(key){
-                    case '\n':
-                    newAccount = !newAccount;
-                    handled = true;
-                    break;
-                }
-                refresh();
-            break;
-        }
-        break;
     }
-    return handled;
+    return true;
 }
 
 void AccountUpsert::onResize() {
     int w = 100;
-    int h = 10;
+    int h = 9;
     int x = maxx() / 2 - w / 2;
     int y = maxy() / 2 - h / 2;
 

@@ -16,6 +16,9 @@ class AccountUpsert : public NWindow {
     std::string password;
     bool newAccount = false;
 
+    void selectNextItem();
+    void selectPreviousItem();
+    
 public:
     AccountUpsert(auth_handler_t authHandler) : authHandler(authHandler) {}
 

@@ -45,9 +45,10 @@ void AccountView::updateSelectedFolder(size_t idx) {
     auto folderPaths = getCachedFolderPaths();
     if(folderPaths.size() == 0)
         selectedFolderIndex = SIZE_MAX;
-    else
+    else {
         selectedFolderIndex = idx;
-    folderChangeHandler(folderPaths.at(selectedFolderIndex));
+        folderChangeHandler(folderPaths.at(selectedFolderIndex));
+    }
     if(win) refresh();
 }
 
@@ -69,9 +70,9 @@ void AccountView::notify(std::shared_ptr<Event> event) {
 
 void AccountView::onResize() {
     int x = 0;
-    int y = 1;
+    int y = 2;
     int w = maxx() / 6;
-    int h = maxy() - 1;
+    int h = maxy() - y;
     resize(w,h);
     reframe(x,y,0,0,w,h);
 }

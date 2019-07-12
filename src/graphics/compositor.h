@@ -6,6 +6,7 @@
 #include <memory>
 #include <list>
 #include <set>
+#include <stack>
 
 class Compositor {
 
@@ -20,6 +21,8 @@ class Compositor {
 
     bool shouldquit = false;
 
+    std::stack<std::shared_ptr<NWindow>> activeWindowStack;
+
     Compositor();
 public:
     virtual ~Compositor();
@@ -33,7 +36,7 @@ public:
 
     void addWindow(std::shared_ptr<NWindow> window);
     void removeWindow(std::shared_ptr<NWindow> window);
-    void setActiveWindow(std::shared_ptr<NWindow> window);
+    bool setActiveWindow(std::shared_ptr<NWindow> window);
     NWindow* getActiveWindow();
 
     // force all child windows to handle resizing

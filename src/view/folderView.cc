@@ -6,9 +6,9 @@ using namespace std;
 
 void FolderView::onResize(){
     int x = maxx() / 6;
-    int y = 1;
+    int y = 2;
     int w = maxx() / 3;
-    int h = maxy() - 1;
+    int h = maxy() - y;
     resize(w,h);
     reframe(x,y,0,0,w,h);
 }
