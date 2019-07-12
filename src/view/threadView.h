@@ -25,7 +25,7 @@ class ThreadView : public View {
     }
 
     void openEmail();
-    std::string getDisplayString(const Email& email);
+    std::string getDisplayString(const Email& email) const;
 
    public:
     ThreadView(Account& account, std::string threadId)

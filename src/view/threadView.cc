@@ -2,13 +2,17 @@
 #include "./composer.h"
 #include "events/accountEvent.h"
 
+#include <ctime>
+#include <sstream>
 #include <string>
+
 using namespace std;
 
-string ThreadView::getDisplayString(const Email& email) {
+string ThreadView::getDisplayString(const Email& email) const {
     string displayString = "";
     displayString += (email.read) ? "  " : "⬤ ";
-    displayString += email.subject;
+    displayString += email.dateTime;
+    displayString += email.from;
     return displayString;
 }
 
@@ -18,11 +22,29 @@ void ThreadView::openEmail() {
 }
 
 void ThreadView::onResize() {
-    // I'll implement this
+    int x = maxx() / 6 + maxx() / 3;
+    int y = 1;
+    int w = maxx() / 2;
+    int h = maxy() - 1;
+    resize(w, h);
+    reframe(x, y, 0, 0, w, h);
 }
 
 void ThreadView::onDraw(bool isActive) const {
-    // I'll implement this
+    wmove(win, 1, 0);
+    for (size_t eidx = 0; eidx < emails.size(); ++eidx) {
+        Email e = emails.at(eidx);
+        string dispName = getDisplayString(e);
+        waddch(win, ' ');
+        if (eidx == selectedEmailIndex) wattron(win, A_REVERSE);
+        wprintw(win, "%s\n", dispName.c_str());
+        wattroff(win, A_REVERSE);
+    }
+    wmove(win, 0, 2);
+    if (isActive) wattron(win, A_REVERSE);
+    box(win, 0, 0);
+    wprintw(win, "Emails");
+    wattroff(win, A_REVERSE);
 }
 
 void ThreadView::notify(std::shared_ptr<Event> event) {
@@ -35,6 +57,18 @@ void ThreadView::notify(std::shared_ptr<Event> event) {
             this->updateEmails();
             this->refresh();
             break;
+        }
+        case AccountEventType::ACCOUNT_FOLDERS_CHANGED: {
+            // folder might get deleted
+            this->getThread();
+            this->updateEmails();
+            this->refresh();
+            break;
+        }
+        case AccountEventType::FOLDER_CONTENTS_CHANGED: {
+            this->getThread();
+            this->updateEmails();
+            this->refresh();
         }
         default:
             break;
@@ -60,7 +94,7 @@ bool ThreadView::onInput(int key) {
             }
             handled = true;
             break;
-        case 'o':
+        case '\n':
             // open email read-only
             openEmail();
             handled = true;
