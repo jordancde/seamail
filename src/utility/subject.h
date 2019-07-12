@@ -5,13 +5,13 @@
 #include <memory>
 
 class Subject {
-    std::vector<std::shared_ptr<Observer>> observers;
+    std::vector<Observer*> observers;
 
 public:
     Subject() = default;
     
-    void attach(std::shared_ptr<Observer>);
-    void detach(std::shared_ptr<Observer>);
+    void attach(Observer*);
+    void detach(Observer*);
 
     void notifyAllObservers(std::shared_ptr<Event>);
 

@@ -104,8 +104,8 @@ void Composer::writeEmail() {
 void Composer::compose() {
     writeEmail();
     (readOnly) ? system(viewCmd.c_str()) : system(editCmd.c_str());
-    unlink(fileName.c_str());
     readEmail();
+    unlink(fileName.c_str());
 }
 
 Email Composer::toEmail() { return email; }

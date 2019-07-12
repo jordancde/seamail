@@ -15,8 +15,12 @@ protected:
 
 public:
 
-    View(Account& account) : account(account) {}
-    virtual ~View() {}
+    View(Account& account) : account(account) {
+        account.attach(this);
+    }
+    virtual ~View() {
+        account.detach(this);
+    }
 
 };
 

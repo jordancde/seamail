@@ -5,3 +5,4 @@ seamail
 *.vg
 *.out
 .DS_Store
+*.json

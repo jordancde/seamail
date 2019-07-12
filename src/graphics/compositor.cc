@@ -101,6 +101,7 @@ NWindow* Compositor::getActiveWindow() {
     return (*activeWindow).get();
 }
 
+
 void Compositor::resize() {
     for(auto win : windows)
         win->onResize();

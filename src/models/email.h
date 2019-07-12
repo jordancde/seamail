@@ -27,18 +27,18 @@ public:
     std::string body;
     bool read;
     std::vector<std::string> imagePaths;
-
-    Email(std::string threadId, 
-            std::string from, 
-            std::vector<std::string> to,
-            time_t dateTime, 
+ 
+    Email(std::string threadId = "new", 
+            std::string from = "", 
+            std::vector<std::string> to = {},
+            time_t dateTime = 0, 
             std::vector<std::string> cc = {},
             std::vector<std::string> bcc = {}, 
             std::string subject = "",
             std::string body = "", 
             bool read = false,
             std::vector<std::string> imagePaths = {});
-    Email() = default;
+
     // Checks equality without id
     bool same(const Email&) const;
     // Equality with id

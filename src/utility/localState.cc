@@ -14,7 +14,7 @@ void LocalState::deserialize(const nlohmann::json& state) {
     localProvider = make_shared<LocalEmailProvider>(
         state["localProvider"].get<LocalEmailProvider>());
 
-    for (auto acc : accounts) acc.setProvider(localProvider);
+    for (auto& acc : accounts) acc.setProvider(localProvider);
 }
 
 void LocalState::storeAccount(Account& acc) { accounts.emplace_back(acc); }

@@ -7,6 +7,7 @@
 #include <list>
 #include <set>
 #include <stack>
+#include <functional>
 
 class Compositor {
 
@@ -38,6 +39,16 @@ public:
     void removeWindow(std::shared_ptr<NWindow> window);
     bool setActiveWindow(std::shared_ptr<NWindow> window);
     NWindow* getActiveWindow();
+
+    template<typename ReturnType>
+    ReturnType runExternalProgram(std::function<ReturnType()> task){
+        def_prog_mode();
+        endwin();
+        ReturnType t = task();
+        reset_prog_mode();
+        refresh();
+        return t;
+    }
 
     // force all child windows to handle resizing
     void resize();

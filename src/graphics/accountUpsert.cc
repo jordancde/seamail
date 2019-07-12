@@ -65,10 +65,14 @@ bool AccountUpsert::onInput(int key) {
         default:
             switch(tabIndex){
                 case 3:
-                    authHandler("","",false);
+                    if(key == '\n'){
+                        authHandler("","",false);
+                    }
                     break;
                 case 4:
-                    authHandler(username,password,newAccount);
+                    if(key == '\n'){
+                        authHandler(username,password,newAccount);
+                    }
                     break;
                 case 0:
                     switch(key){

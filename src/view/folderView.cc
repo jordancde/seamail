@@ -33,7 +33,7 @@ void FolderView::onDraw(bool isActive) const {
         mvwprintw(win, cy(), 1, "%s", lastFrom.c_str());
         if(!read)
             wattron(win, A_REVERSE);
-        mvwprintw(win, cy() + 1, 1, "%s", thread.title.c_str());
+        mvwprintw(win, cy() + 1, 2, "%s", thread.title.c_str());
         wattroff(win, A_REVERSE);
         mvwprintw(win, cy(), w() - strlen(desctime), "%s", desctime);
         mvwhline(win, cy(), 0, ACS_HLINE, w());
@@ -49,6 +49,7 @@ void FolderView::onDraw(bool isActive) const {
             if(++displayCount > 2)
                 break;
         }
+        wmove(win, cy()+1, cx());
     } 
 
 
