@@ -1,3 +1,6 @@
+#ifndef COMPOSER_H
+#define COMPOSER_H
+
 #include "../models/email.h"
 
 #include <stdio.h>
@@ -5,7 +8,8 @@
 #include <vector>
 
 class Composer {
-    static std::string cmd;
+    static std::string editCmd;
+    static std::string viewCmd;
     static std::string fileName;
     std::string getFilename();
     std::string commaSeperate(std::vector<std::string>);
@@ -13,9 +17,10 @@ class Composer {
     std::vector<std::string> getListFromHeader(std::string);
     std::vector<std::string> splitByDelim(std::string, char);
     Email email;
+    bool readOnly;
 
    public:
-    Composer(Email e = Email());
+    Composer(Email e = Email(), bool readOnly = false);
 
     void compose();
     Email toEmail();
@@ -24,3 +29,5 @@ class Composer {
     void writeEmail();
     void readEmail();
 };
+
+#endif

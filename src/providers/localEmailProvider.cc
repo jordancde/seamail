@@ -1,8 +1,8 @@
 #include "./localEmailProvider.h"
 
+#include "../exceptions/accountAlreadyExistsException.h"
 #include "../exceptions/authenticationFailedException.h"
 #include "../exceptions/notImplementedException.h"
-#include "../exceptions/accountAlreadyExistsException.h"
 
 #include <algorithm>
 #include <unordered_set>
@@ -23,7 +23,11 @@ void LocalEmailProvider::addAccount(string emailAddress, string password) {
     if (accounts.find(emailAddress) != accounts.end()) {
         throw AccountAlreadyExists();
     }
-    accounts[emailAddress] = hash<string>{}(password); // unsecure hash!
+    accounts[emailAddress] = hash<string>{}(password);  // unsecure hash!
+    Session s = getSession(emailAddress, password);
+    addFolder(s, sentPath);
+    addFolder(s, inboxPath);
+    addFolder(s, deletedPath);
 }
 
 Session LocalEmailProvider::getSession(string emailAddress, string password) {
@@ -64,7 +68,7 @@ void LocalEmailProvider::removeFolder(Session& ctx, string folderPath) {
 
         folderPaths[ctx.getEmailAddress()].erase(
             remove(folderPaths[ctx.getEmailAddress()].begin(),
-                    folderPaths[ctx.getEmailAddress()].end(), folderPath),
+                   folderPaths[ctx.getEmailAddress()].end(), folderPath),
             folderPaths[ctx.getEmailAddress()].end());
     }
 }
@@ -74,11 +78,10 @@ Thread LocalEmailProvider::getThreadById(Session& ctx, string threadId) {
 }
 
 void LocalEmailProvider::addThreadToFolder(Session& ctx, string threadId,
-                                            string folderPath) {
-    if (threads.find(ctx.getEmailAddress() + "/" + threadId) 
-            == threads.end()
-        || folders.find(ctx.getEmailAddress() + "/" + folderPath) 
-                == folders.end()) {
+                                           string folderPath) {
+    if (threads.find(ctx.getEmailAddress() + "/" + threadId) == threads.end() ||
+        folders.find(ctx.getEmailAddress() + "/" + folderPath) ==
+            folders.end()) {
         return;
     }
 
@@ -88,13 +91,12 @@ void LocalEmailProvider::addThreadToFolder(Session& ctx, string threadId,
 
 void LocalEmailProvider::removeThreadFromFolder(Session& ctx, string threadId,
                                                 string folderPath) {
-    if (threads.find(ctx.getEmailAddress() + "/" + threadId) 
-            == threads.end()
-        || folders.find(ctx.getEmailAddress() + "/" + folderPath) 
-                == folders.end()) {
-            return;
+    if (threads.find(ctx.getEmailAddress() + "/" + threadId) == threads.end() ||
+        folders.find(ctx.getEmailAddress() + "/" + folderPath) ==
+            folders.end()) {
+        return;
     }
-                                                
+
     Thread& t = threads[ctx.getEmailAddress() + "/" + threadId];
     Folder& f = folders[ctx.getEmailAddress() + "/" + folderPath];
 
@@ -131,7 +133,7 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
     recipients.insert(email.cc.end(), email.cc.begin(), email.cc.end());
     recipients.insert(email.bcc.end(), email.bcc.begin(), email.bcc.end());
     unordered_set<string> bcc(email.bcc.begin(), email.bcc.end());
-    
+
     for (auto recipient : recipients) {
         if (accounts.find(recipient) == accounts.end()) {
             continue;
@@ -140,9 +142,9 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
         email.changeId();
         emails[recipient + "/" + email.id] = email;
         if (bcc.find(recipient) != bcc.end()) {
-                emails[recipient + "/" + email.id].to = vector<string>();
-                emails[recipient + "/" + email.id].cc = vector<string>();
-                emails[recipient + "/" + email.id].bcc = vector<string>{recipient};
+            emails[recipient + "/" + email.id].to = vector<string>();
+            emails[recipient + "/" + email.id].cc = vector<string>();
+            emails[recipient + "/" + email.id].bcc = vector<string>{recipient};
         }
         if (email.threadId == "new") {
             Thread t = Thread(email.subject);
@@ -161,10 +163,11 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
     }
 }
 
-void LocalEmailProvider::setEmailStatus(Session& ctx, string emailId, bool read){
+void LocalEmailProvider::setEmailStatus(Session& ctx, string emailId,
+                                        bool read) {
     emails[ctx.getEmailAddress() + "/" + emailId].read = read;
 }
 
-bool LocalEmailProvider::operator==(const LocalEmailProvider& other) const{
+bool LocalEmailProvider::operator==(const LocalEmailProvider& other) const {
     return accounts == other.accounts && EmailProvider::operator==(other);
 }
