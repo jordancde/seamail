@@ -20,6 +20,10 @@ int main() {
     myDummyAccount->removeFolder("Test4");
 
     vector<string> paths = myDummyAccount->getAllFolderPaths();
+    paths.erase(find(paths.begin(), paths.end(), "inbox"));
+    paths.erase(find(paths.begin(), paths.end(), "sent"));
+    paths.erase(find(paths.begin(), paths.end(), "deleted"));
+
     vector<string> expected{"Test2", "Test3"};
     return paths != expected;
 }
