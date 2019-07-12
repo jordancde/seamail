@@ -8,6 +8,12 @@
 
 using namespace std;
 
+void ThreadView::openAttachments() {
+    for (string path : emails.at(selectedEmailIndex).imagePaths) {
+        system(("open " + path).c_str());
+    }
+}
+
 string ThreadView::getDisplayString(const Email& email) const {
     string displayString = "";
     displayString += (email.read) ? "  " : "⬤ ";
@@ -92,6 +98,11 @@ bool ThreadView::onInput(int key) {
                 updateSelectedEmail(selectedEmailIndex + 1);
                 refresh();
             }
+            handled = true;
+            break;
+        case 'i':
+            // opens all attachments
+            openAttachments();
             handled = true;
             break;
         case '\n':
