@@ -10,7 +10,7 @@ using namespace std;
 
 void ThreadView::openAttachments() {
     for (string path : emails.at(selectedEmailIndex).imagePaths) {
-        system(("open " + path).c_str());
+        system(("display " + path).c_str());
     }
 }
 
