@@ -28,9 +28,16 @@ class ThreadView : public View {
     void openAttachments();
     std::string getDisplayString(const Email& email) const;
 
+
+    std::function<void(Email)> displayEmailHandler;
+
    public:
-    ThreadView(Account& account, std::string threadId)
-        : View(account), threadId(threadId) {}
+    ThreadView(Account& account, std::string threadId, 
+    std::function<void(Email)> displayEmailHandler = [](Email){})
+        : View(account), threadId(threadId), displayEmailHandler(displayEmailHandler) {
+            updateEmails();
+            updateSelectedEmail(0);
+        }
 
     void onResize() override;
     void onDraw(bool isActive) const override;

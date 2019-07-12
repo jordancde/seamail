@@ -50,6 +50,14 @@ public:
         return t;
     }
 
+    void runExternalProgram(std::function<void()> task){
+        def_prog_mode();
+        endwin();
+        task();
+        reset_prog_mode();
+        refresh();
+    }
+
     // force all child windows to handle resizing
     void resize();
     // force all child windows to redraw

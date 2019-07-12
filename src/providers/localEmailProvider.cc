@@ -130,8 +130,8 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
     vector<string> recipients;
     recipients.reserve(email.to.size() + email.cc.size() + email.bcc.size());
     recipients.insert(recipients.end(), email.to.begin(), email.to.end());
-    recipients.insert(email.cc.end(), email.cc.begin(), email.cc.end());
-    recipients.insert(email.bcc.end(), email.bcc.begin(), email.bcc.end());
+    recipients.insert(recipients.end(), email.cc.begin(), email.cc.end());
+    recipients.insert(recipients.end(), email.bcc.begin(), email.bcc.end());
     unordered_set<string> bcc(email.bcc.begin(), email.bcc.end());
 
     for (auto recipient : recipients) {

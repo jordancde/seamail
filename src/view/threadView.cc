@@ -16,15 +16,14 @@ void ThreadView::openAttachments() {
 
 string ThreadView::getDisplayString(const Email& email) const {
     string displayString = "";
-    displayString += (email.read) ? "  " : ACS_DIAMOND + " ";
-    displayString += email.dateTime;
+    // displayString += (email.read) ? "  " : ACS_DIAMOND + " ";
+    displayString += ""+ email.dateTime;
     displayString += email.from;
     return displayString;
 }
 
 void ThreadView::openEmail() {
-    Composer c = Composer(emails.at(selectedEmailIndex), true);
-    c.compose();
+    displayEmailHandler(emails.at(selectedEmailIndex));
 }
 
 void ThreadView::onResize() {
@@ -42,7 +41,7 @@ void ThreadView::onDraw(bool isActive) const {
         Email e = emails.at(eidx);
         string dispName = getDisplayString(e);
         if (eidx == selectedEmailIndex) wattron(win, A_REVERSE);
-        mvwprintw(win, cy()+1, cx()+2, "%s\n", dispName.c_str());
+        mvwprintw(win, cy()+1, 2, "%s", dispName.c_str());
         wattroff(win, A_REVERSE);
     }
     wmove(win, 0, 2);
@@ -86,6 +85,7 @@ bool ThreadView::onInput(int key) {
 
     switch (key) {
         case 'k':
+        case KEY_UP:
             if (selectedEmailIndex > 0) {
                 updateSelectedEmail(selectedEmailIndex - 1);
                 refresh();
@@ -93,6 +93,7 @@ bool ThreadView::onInput(int key) {
             handled = true;
             break;
         case 'j':
+        case KEY_DOWN:
             if (selectedEmailIndex < max - 1) {
                 updateSelectedEmail(selectedEmailIndex + 1);
                 refresh();

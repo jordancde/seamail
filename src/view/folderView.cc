@@ -14,6 +14,7 @@ void FolderView::onResize(){
 }
 
 void FolderView::onDraw(bool isActive) const {
+    werase(win);
     wmove(win, 1, 1);
     
     auto folder = getFolder(); 
@@ -22,6 +23,11 @@ void FolderView::onDraw(bool isActive) const {
         auto thread = account.getThreadById(*threadId);
         time_t latestDate = 0; 
         bool read = true;
+        if(cindex == selectedThreadIndex){
+            wattron(win, A_REVERSE);
+            mvwhline(win, cy(), 0, ' ', w());
+            wattroff(win, A_REVERSE);
+        }
         for(auto emailId = thread.emailIds.begin(); emailId != thread.emailIds.end(); ++emailId){
             auto email = account.getEmailById(*emailId);
             latestDate = max(latestDate, email.dateTime);
@@ -31,7 +37,7 @@ void FolderView::onDraw(bool isActive) const {
         const char* desctime = asctime(timeinfo);
         auto lastFrom = account.getEmailById(thread.emailIds.back()).from;
 
-        mvwprintw(win, cy(), 1, "%s", lastFrom.c_str());
+        mvwprintw(win, cy()+1, 1, "%s", lastFrom.c_str());
         if(!read)
             wattron(win, A_REVERSE);
         mvwprintw(win, cy() + 1, 2, "%s", thread.title.c_str());
@@ -75,6 +81,7 @@ void FolderView::notify(std::shared_ptr<Event> event) {
         }
         case AccountEventType::FOLDER_CONTENTS_CHANGED: {
             this->refresh();
+            updateThreadIndex(0);
         }
         default:
             break;
@@ -82,5 +89,15 @@ void FolderView::notify(std::shared_ptr<Event> event) {
 }
 
 bool FolderView::onInput(int key) {
+    switch(key){
+        case KEY_DOWN:
+        case 'j':
+            selectNextThread();
+            return true;
+        case KEY_UP:
+        case 'k':
+            selectPreviousThread();
+            return true;
+    }
     return false;
 }

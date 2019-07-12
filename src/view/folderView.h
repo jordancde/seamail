@@ -15,20 +15,24 @@ class FolderView : public View {
 
     size_t selectedThreadIndex = SIZE_MAX;
 
-    void selectNextThread(){
+
+    void updateThreadIndex(size_t index){
         size_t threads = getFolder().threadIds.size();
         if(threads < 1)
             selectedThreadIndex = SIZE_MAX;
-        else if(selectedThreadIndex < threads - 1)
-            ++selectedThreadIndex;
+        else if(index >= 0 && index < threads){
+            selectedThreadIndex = index;
+            threadChangeHandler(getFolder().threadIds.at(selectedThreadIndex));
+        }
+        if(win) refresh();
+    }
+
+    void selectNextThread(){
+        updateThreadIndex(selectedThreadIndex + 1);
     }
 
     void selectPreviousThread(){
-        size_t threads = getFolder().threadIds.size();
-        if(threads < 1)
-            selectedThreadIndex == SIZE_MAX;
-        else if(selectedThreadIndex > 0)
-            --selectedThreadIndex;
+        updateThreadIndex(selectedThreadIndex - 1);
     }
 
 
@@ -37,7 +41,9 @@ public:
                 std::string watchingFolder,
                 std::function<void(std::string)> threadChangeHandler = [](std::string){})
                 : View(account), watchingFolder(watchingFolder), 
-                    threadChangeHandler(threadChangeHandler) {}
+                    threadChangeHandler(threadChangeHandler) {
+        updateThreadIndex(0);
+    }
 
     void onResize() override;
     void onDraw(bool isActive) const override;

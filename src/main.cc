@@ -80,11 +80,17 @@ int main()
 		activeAccount = acc;
 
 		bindWindow(myAccountView, make_shared<AccountView>(activeAccount, [&](string folderPath){
-			bindWindow(myActiveFolderView, 	myActiveFolderView = 
+			bindWindow(myActiveFolderView,
 				make_shared<FolderView>(activeAccount, folderPath, 
 					[&](string threadId){
 						bindWindow(myActiveThreadView, 
-							make_shared<ThreadView>(activeAccount, threadId));
+							make_shared<ThreadView>(activeAccount, threadId,
+								[&](Email e){
+									com.runExternalProgram([&]{
+										Composer c = Composer(e, true);
+										c.compose();
+									});
+								}));
 					}));
 		}));
 
@@ -167,6 +173,7 @@ int main()
 	destroyWindow(myAccountView);
 	destroyWindow(myActiveFolderView);
 	destroyWindow(myAccountToolbar);
+	destroyWindow(myActiveThreadView);
 
 	ofstream stateFileOut(STATE_FILE);
 	stateFileOut << localState;
