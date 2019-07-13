@@ -6,6 +6,7 @@
 #include "graphics/compositor.h"
 #include "graphics/toolbar.h"
 #include "graphics/dialog.h"
+#include "graphics/inputDialog.h"
 #include "graphics/accountSelect.h"
 #include "graphics/accountUpsert.h"
 
@@ -72,6 +73,15 @@ int main()
 			}), true);
 	};
 
+	auto makeInputDialog = [&](string title, string message, std::function<void(string)> inputHandler){
+		bindWindow(myActiveDialog, make_shared<InputDialog>(title, message, [&]{
+				destroyWindow(myActiveDialog);
+			},[&](string input){
+				destroyWindow(myActiveDialog);
+				inputHandler(input);
+			}), true);
+	};
+
 	auto logoutActiveAccount = [&]{
 		destroyWindow(myActiveFolderView);
 		destroyWindow(myAccountView);
@@ -95,6 +105,13 @@ int main()
 										c.compose();
 									});
 								}));
+					},
+					[&](std::string title, std::string message){
+						string theInput;
+						makeInputDialog(title, message, [&](string input){
+							theInput = input;
+						});
+						return theInput;
 					}));
 		}));
 

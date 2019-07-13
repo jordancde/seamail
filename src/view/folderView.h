@@ -1,13 +1,13 @@
 #ifndef FOLDER_VIEW_H
 #define FOLDER_VIEW_H
 
-#include "view/view.h"
 #include "account/account.h"
+#include "view/view.h"
 
 class FolderView : public View {
-
     std::string watchingFolder;
     std::function<void(std::string)> threadChangeHandler;
+    std::function<std::string(std::string, std::string)> requestInput;
 
     Folder cachedFolder;
     bool sortUnread = false;
@@ -48,48 +48,43 @@ class FolderView : public View {
             sortUnread ? predicateUnread : predicateDate); 
     }
 
-    Folder getFolder() const {
-        return cachedFolder;
+    Folder getFolder() const { return cachedFolder; }
+    std::string getSelectedThreadId() const {
+        return getFolder().threadIds.at(selectedThreadIndex);
     }
 
     size_t selectedThreadIndex = SIZE_MAX;
 
-
-    void updateThreadIndex(size_t index){
+    void updateThreadIndex(size_t index) {
         size_t threads = getFolder().threadIds.size();
-        if(threads < 1)
+        if (threads < 1)
             selectedThreadIndex = SIZE_MAX;
-        else if(index >= 0 && index < threads){
+        else if (index >= 0 && index < threads) {
             selectedThreadIndex = index;
             threadChangeHandler(getFolder().threadIds.at(selectedThreadIndex));
         }
-        if(win) refresh();
+        if (win) refresh();
     }
-
-    void selectNextThread(){
-        updateThreadIndex(selectedThreadIndex + 1);
-    }
-
-    void selectPreviousThread(){
-        updateThreadIndex(selectedThreadIndex - 1);
-    }
-
-
-public:
-    FolderView(Account& account,
-                std::string watchingFolder,
-                std::function<void(std::string)> threadChangeHandler = [](std::string){})
-                : View(account, 2), watchingFolder(watchingFolder), 
-                    threadChangeHandler(threadChangeHandler) {
+   public:
+    FolderView(Account& account, std::string watchingFolder,
+               std::function<void(std::string)> threadChangeHandler,
+               std::function<std::string(std::string, std::string)>
+                   requestInput)  // assign field TODO
+        : View(account,2),
+          watchingFolder(watchingFolder),
+          threadChangeHandler(threadChangeHandler),
+          requestInput{requestInput} {
         updateCachedFolders();
         updateThreadIndex(0);
     }
+    void selectNextThread() { updateThreadIndex(selectedThreadIndex + 1); }
+    void selectPreviousThread() { updateThreadIndex(selectedThreadIndex - 1); }
+    void moveSelectedThread();
 
     void onResize() override;
     void onDraw(bool isActive) const override;
     void notify(std::shared_ptr<Event> event) override;
     bool onInput(int key) override;
 };
-
 
 #endif

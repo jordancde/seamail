@@ -8,7 +8,7 @@
 #include "account/account.h"
 
 class Dialog : public NWindow {
-
+protected:
     std::string title;
     std::string message;
 
@@ -19,8 +19,8 @@ public:
         : NWindow(100), title(title), message(message), dialogClosedHandler(dialogClosedHandler) {
     } 
     
-    void onDraw(bool isActive) const; 
-    bool onInput(int key); 
+    virtual void onDraw(bool isActive) const; 
+    virtual bool onInput(int key); 
     void onResize(); 
 };
 
