@@ -17,7 +17,7 @@ void ThreadView::openAttachments() {
 string ThreadView::getDisplayString(const Email& email) const {
     string displayString = "";
     // displayString += (email.read) ? "  " : ACS_DIAMOND + " ";
-    displayString += ""+ email.dateTime;
+    displayString += "" + email.dateTime;
     displayString += email.from;
     return displayString;
 }
@@ -27,6 +27,18 @@ void ThreadView::openEmail() {
 
     displayEmailHandler(e);
     account.setEmailStatus(e.id, true);
+}
+
+void ThreadView::replyEmail() {
+    Email& selected = emails.at(selectedEmailIndex);
+    Email newEmail = Email();
+    newEmail.threadId = selected.threadId;
+    newEmail.from = account.getEmailAddress();
+    newEmail.subject = selected.subject;
+    newEmail.to = vector<string>{selected.from};
+    newEmail.cc = selected.cc;
+    newEmail.bcc = selected.bcc;
+    replyEmailHandler(newEmail);
 }
 
 void ThreadView::onResize() {
@@ -41,25 +53,24 @@ void ThreadView::onResize() {
 void ThreadView::onDraw(bool isActive) const {
     wmove(win, 1, 0);
     mvwhline(win, cy(), 0, ACS_HLINE, w());
-    wmove(win, cy()+1,cx());
+    wmove(win, cy() + 1, cx());
     for (size_t eidx = 0; eidx < emails.size(); ++eidx) {
         Email e = emails.at(eidx);
 
         struct tm* timeinfo = localtime(&e.dateTime);
         const char* desctime = asctime(timeinfo);
 
-        if (eidx == selectedEmailIndex){
+        if (eidx == selectedEmailIndex) {
             wattron(win, A_REVERSE);
             mvwvline(win, cy(), 2, ' ', 3);
             wattroff(win, A_REVERSE);
         }
 
-        mvwprintw(win, cy()+1, 4, "%s", e.from.c_str());
-        if(!e.read)
-            wattron(win, A_REVERSE);
-        mvwprintw(win, cy()+1, 4, "%s", e.subject.c_str());
+        mvwprintw(win, cy() + 1, 4, "%s", e.from.c_str());
+        if (!e.read) wattron(win, A_REVERSE);
+        mvwprintw(win, cy() + 1, 4, "%s", e.subject.c_str());
         wattroff(win, A_REVERSE);
-        mvwprintw(win, cy(), w()-strlen(desctime)-1,"%s", desctime);
+        mvwprintw(win, cy(), w() - strlen(desctime) - 1, "%s", desctime);
 
         mvwhline(win, cy(), 0, ACS_HLINE, w());
     }
@@ -119,6 +130,10 @@ bool ThreadView::onInput(int key) {
         case 'i':
             // opens all attachments
             openAttachments();
+            handled = true;
+            break;
+        case 'r':
+            replyEmail();
             handled = true;
             break;
         case '\n':
