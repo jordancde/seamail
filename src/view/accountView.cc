@@ -35,9 +35,7 @@ void AccountView::moveFolderToEnd(vector<string>& folderPaths,
 
 void AccountView::onDraw(bool isActive) const {
     auto folderPaths = getCachedFolderPaths();
-    moveFolderToEnd(folderPaths, "sent", true);
-    moveFolderToEnd(folderPaths, "inbox", true);
-    moveFolderToEnd(folderPaths, "deleted", false);
+    
     wmove(win, 1, 0);
     for (size_t fidx = 0; fidx < folderPaths.size(); ++fidx) {
         const string& s = folderPaths.at(fidx);
