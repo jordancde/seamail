@@ -25,6 +25,8 @@ class AccountView : public View {
         return sortedFolderPaths;
     }
 
+    void moveFolderToEnd(std::vector<std::string>&, std::string, bool) const;
+
     std::function<void(std::string folderPath)> folderChangeHandler;
 
 public:
