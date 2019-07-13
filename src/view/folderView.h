@@ -7,7 +7,7 @@
 class FolderView : public View {
     std::string watchingFolder;
     std::function<void(std::string)> threadChangeHandler;
-    std::function<std::string(std::string, std::string)> requestInput;
+    std::function<void(std::string, std::string, std::function<void(std::string)>)> requestInput;
 
     Folder cachedFolder;
     bool sortUnread = false;
@@ -68,8 +68,8 @@ class FolderView : public View {
    public:
     FolderView(Account& account, std::string watchingFolder,
                std::function<void(std::string)> threadChangeHandler,
-               std::function<std::string(std::string, std::string)>
-                   requestInput)  // assign field TODO
+               std::function<void(std::string, std::string, std::function<void(std::string)>)>
+                   requestInput)
         : View(account,2),
           watchingFolder(watchingFolder),
           threadChangeHandler(threadChangeHandler),

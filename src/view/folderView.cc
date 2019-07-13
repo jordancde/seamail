@@ -91,13 +91,12 @@ void FolderView::notify(std::shared_ptr<Event> event) {
 }
 
 void FolderView::moveSelectedThread() {
-    string input =
-        requestInput("Move Thread",
-                     "Please type the folder path you'd like to move this \
-                     thread to below (ex. myfolder/subfolder):");
-    if (!input.empty()) {
-        account.addThreadToFolder(getSelectedThreadId(), input);
-    }
+	requestInput("Move Thread",
+		     "Please type the folder path you'd like to move this \
+		     thread to below (ex. myfolder/subfolder):",
+		     [&](std::string input){
+                account.addThreadToFolder(getSelectedThreadId(), input);
+            } );
 }
 
 bool FolderView::onInput(int key) {

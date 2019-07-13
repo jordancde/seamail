@@ -76,9 +76,9 @@ int main()
 	auto makeInputDialog = [&](string title, string message, std::function<void(string)> inputHandler){
 		bindWindow(myActiveDialog, make_shared<InputDialog>(title, message, [&]{
 				destroyWindow(myActiveDialog);
-			},[&](string input){
-				destroyWindow(myActiveDialog);
+			},[&,inputHandler](string input){
 				inputHandler(input);
+				destroyWindow(myActiveDialog);
 			}), true);
 	};
 
@@ -106,12 +106,11 @@ int main()
 									});
 								}));
 					},
-					[&](std::string title, std::string message){
-						string theInput;
-						makeInputDialog(title, message, [&](string input){
-							theInput = input;
+					[&](std::string title, std::string message, std::function<void(string)>
+							inputReceivedHandler){
+						makeInputDialog(title, message, [&,inputReceivedHandler](string input){
+							inputReceivedHandler(input);
 						});
-						return theInput;
 					}));
 		}));
 
