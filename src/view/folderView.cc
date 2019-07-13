@@ -19,30 +19,31 @@ void FolderView::onDraw(bool isActive) const {
     
     auto folder = getFolder(); 
     size_t cindex = 0;
+    
+    mvwhline(win, cy(), 0, ACS_HLINE, w());
+    wmove(win, cy()+1, cx());
+
     for(auto threadId = folder.threadIds.begin(); threadId != folder.threadIds.end(); ++threadId){
         auto thread = account.getThreadById(*threadId);
-        time_t latestDate = 0; 
-        bool read = true;
+        time_t latestDate = threadLatestDate(thread.id); 
+        bool read = threadIsRead(thread.id);
+
         if(cindex == selectedThreadIndex){
             wattron(win, A_REVERSE);
-            mvwhline(win, cy(), 0, ' ', w());
+            mvwvline(win, cy(), 2, ' ', 3);
             wattroff(win, A_REVERSE);
         }
-        for(auto emailId = thread.emailIds.begin(); emailId != thread.emailIds.end(); ++emailId){
-            auto email = account.getEmailById(*emailId);
-            latestDate = max(latestDate, email.dateTime);
-            read &= email.read;
-        }
+
         struct tm* timeinfo = localtime(&latestDate);
         const char* desctime = asctime(timeinfo);
         auto lastFrom = account.getEmailById(thread.emailIds.back()).from;
 
-        mvwprintw(win, cy()+1, 1, "%s", lastFrom.c_str());
+        mvwprintw(win, cy()+1, 4, "%s", lastFrom.c_str());
         if(!read)
             wattron(win, A_REVERSE);
-        mvwprintw(win, cy() + 1, 2, "%s", thread.title.c_str());
+        mvwprintw(win, cy() + 1, 4, "%s", thread.title.c_str());
         wattroff(win, A_REVERSE);
-        mvwprintw(win, cy(), w() - strlen(desctime), "%s", desctime);
+        mvwprintw(win, cy(), w() - strlen(desctime) - 1, "%s", desctime);
         mvwhline(win, cy(), 0, ACS_HLINE, w());
         if(thread.emailIds.size() > 1){
             string ticker = (thread.emailIds.size()-1) + " more...";
@@ -80,8 +81,10 @@ void FolderView::notify(std::shared_ptr<Event> event) {
             break;
         }
         case AccountEventType::FOLDER_CONTENTS_CHANGED: {
-            this->refresh();
             updateThreadIndex(0);
+            updateCachedFolders();
+            this->refresh();
+            break;
         }
         default:
             break;
@@ -97,6 +100,11 @@ bool FolderView::onInput(int key) {
         case KEY_UP:
         case 'k':
             selectPreviousThread();
+            return true;
+        case 's':
+            sortUnread = !sortUnread;
+            updateCachedFolders();
+            refresh();
             return true;
     }
     return false;

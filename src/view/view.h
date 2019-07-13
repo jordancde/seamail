@@ -15,7 +15,7 @@ protected:
 
 public:
 
-    View(Account& account) : account(account) {
+    View(Account& account, int zindex = 0) : NWindow(zindex), account(account) {
         account.attach(this);
     }
     virtual ~View() {

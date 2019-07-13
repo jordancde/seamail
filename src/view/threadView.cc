@@ -23,7 +23,10 @@ string ThreadView::getDisplayString(const Email& email) const {
 }
 
 void ThreadView::openEmail() {
-    displayEmailHandler(emails.at(selectedEmailIndex));
+    Email& e = emails.at(selectedEmailIndex);
+
+    displayEmailHandler(e);
+    account.setEmailStatus(e.id, true);
 }
 
 void ThreadView::onResize() {
@@ -36,13 +39,29 @@ void ThreadView::onResize() {
 }
 
 void ThreadView::onDraw(bool isActive) const {
-    wmove(win, 2, 0);
+    wmove(win, 1, 0);
+    mvwhline(win, cy(), 0, ACS_HLINE, w());
+    wmove(win, cy()+1,cx());
     for (size_t eidx = 0; eidx < emails.size(); ++eidx) {
         Email e = emails.at(eidx);
-        string dispName = getDisplayString(e);
-        if (eidx == selectedEmailIndex) wattron(win, A_REVERSE);
-        mvwprintw(win, cy()+1, 2, "%s", dispName.c_str());
+
+        struct tm* timeinfo = localtime(&e.dateTime);
+        const char* desctime = asctime(timeinfo);
+
+        if (eidx == selectedEmailIndex){
+            wattron(win, A_REVERSE);
+            mvwvline(win, cy(), 2, ' ', 3);
+            wattroff(win, A_REVERSE);
+        }
+
+        mvwprintw(win, cy()+1, 4, "%s", e.from.c_str());
+        if(!e.read)
+            wattron(win, A_REVERSE);
+        mvwprintw(win, cy()+1, 4, "%s", e.subject.c_str());
         wattroff(win, A_REVERSE);
+        mvwprintw(win, cy(), w()-strlen(desctime)-1,"%s", desctime);
+
+        mvwhline(win, cy(), 0, ACS_HLINE, w());
     }
     wmove(win, 0, 2);
     if (isActive) wattron(win, A_REVERSE);
@@ -57,22 +76,19 @@ void ThreadView::notify(std::shared_ptr<Event> event) {
 
     switch (ptr->type) {
         case AccountEventType::THREAD_CHANGED: {
-            this->getThread();
             this->updateEmails();
             this->refresh();
             break;
         }
         case AccountEventType::ACCOUNT_FOLDERS_CHANGED: {
-            // folder might get deleted
-            this->getThread();
             this->updateEmails();
             this->refresh();
             break;
         }
         case AccountEventType::FOLDER_CONTENTS_CHANGED: {
-            this->getThread();
             this->updateEmails();
             this->refresh();
+            break;
         }
         default:
             break;

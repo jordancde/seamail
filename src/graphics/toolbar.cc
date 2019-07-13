@@ -4,7 +4,7 @@
 
 Toolbar::Toolbar(size_t line, 
     std::list<std::string> menuItems, std::function<void(std::string)> handler) 
-    : line(line), menuItems(std::move(menuItems)),
+    : NWindow(-1), line(line), menuItems(std::move(menuItems)),
         handler(handler) {
     selected = this->menuItems.begin();
 }

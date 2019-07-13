@@ -25,6 +25,8 @@ const string STATE_FILE = "state.json";
 
 int main()
 {	
+	srand(time(0));
+
 	LocalState localState;
 
 	ifstream stateFileIn(STATE_FILE);
@@ -54,6 +56,7 @@ int main()
 			com.setActiveWindow(window);
 		com.refresh();
 	};
+
 	auto destroyWindow = [&](shared_ptr<NWindow> window){
 		if(window){
 			com.removeWindow(window);
@@ -85,7 +88,7 @@ int main()
 					[&](string threadId){
 						bindWindow(myActiveThreadView, 
 							make_shared<ThreadView>(activeAccount, threadId,
-								[&](Email e){
+								[&](const Email &e){
 									com.runExternalProgram([&]{
 										Composer c = Composer(e, true);
 										c.compose();

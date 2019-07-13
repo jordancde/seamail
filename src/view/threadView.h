@@ -29,12 +29,12 @@ class ThreadView : public View {
     std::string getDisplayString(const Email& email) const;
 
 
-    std::function<void(Email)> displayEmailHandler;
+    std::function<void(const Email&)> displayEmailHandler;
 
    public:
     ThreadView(Account& account, std::string threadId, 
-    std::function<void(Email)> displayEmailHandler = [](Email){})
-        : View(account), threadId(threadId), displayEmailHandler(displayEmailHandler) {
+    std::function<void(const Email&)> displayEmailHandler = [](Email){})
+        : View(account, 3), threadId(threadId), displayEmailHandler(displayEmailHandler) {
             updateEmails();
             updateSelectedEmail(0);
         }

@@ -30,7 +30,7 @@ class AccountView : public View {
 public:
     AccountView(Account& account,
                 std::function<void(std::string folderPath)> folderChangeHandler = [](std::string){})
-        : View(account), folderChangeHandler(folderChangeHandler) {
+        : View(account, 1), folderChangeHandler(folderChangeHandler) {
         updateCachedFolderPaths();
         updateSelectedFolder(0);
     }
