@@ -65,7 +65,11 @@ void InputDialog::onDraw(bool isActive) const {
     wmove(win, 1, 2);
 
     if (tabIndex == 0) wattron(win, A_REVERSE);
-    mvwprintw(win, cy() + 1, 2, "%-5s: ", input.c_str());
+    if (input.empty()) {
+        mvwprintw(win, cy() + 1, 2, " ");
+    } else {
+        mvwprintw(win, cy() + 1, 2, "%s", input.c_str());
+    }
     wattroff(win, A_REVERSE);
 
     wmove(win, cy() + 2, 0);
