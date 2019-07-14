@@ -17,7 +17,10 @@ class FolderView : public View {
     ReturnType threadEmailAccumulate(std::string threadId, ReturnType first, 
         std::function<ReturnType(ReturnType, Email)> binOp) const {
         auto thread = account.getThreadById(threadId);
-        return std::accumulate(thread.emailIds.begin(), thread.emailIds.end(), first, binOp);
+        std::vector<Email> emails;
+        emails.resize(thread.emailIds.size());
+        std::transform(thread.emailIds.begin(), thread.emailIds.end(), emails.begin(), [&](std::string emailId){account.getEmailById(emailId);});
+        return std::accumulate(emails.begin(), emails.end(), first, binOp);
     }
 
     bool threadIsRead(std::string threadId) const {
