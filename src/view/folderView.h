@@ -19,7 +19,7 @@ class FolderView : public View {
         auto thread = account.getThreadById(threadId);
         std::vector<Email> emails;
         emails.resize(thread.emailIds.size());
-        std::transform(thread.emailIds.begin(), thread.emailIds.end(), emails.begin(), [&](std::string emailId){account.getEmailById(emailId);});
+        std::transform(thread.emailIds.begin(), thread.emailIds.end(), emails.begin(), [&](std::string emailId){return account.getEmailById(emailId);});
         return std::accumulate(emails.begin(), emails.end(), first, binOp);
     }
 
