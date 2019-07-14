@@ -6,3 +6,4 @@ seamail
 *.out
 .DS_Store
 *.json
+gdb.txt

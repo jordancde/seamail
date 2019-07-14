@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo gdb -tui attach $(pgrep seamail)
+sudo -E gdb -tui attach $(pgrep seamail)

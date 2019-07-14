@@ -114,7 +114,6 @@ Email LocalEmailProvider::getEmailById(Session& ctx, string emailId) {
 
 void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
     string user = ctx.getEmailAddress();
-
     // sending
     email.dateTime = time(nullptr);
     emails[user + "/" + email.id] = email;
@@ -124,8 +123,16 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
         threads[user + "/" + t.id] = t;
         threadId = t.id;
         folders[user + "/sent"].threadIds.emplace_back(threadId);
+        emails[user + "/" + email.id].threadId = threadId;
     }
     threads[user + "/" + threadId].emailIds.emplace_back(email.id);
+
+    // check if already in sent folder, if not add
+    vector<string>& sentThreadIds = folders[user + "/sent"].threadIds;
+    if (find(sentThreadIds.begin(), sentThreadIds.end(), threadId) ==
+        sentThreadIds.end()) {
+        sentThreadIds.emplace_back(threadId);
+    }
 
     // receiving
     vector<string> recipients;
@@ -134,7 +141,6 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
     recipients.insert(recipients.end(), email.cc.begin(), email.cc.end());
     recipients.insert(recipients.end(), email.bcc.begin(), email.bcc.end());
     unordered_set<string> bcc(email.bcc.begin(), email.bcc.end());
-
     for (auto recipient : recipients) {
         if (accounts.find(recipient) == accounts.end()) {
             continue;
@@ -150,16 +156,29 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
         }
         if (email.threadId == "new") {
             Thread t = Thread(email.subject);
+            emails[recipient + "/" + email.id].threadId = t.id;
             t.emailIds.emplace_back(email.id);
             threads[recipient + "/" + t.id] = t;
             folders[recipient + "/inbox"].threadIds.emplace_back(t.id);
         } else {
+            // Find the matching thread in the recipients inbox (different
+            // thread Id)
             for (auto& t : threads) {
-                if (t.second.title == email.subject &&
-                    t.first.substr(1, t.first.find("/", 1)) == recipient) {
+                string recip = t.first.substr(0, t.first.find("/"));
+                if (t.second.title == email.subject && recip == recipient) {
                     t.second.emailIds.emplace_back(email.id);
+                    threadId = t.second.id;
+                    emails[recipient + "/" + email.id].threadId = threadId;
                     break;
                 }
+            }
+
+            // check if already in inbox folder, if not add
+            vector<string>& inboxThreadIds =
+                folders[recipient + "/inbox"].threadIds;
+            if (find(inboxThreadIds.begin(), inboxThreadIds.end(), threadId) ==
+                inboxThreadIds.end()) {
+                inboxThreadIds.emplace_back(threadId);
             }
         }
     }

@@ -17,13 +17,20 @@ class AccountView : public View {
     void updateSelectedFolder(size_t idx);
 
     std::vector<std::string> sortedFolderPaths;
-    void updateCachedFolderPaths() {
+    void updateCachedFolderPaths(){
+        
         sortedFolderPaths = account.getAllFolderPaths();
         sort(sortedFolderPaths.begin(), sortedFolderPaths.end());
+        moveFolderToEnd(sortedFolderPaths, "sent", true);
+        moveFolderToEnd(sortedFolderPaths, "inbox", true);
+        moveFolderToEnd(sortedFolderPaths, "deleted", false);
+    
     }
     const std::vector<std::string>& getCachedFolderPaths() const {
         return sortedFolderPaths;
     }
+
+    void moveFolderToEnd(std::vector<std::string>&, std::string, bool) const;
 
     std::function<void(std::string folderPath)> folderChangeHandler;
 
