@@ -116,6 +116,7 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
     string user = ctx.getEmailAddress();
 
     // sending
+    email.dateTime = time(nullptr);
     emails[user + "/" + email.id] = email;
     string threadId = email.threadId;
     if (threadId == "new") {
@@ -140,6 +141,7 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
         }
 
         email.changeId();
+        email.dateTime = time(nullptr);
         emails[recipient + "/" + email.id] = email;
         if (bcc.find(recipient) != bcc.end()) {
             emails[recipient + "/" + email.id].to = vector<string>();
