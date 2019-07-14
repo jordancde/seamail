@@ -79,6 +79,7 @@ bool AccountUpsert::onInput(int key) {
                         case '\n':
                             selectNextItem();
                             break;
+                        case 127:
                         case KEY_BACKSPACE:
                             if(username.length() > 0)
                                 username = username.substr(0, username.length() - 1);
@@ -96,6 +97,7 @@ bool AccountUpsert::onInput(int key) {
                         case '\n':
                             selectNextItem();
                             break;
+                        case 127:
                         case KEY_BACKSPACE:
                             if(password.length() > 0)
                                 password = password.substr(0, password.length() - 1);
