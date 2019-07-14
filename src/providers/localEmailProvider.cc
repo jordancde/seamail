@@ -168,6 +168,7 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
                 if (t.second.title == email.subject && recip == recipient) {
                     t.second.emailIds.emplace_back(email.id);
                     threadId = t.second.id;
+                    emails[recipient + "/" + email.id].threadId = threadId;
                     break;
                 }
             }
