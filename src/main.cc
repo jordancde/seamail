@@ -18,6 +18,7 @@
 #include "providers/localEmailProvider.h"
 #include "account/account.h"
 #include "exceptions/authenticationFailedException.h"
+#include "exceptions/accountAlreadyExistsException.h"
 
 using namespace std;
 
@@ -116,12 +117,16 @@ int main()
 
 	auto registerAccount = [&](string username, string password){
 		// TEMP
-		shared_ptr<LocalEmailProvider> provider = localState.localProvider;
-		Account myNewAccount{provider, username};
-		provider->addAccount(username, password);
-		myNewAccount.login(username, password);
-		localState.storeAccount(myNewAccount);
-		changeActiveAccount(myNewAccount);
+		try{
+			shared_ptr<LocalEmailProvider> provider = localState.localProvider;
+			Account myNewAccount{provider, username};
+			provider->addAccount(username, password);
+			myNewAccount.login(username, password);
+			localState.storeAccount(myNewAccount);
+			changeActiveAccount(myNewAccount);
+		}catch(AccountAlreadyExists& e){
+			makeDialog("Registration Failed", "The account with that email already exists.");
+		}
 	};
 
 	auto loginAccount = [&](string username, string password){
