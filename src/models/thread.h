@@ -20,7 +20,7 @@ public:
     std::string title;
     std::vector<std::string> emailIds;
 
-    Thread(std::string title, std::vector<std::string> emailIds = {});
+    explicit Thread(std::string title, std::vector<std::string> emailIds = {});
     Thread() = default;
     bool operator==(const Thread&) const;
 };

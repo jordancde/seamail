@@ -91,6 +91,11 @@ int main() {
     };
 
     auto changeActiveAccount = [&](Account& acc) {
+		destroyWindow(myAccountView);
+		destroyWindow(myAccountToolbar);
+		destroyWindow(myActiveFolderView);
+		destroyWindow(myActiveThreadView);
+
         activeAccount = acc;
 
         bindWindow(myAccountView, make_shared<AccountView>(activeAccount, [&](string folderPath){
@@ -144,47 +149,6 @@ int main() {
                         }
                     }));
 	}));
-	};
-
-	auto changeActiveAccount = [&](Account& acc){
-		activeAccount = acc;
-
-		bindWindow(myAccountView, make_shared<AccountView>(activeAccount, [&](string folderPath){
-			bindWindow(myActiveFolderView,
-				make_shared<FolderView>(activeAccount, folderPath, 
-					[&](string threadId){
-						bindWindow(myActiveThreadView, 
-							make_shared<ThreadView>(activeAccount, threadId,
-								[&](const Email &e){
-									com.runExternalProgram([&]{
-										Composer c = Composer(e, true);
-										c.compose();
-									});
-								}));
-					},
-					[&](std::string title, std::string message, std::function<void(string)>
-							inputReceivedHandler){
-						makeInputDialog(title, message, [&,inputReceivedHandler](string input){
-							inputReceivedHandler(input);
-						});
-					}));
-		}));
-
-		bindWindow(myAccountToolbar, make_shared<Toolbar>(1, 
-			list<string>{activeAccount.getEmailAddress(), "Compose"}, 
-			[&](string selected){
-				if(selected == "Compose"){
-					activeAccount.sendEmail(
-						com.runExternalProgram<Email>([&]{
-							Email e;
-							e.from = activeAccount.getEmailAddress();
-							Composer c{e};
-							c.compose();
-							return c.toEmail();
-						}));
-				}
-
-			},-1));
 	};
 
 	auto registerAccount = [&](string username, string password){
