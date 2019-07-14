@@ -20,6 +20,7 @@ bool InputDialog::onInput(int key) {
                         case '\n':
                             selectNextItem();
                             break;
+                        case 127:
                         case KEY_BACKSPACE:
                             if (input.length() > 0)
                                 input = input.substr(0, input.length() - 1);
