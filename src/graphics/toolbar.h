@@ -18,7 +18,7 @@ class Toolbar : public NWindow {
 
 public:
     Toolbar(size_t line, 
-        std::list<std::string> menuItems, std::function<void(std::string)> handler);
+        std::list<std::string> menuItems, std::function<void(std::string)> handler, int zindex = 0);
 
     void onDraw(bool isActive) const override;
     bool onInput(int key) override;

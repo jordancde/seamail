@@ -20,7 +20,7 @@ class AccountUpsert : public NWindow {
     void selectPreviousItem();
     
 public:
-    AccountUpsert(auth_handler_t authHandler) : authHandler(authHandler) {}
+    AccountUpsert(auth_handler_t authHandler) : NWindow(10), authHandler(authHandler) {}
 
     void onDraw(bool isActive) const;
     bool onInput(int key);

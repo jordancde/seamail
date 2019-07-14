@@ -112,7 +112,7 @@ int main()
 						}));
 				}
 
-			}));
+			},-1));
 	};
 
 	auto registerAccount = [&](string username, string password){
@@ -142,7 +142,7 @@ int main()
 	};
 
 	myToolbar = make_shared<Toolbar>(0, 
-		list<string>{"Accounts", "Login", "Logout", "Exit"}, [&](string selected){
+		list<string>{"Accounts", "Login", "Logout", "Exit", "Help [F1]"}, [&](string selected){
 			if(selected == "Accounts"){
 				if(localState.getAccounts().size() < 1){
 					makeDialog("Error", "You are not logged into any accounts.");
@@ -166,10 +166,12 @@ int main()
 				logoutActiveAccount();
 			}else if (selected == "Exit"){
 				com.quit();
+			}else if(selected == "Help [F1]"){
+
 			}else {
 				throw exception{};
 			}
-	});
+	}, -2);
 
 	com.addWindow(myToolbar);
 

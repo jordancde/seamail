@@ -3,8 +3,8 @@
 #include <iostream>
 
 Toolbar::Toolbar(size_t line, 
-    std::list<std::string> menuItems, std::function<void(std::string)> handler) 
-    : NWindow(-1), line(line), menuItems(std::move(menuItems)),
+    std::list<std::string> menuItems, std::function<void(std::string)> handler, int zindex) 
+    : NWindow(zindex), line(line), menuItems(std::move(menuItems)),
         handler(handler) {
     selected = this->menuItems.begin();
 }
