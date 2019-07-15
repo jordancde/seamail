@@ -69,6 +69,6 @@ bool Email::operator==(const Email& rhs) const {
 
 bool Email::same(const Email& rhs) const {
     return from == rhs.from && to == rhs.to && dateTime == rhs.dateTime &&
-           cc == rhs.cc && bcc == rhs.bcc && subject == rhs.subject &&
+           cc == rhs.cc && subject == rhs.subject &&
            body == rhs.body && imagePaths == rhs.imagePaths;
 }
