@@ -8,3 +8,5 @@ seamail
 *.json
 gdb.txt
 *.exe*
+.idea
+cmake-build-debug

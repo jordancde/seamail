@@ -37,9 +37,12 @@ void AccountView::onDraw(bool isActive) const {
     auto folderPaths = getCachedFolderPaths();
     
     wmove(win, 1, 0);
+    whline(win, ACS_HLINE, w());
+    wmove(win, 2, 0);
     for (size_t fidx = 0; fidx < folderPaths.size(); ++fidx) {
         const string& s = folderPaths.at(fidx);
         auto dispName = folderPathToDisplayName(s);
+        waddch(win, ' ');
         waddch(win, ' ');
         for (size_t i = 0; i < dispName.first; ++i) wprintw(win, "\t");
         if (fidx == selectedFolderIndex) wattron(win, A_REVERSE);
@@ -49,7 +52,7 @@ void AccountView::onDraw(bool isActive) const {
     wmove(win, 0, 2);
     if (isActive) wattron(win, A_REVERSE);
     box(win, 0, 0);
-    wprintw(win, "Folders");
+    wprintw(win, "%s's Folders", account.getEmailAddress().c_str());
     wattroff(win, A_REVERSE);
 }
 
@@ -82,7 +85,7 @@ void AccountView::notify(std::shared_ptr<Event> event) {
 
 void AccountView::onResize() {
     int x = 0;
-    int y = 2;
+    int y = 1;
     int w = maxx() / 6;
     int h = maxy() - y;
     resize(w, h);

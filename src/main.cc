@@ -33,6 +33,7 @@ int main() {
   ifstream stateFileIn(STATE_FILE);
   if (stateFileIn.good()) stateFileIn >> localState;
 
+
   Account activeAccount;
 
   Compositor& com = Compositor::instance();
@@ -43,7 +44,6 @@ int main() {
   shared_ptr<NWindow> myToolbar;
   shared_ptr<NWindow> myAccountUpsertWindow;
   shared_ptr<NWindow> myActiveDialog;
-  shared_ptr<NWindow> myAccountToolbar;
   shared_ptr<NWindow> myActiveThreadView;
 
   auto makeDialog = [&](string title, string message, int height=7, int width=100) {
@@ -67,20 +67,19 @@ int main() {
         true);
   };
 
-  auto logoutActiveAccount = [&] {
+  auto logoutActiveAccount = [&](bool remove = true) {
     com.destroyWindow(myActiveFolderView);
     com.destroyWindow(myAccountView);
-    com.destroyWindow(myAccountToolbar);
-    localState.removeAccount(activeAccount);
+    com.destroyWindow(myActiveThreadView);
+    if(remove)
+      localState.removeAccount(activeAccount);
+    activeAccount.logout();
     com.refresh();
   };
 
   auto changeActiveAccount = [&](Account& acc) {
     // prevent rebinding of active account
-    com.destroyWindow(myAccountView);
-    com.destroyWindow(myAccountToolbar);
-    com.destroyWindow(myActiveFolderView);
-    com.destroyWindow(myActiveThreadView);
+    logoutActiveAccount(false);
 
     activeAccount = acc;
 
@@ -115,23 +114,6 @@ int main() {
                                     [&, inputReceivedHandler](string input) {
                                       inputReceivedHandler(input);
                                     });
-                  }));
-
-          com.bindWindow(
-              myAccountToolbar,
-              make_shared<Toolbar>(
-                  1, list<string>{activeAccount.getEmailAddress(), "Compose"},
-                  [&](string selected) {
-                    if (selected == "Compose") {
-                      activeAccount.sendEmail(
-                          com.runExternalProgram<Email>([&] {
-                            Email e;
-                            e.from = activeAccount.getEmailAddress();
-                            Composer c{e};
-                            c.compose();
-                            return c.toEmail();
-                          }));
-                    }
                   }));
         }));
   };
@@ -169,7 +151,7 @@ int main() {
   };
 
   myToolbar = make_shared<Toolbar>(
-      0, list<string>{"Accounts", "Login", "Logout", "Exit", "Help [F1]"},
+      0, list<string>{"Accounts", "Login", "Logout", "Exit", "Compose", "Help"},
       [&](string selected) {
         if (selected == "Accounts") {
           if (localState.getAccounts().size() < 1) {
@@ -202,13 +184,24 @@ int main() {
           logoutActiveAccount();
         } else if (selected == "Exit") {
           com.quit();
-        } else if (selected == "Help [F1]") {
+        } else if (selected == "Help") {
           ifstream helpFile ("help.txt"); 
           string message = "";
           string line; 
           while (getline(helpFile,line))
             message+=line+"\n  ";
           makeDialog("Help", message,23,100);
+        } else if (selected == "Compose") {
+          if(activeAccount.loggedIn){
+            activeAccount.sendEmail(
+                com.runExternalProgram<Email>([&] {
+                  Email e;
+                  e.from = activeAccount.getEmailAddress();
+                  Composer c{e};
+                  c.compose();
+                  return c.toEmail();
+                }));
+          }
         } else {
           throw exception{};
         }
@@ -224,7 +217,6 @@ int main() {
 
   com.destroyWindow(myAccountView);
   com.destroyWindow(myActiveFolderView);
-  com.destroyWindow(myAccountToolbar);
   com.destroyWindow(myActiveThreadView);
 
   ofstream stateFileOut(STATE_FILE);

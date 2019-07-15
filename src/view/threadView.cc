@@ -42,7 +42,7 @@ void ThreadView::replyEmail() {
 
 void ThreadView::onResize() {
     int x = maxx() / 6 + maxx() / 3;
-    int y = 2;
+    int y = 1;
     int w = maxx() / 2;
     int h = maxy() - y;
     resize(w, h);
