@@ -46,11 +46,11 @@ int main() {
   shared_ptr<NWindow> myAccountToolbar;
   shared_ptr<NWindow> myActiveThreadView;
 
-  auto makeDialog = [&](string title, string message) {
+  auto makeDialog = [&](string title, string message, int height=7, int width=100) {
     com.bindWindow(
         myActiveDialog,
         myActiveDialog = make_shared<Dialog>(
-            title, message, [&] { com.destroyWindow(myActiveDialog); }),
+            title, message, [&] { com.destroyWindow(myActiveDialog); }, height,width),
         true);
   };
 
@@ -203,6 +203,12 @@ int main() {
         } else if (selected == "Exit") {
           com.quit();
         } else if (selected == "Help [F1]") {
+          ifstream helpFile ("help.txt"); 
+          string message = "";
+          string line; 
+          while (getline(helpFile,line))
+            message+=line+"\n  ";
+          makeDialog("Help", message,23,100);
         } else {
           throw exception{};
         }

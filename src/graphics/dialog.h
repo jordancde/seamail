@@ -11,12 +11,14 @@ class Dialog : public NWindow {
 protected:
     std::string title;
     std::string message;
+    int dialogH;
+    int dialogW;
 
     std::function<void(void)> dialogClosedHandler;
 
 public:
-    Dialog(std::string title, std::string message, std::function<void(void)> dialogClosedHandler) 
-        : NWindow(100), title(title), message(message), dialogClosedHandler(dialogClosedHandler) {
+    Dialog(std::string title, std::string message, std::function<void(void)> dialogClosedHandler, int height = 7, int width = 100) 
+        : NWindow(100), title(title), message(message), dialogH(height), dialogW(width), dialogClosedHandler(dialogClosedHandler) {
     } 
     
     virtual void onDraw(bool isActive) const; 
