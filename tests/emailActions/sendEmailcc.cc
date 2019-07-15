@@ -51,9 +51,5 @@ int main() {
                    (recievedEmail.to.at(0) == "mydummyaccount2@example.com");
     bool recieverSideValid = recievedEmail.same(e);
 
-    cout << senderSideValid << endl;
-    cout << tovalid << endl;
-    cout << ccvalid << endl;
-    cout << recieverSideValid << endl;
     return !(senderSideValid && tovalid && ccvalid && recieverSideValid);
 }
