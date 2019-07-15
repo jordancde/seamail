@@ -50,9 +50,9 @@ void ThreadView::onResize() {
 }
 
 void ThreadView::onDraw(bool isActive) const {
+    werase(win);
     wmove(win, 1, 0);
     mvwhline(win, cy(), 0, ACS_HLINE, w());
-    wmove(win, cy() + 1, cx());
     for (size_t eidx = 0; eidx < emails.size(); ++eidx) {
         Email e = emails.at(eidx);
 
@@ -61,11 +61,13 @@ void ThreadView::onDraw(bool isActive) const {
 
         if (eidx == selectedEmailIndex) {
             wattron(win, A_REVERSE);
-            mvwvline(win, cy(), 2, ' ', 3);
+            mvwvline(win, cy()+1, 2, ' ', 3);
             wattroff(win, A_REVERSE);
+        }else{
+            wmove(win,cy()+1,cx());
         }
 
-        mvwprintw(win, cy() + 1, 4, "%s", e.from.c_str());
+        mvwprintw(win, cy(), 4, "%s", e.from.c_str());
         if (!e.read) wattron(win, A_REVERSE);
         mvwprintw(win, cy() + 1, 4, "%s", e.subject.c_str());
         wattroff(win, A_REVERSE);

@@ -5,7 +5,7 @@ void Dialog::onDraw(bool isActive) const {
     wmove(win, 1, 2);
     mvwprintw(win, cy()+1,cx(), "%s", message.c_str());
     wattron(win, A_REVERSE);
-    mvwprintw(win, h()-2, w()/2-3, "[ OK ]");
+    mvwprintw(win, h()-3, w()/2-3, "[ OK ]");
     wattroff(win, A_REVERSE);
 
     if(isActive)

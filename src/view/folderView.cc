@@ -91,6 +91,7 @@ void FolderView::notify(std::shared_ptr<Event> event) {
 }
 
 void FolderView::moveSelectedThread() {
+    if(selectedThreadIndex==SIZE_MAX) return;
     requestInput("Move Thread",
                  "Please type the folder path you'd like to move this \
 		     thread to below (ex. myfolder/subfolder):",
