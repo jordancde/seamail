@@ -7,3 +7,4 @@ seamail
 .DS_Store
 *.json
 gdb.txt
+*.exe*
