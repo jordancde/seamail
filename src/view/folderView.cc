@@ -46,10 +46,9 @@ void FolderView::onDraw(bool isActive) const {
         mvwprintw(win, cy(), w() - strlen(desctime) - 1, "%s", desctime);
         mvwhline(win, cy(), 0, ACS_HLINE, w());
         if (thread.emailIds.size() > 1) {
-            string ticker = (thread.emailIds.size() - 1) + " more...";
-            mvwprintw(win, cy() + 1, w() / 2 - ticker.length() / 2, "%s",
+            string ticker = to_string(thread.emailIds.size() - 1) + " more...";
+            mvwprintw(win, cy(), w() / 2 - ticker.length() / 2, "%s",
                       ticker.c_str());
-            mvwhline(win, cy() + 1, 0, ACS_HLINE, w());
         }
 
         size_t displayCount = 0;
@@ -66,6 +65,7 @@ void FolderView::onDraw(bool isActive) const {
     if (isActive) wattron(win, A_REVERSE);
     box(win, 0, 0);
     wprintw(win, "Folder - %s", watchingFolder.c_str());
+    mvwprintw(win, h() -1,2, "sort by %s", sortUnread ? "unread" : "date");
     wattroff(win, A_REVERSE);
 }
 
@@ -115,8 +115,10 @@ bool FolderView::onInput(int key) {
             sortUnread = !sortUnread;
             updateCachedFolders();
             refresh();
+            return true;
         case 'm':
             moveSelectedThread();
+            refresh();
             return true;
     }
     return false;

@@ -39,13 +39,17 @@ class FolderView : public View {
 
     void updateCachedFolders() {
         cachedFolder = account.getFolderByPath(watchingFolder);
-        std::function<bool(std::string,std::string)> predicateUnread = 
-            [&](std::string threadA, std::string threadB){
-                return threadIsRead(threadA) && !threadIsRead(threadB);
-            };
         std::function<bool(std::string,std::string)> predicateDate = 
             [&](std::string threadA, std::string threadB){
                 return threadLatestDate(threadA) > threadLatestDate(threadB);
+            };
+        std::function<bool(std::string,std::string)> predicateUnread = 
+            [&](std::string threadA, std::string threadB){
+                bool aRead = threadIsRead(threadA);
+                bool bRead = threadIsRead(threadB);
+                if(aRead == bRead)
+                    return predicateDate(threadA, threadB);
+                return !aRead && bRead;
             };
         sort(cachedFolder.threadIds.begin(), cachedFolder.threadIds.end(),
             sortUnread ? predicateUnread : predicateDate); 

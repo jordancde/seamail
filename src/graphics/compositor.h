@@ -67,6 +67,11 @@ public:
     // event loop
     void run();
 
+
+    // ex-lambda functions
+    void bindWindow(std::shared_ptr<NWindow>& window, std::shared_ptr<NWindow> instance, bool setActive = false);
+    void destroyWindow(std::shared_ptr<NWindow> window);
+
     void quit();
 
 };
