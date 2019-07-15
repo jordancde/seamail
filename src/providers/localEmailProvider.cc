@@ -149,9 +149,9 @@ void LocalEmailProvider::sendEmail(Session& ctx, Email email) {
         email.changeId();
         email.dateTime = time(nullptr);
         emails[recipient + "/" + email.id] = email;
-        if (bcc.find(recipient) != bcc.end()) {
-            emails[recipient + "/" + email.id].to = vector<string>();
-            emails[recipient + "/" + email.id].cc = vector<string>();
+        if (bcc.find(recipient) == bcc.end()) {
+            emails[recipient + "/" + email.id].bcc = vector<string>();
+        } else {
             emails[recipient + "/" + email.id].bcc = vector<string>{recipient};
         }
         if (email.threadId == "new") {

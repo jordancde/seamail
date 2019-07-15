@@ -37,7 +37,6 @@ void ThreadView::replyEmail() {
     newEmail.subject = selected.subject;
     newEmail.to = vector<string>{selected.from};
     newEmail.cc = selected.cc;
-    newEmail.bcc = selected.bcc;
     replyEmailHandler(newEmail);
 }
 
