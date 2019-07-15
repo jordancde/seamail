@@ -1,0 +1,19 @@
+*** Shortcuts ***
+
+** Global **
+
+Arrows          - Navigation
+[]              - Cycle between menus/panes
+Enter           - Select item
+q               - Quit
+
+** Folder View (Middle pane) **
+
+m               - Move thread to a folder (deleted to delete)
+s               - Sort threads by unread/date
+
+** Thread View (Right pane) **
+
+r               - Reply to an email
+i               - Open image attachments
+
