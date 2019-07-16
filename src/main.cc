@@ -111,6 +111,7 @@ void changeActiveAccount(Account& acc) {
   logoutActiveAccount(false);
 
   activeAccount = acc;
+  activeAccount.loggedIn = true;
 
   com.bindWindow(
       myAccountView,
