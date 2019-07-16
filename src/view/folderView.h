@@ -73,6 +73,10 @@ class FolderView : public View {
     if (win) refresh();
   }
 
+  void selectNextThread() { updateThreadIndex(selectedThreadIndex + 1); }
+  void selectPreviousThread() { updateThreadIndex(selectedThreadIndex - 1); }
+  void moveSelectedThread();
+
  public:
   FolderView(Account& account, std::string watchingFolder,
              std::function<void(std::string)> threadChangeHandler,
@@ -87,9 +91,6 @@ class FolderView : public View {
     updateCachedFolders();
     updateThreadIndex(0);
   }
-  void selectNextThread() { updateThreadIndex(selectedThreadIndex + 1); }
-  void selectPreviousThread() { updateThreadIndex(selectedThreadIndex - 1); }
-  void moveSelectedThread();
 
   void onResize() override;
   void onDraw(bool isActive) const override;

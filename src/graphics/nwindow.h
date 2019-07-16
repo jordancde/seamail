@@ -41,6 +41,18 @@ protected:
 
     static std::vector<WindowColor> colors;
     int cp;
+protected:
+    size_t wx() const { return _wx; }                 // pad x
+    size_t wy() const { return _wy; }                 // pad y
+    size_t x() const { return _x; }                 // frame x
+    size_t y() const { return _y; }                 // frame y
+    size_t w() const { return getmaxx(win) - x(); }                 // frame width
+    size_t h() const { return getmaxy(win) - y(); }                 // frame height
+    size_t cx() const { return getcurx(win); }      // cursor x
+    size_t cy() const { return getcury(win); }      // cursor y
+    size_t maxx() const { return getmaxx(stdscr); } // stdscr width
+    size_t maxy() const { return getmaxy(stdscr); } // stdscr height
+
 public:
     NWindow(int zindex = 0, WindowColor color = WindowColor{}) : zindex(zindex)  {
         auto it = std::find(colors.begin(), colors.end(), color);
@@ -64,17 +76,6 @@ public:
     int getZindex(){
         return zindex;
     }
-
-    size_t wx() const { return _wx; }                 // pad x
-    size_t wy() const { return _wy; }                 // pad y
-    size_t x() const { return _x; }                 // frame x
-    size_t y() const { return _y; }                 // frame y
-    size_t w() const { return getmaxx(win) - x(); }                 // frame width
-    size_t h() const { return getmaxy(win) - y(); }                 // frame height
-    size_t cx() const { return getcurx(win); }      // cursor x
-    size_t cy() const { return getcury(win); }      // cursor y
-    size_t maxx() const { return getmaxx(stdscr); } // stdscr width
-    size_t maxy() const { return getmaxy(stdscr); } // stdscr height
 
     void move(size_t x, size_t y) { wmove(win, y, x); }
     int get() const { return ::wgetch(win); }
