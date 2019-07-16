@@ -1,4 +1,5 @@
 
+#include <clocale>
 #include <cstdio>
 #include <fstream>
 #include <iostream>
@@ -16,7 +17,7 @@
 #include "view/threadView.h"
 
 #include "account/account.h"
-#include "exceptions/accountAlreadyExistsException.h" 
+#include "exceptions/accountAlreadyExistsException.h"
 #include "exceptions/authenticationFailedException.h"
 #include "providers/localEmailProvider.h"
 #include "utility/localState.h"
@@ -25,130 +26,133 @@ using namespace std;
 
 const string STATE_FILE = "state.json";
 
+Compositor& com = Compositor::instance();
+
+shared_ptr<NWindow> myAccountView;
+shared_ptr<NWindow> myAccountSelectWindow;
+shared_ptr<NWindow> myActiveFolderView;
+shared_ptr<NWindow> myToolbar;
+shared_ptr<NWindow> myAccountUpsertWindow;
+shared_ptr<NWindow> myActiveDialog;
+shared_ptr<NWindow> myActiveThreadView;
+
+LocalState localState;
+
+Account activeAccount;
+
+// Creates a dialog, automatically binding it to the Compositor
+void makeDialog(string title, string message, int height = 7, int width = 100) {
+  com.bindWindow(myActiveDialog,
+                 myActiveDialog = make_shared<Dialog>(
+                     title, message, [&] { com.destroyWindow(myActiveDialog); },
+                     height, width),
+                 true);
+}
+
+// Creates an input dialog, automatically binding it to the Compositor
+void makeInputDialog(string title, string message,
+                     std::function<void(string)> inputHandler) {
+  com.bindWindow(myActiveDialog,
+                 make_shared<InputDialog>(
+                     title, message, [&] { com.destroyWindow(myActiveDialog); },
+                     [&, inputHandler](string input) {
+                       inputHandler(input);
+                       com.destroyWindow(myActiveDialog);
+                     }),
+                 true);
+}
+
+void logoutActiveAccount(bool remove = true) {
+  com.destroyWindow(myActiveFolderView);
+  com.destroyWindow(myAccountView);
+  com.destroyWindow(myActiveThreadView);
+  if (remove) localState.removeAccount(activeAccount);
+  activeAccount.logout();
+}
+
+void displayEmailHandler(Email e) {
+  com.runExternalProgram([&, e] {
+    Composer c = Composer(e, true);
+    c.compose();
+  });
+}
+
+void replyEmailHandler(Email e) {
+  com.runExternalProgram([&, e] {
+    Composer c = Composer(e);
+    c.compose();
+    activeAccount.sendEmail(c.toEmail());
+  });
+}
+
+void selectedThreadChangedHandler(string threadId) {
+  com.bindWindow(
+      myActiveThreadView,
+      make_shared<ThreadView>(activeAccount, threadId, displayEmailHandler,
+                              replyEmailHandler));
+}
+
+void selectedFolderChangedHandler(string folderPath) {
+  com.destroyWindow(myActiveThreadView);
+  com.bindWindow(myActiveFolderView,
+                 make_shared<FolderView>(
+                     activeAccount, folderPath, selectedThreadChangedHandler,
+                     [&](std::string title, std::string message,
+                         std::function<void(string)> inputReceivedHandler) {
+                       makeInputDialog(title, message,
+                                       [&, inputReceivedHandler](string input) {
+                                         inputReceivedHandler(input);
+                                       });
+                     }));
+}
+
+void changeActiveAccount(Account& acc) {
+  // prevent rebinding of active account
+  logoutActiveAccount(false);
+
+  activeAccount = acc;
+
+  com.bindWindow(
+      myAccountView,
+      make_shared<AccountView>(activeAccount, selectedFolderChangedHandler));
+};
+
+void registerAccount(string username, string password) {
+  try {
+    shared_ptr<LocalEmailProvider> provider = localState.localProvider;
+    Account myNewAccount{provider, username};
+    provider->addAccount(username, password);
+    myNewAccount.login(username, password);
+    localState.storeAccount(myNewAccount);
+    changeActiveAccount(myNewAccount);
+  } catch (AccountAlreadyExists& e) {
+    makeDialog("Registration Failed",
+               "The account with that email already exists.");
+  }
+}
+void loginAccount(string username, string password) {
+  try {
+    shared_ptr<LocalEmailProvider> provider = localState.localProvider;
+    Account myExistingAccount{provider, username};
+    myExistingAccount.login(username, password);
+    if (find(localState.getAccounts().begin(), localState.getAccounts().end(),
+             myExistingAccount) != localState.getAccounts().end()) {
+      makeDialog("Login Failed", "You are already logged into this account.");
+      return;
+    }
+    localState.storeAccount(myExistingAccount);
+    changeActiveAccount(myExistingAccount);
+  } catch (AuthenticationFailedException& e) {
+    makeDialog("Login Failed", "Check your email and password.");
+  }
+}
+
 int main() {
   srand(time(0));
-
-  LocalState localState;
+  setlocale(LC_ALL, "en_US.utf8");
 
   ifstream stateFileIn(STATE_FILE);
   if (stateFileIn.good()) stateFileIn >> localState;
-
-
-  Account activeAccount;
-
-  Compositor& com = Compositor::instance();
-
-  shared_ptr<NWindow> myAccountView;
-  shared_ptr<NWindow> myAccountSelectWindow;
-  shared_ptr<NWindow> myActiveFolderView;
-  shared_ptr<NWindow> myToolbar;
-  shared_ptr<NWindow> myAccountUpsertWindow;
-  shared_ptr<NWindow> myActiveDialog;
-  shared_ptr<NWindow> myActiveThreadView;
-
-  auto makeDialog = [&](string title, string message, int height=7, int width=100) {
-    com.bindWindow(
-        myActiveDialog,
-        myActiveDialog = make_shared<Dialog>(
-            title, message, [&] { com.destroyWindow(myActiveDialog); }, height,width),
-        true);
-  };
-
-  auto makeInputDialog = [&](string title, string message,
-                             std::function<void(string)> inputHandler) {
-    com.bindWindow(
-        myActiveDialog,
-        make_shared<InputDialog>(title, message,
-                                 [&] { com.destroyWindow(myActiveDialog); },
-                                 [&, inputHandler](string input) {
-                                   inputHandler(input);
-                                   com.destroyWindow(myActiveDialog);
-                                 }),
-        true);
-  };
-
-  auto logoutActiveAccount = [&](bool remove = true) {
-    com.destroyWindow(myActiveFolderView);
-    com.destroyWindow(myAccountView);
-    com.destroyWindow(myActiveThreadView);
-    if(remove)
-      localState.removeAccount(activeAccount);
-    activeAccount.logout();
-    com.refresh();
-  };
-
-  auto changeActiveAccount = [&](Account& acc) {
-    // prevent rebinding of active account
-    logoutActiveAccount(false);
-
-    activeAccount = acc;
-
-    com.bindWindow(
-        myAccountView,
-        make_shared<AccountView>(activeAccount, [&](string folderPath) {
-          com.bindWindow(
-              myActiveFolderView,
-              make_shared<FolderView>(
-                  activeAccount, folderPath,
-                  [&](string threadId) {
-                    com.bindWindow(myActiveThreadView,
-                                   make_shared<ThreadView>(
-                                       activeAccount, threadId,
-                                       [&](Email e) {
-                                         com.runExternalProgram([&, e] {
-                                           Composer c = Composer(e, true);
-                                           c.compose();
-                                         });
-                                       },
-                                       [&](Email e) {
-                                         com.runExternalProgram([&, e] {
-                                           Composer c = Composer(e);
-                                           c.compose();
-                                           activeAccount.sendEmail(c.toEmail());
-                                         });
-                                       }));
-                  },
-                  [&](std::string title, std::string message,
-                      std::function<void(string)> inputReceivedHandler) {
-                    makeInputDialog(title, message,
-                                    [&, inputReceivedHandler](string input) {
-                                      inputReceivedHandler(input);
-                                    });
-                  }));
-        }));
-  };
-
-  auto registerAccount = [&](string username, string password) {
-    try {
-      shared_ptr<LocalEmailProvider> provider = localState.localProvider;
-      Account myNewAccount{provider, username};
-      provider->addAccount(username, password);
-      myNewAccount.login(username, password);
-      localState.storeAccount(myNewAccount);
-      changeActiveAccount(myNewAccount);
-    } catch (AccountAlreadyExists& e) {
-      makeDialog("Registration Failed",
-                 "The account with that email already exists.");
-    }
-  };
-
-  auto loginAccount = [&](string username, string password) {
-    try {
-      shared_ptr<LocalEmailProvider> provider = localState.localProvider;
-      Account myExistingAccount{provider, username};
-      myExistingAccount.login(username, password);
-      if (find(localState.getAccounts().begin(), localState.getAccounts().end(),
-               myExistingAccount) != localState.getAccounts().end()){
-          makeDialog("Login Failed",
-                     "You are already logged into this account.");
-          return;
-        }
-      localState.storeAccount(myExistingAccount);
-      changeActiveAccount(myExistingAccount);
-    } catch (AuthenticationFailedException& e) {
-      makeDialog("Login Failed", "Check your email and password.");
-    }
-  };
 
   myToolbar = make_shared<Toolbar>(
       0, list<string>{"Accounts", "Login", "Logout", "Exit", "Compose", "Help"},
@@ -185,22 +189,20 @@ int main() {
         } else if (selected == "Exit") {
           com.quit();
         } else if (selected == "Help") {
-          ifstream helpFile ("help.txt"); 
+          ifstream helpFile("help.txt");
           string message = "";
-          string line; 
-          while (getline(helpFile,line))
-            message+=line+"\n  ";
-          makeDialog("Help", message,23,100);
+          string line;
+          while (getline(helpFile, line)) message += line + "\n  ";
+          makeDialog("Help", message, 23, 100);
         } else if (selected == "Compose") {
-          if(activeAccount.loggedIn){
-            activeAccount.sendEmail(
-                com.runExternalProgram<Email>([&] {
-                  Email e;
-                  e.from = activeAccount.getEmailAddress();
-                  Composer c{e};
-                  c.compose();
-                  return c.toEmail();
-                }));
+          if (activeAccount.loggedIn) {
+            activeAccount.sendEmail(com.runExternalProgram<Email>([&] {
+              Email e;
+              e.from = activeAccount.getEmailAddress();
+              Composer c{e};
+              c.compose();
+              return c.toEmail();
+            }));
           }
         } else {
           throw exception{};

@@ -6,6 +6,8 @@
 
 #include "graphics/compositor.h"
 
+int NWindow::_cp = 1;
+
 NWindow::~NWindow() {
     if(win) {
         delwin(win);
@@ -42,6 +44,9 @@ void NWindow::resize(size_t w, size_t h) {
         delwin(win);
     win = newpad(h, w);
     keypad(win, TRUE);
+
+	wbkgd(win, COLOR_PAIR(cp));
+    wattron(win, COLOR_PAIR(cp));
 }
 
 void NWindow::refresh() const {

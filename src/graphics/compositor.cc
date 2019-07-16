@@ -34,7 +34,8 @@ Compositor::Compositor() : windows(compare) {
   raw();
   keypad(stdscr, TRUE);
   noecho();
-  curs_set(0);
+  curs_set(0); 
+  start_color();			/* Start color 			*/
 }
 
 Compositor::~Compositor() { endwin(); }
@@ -101,9 +102,8 @@ void Compositor::resize() {
   for (auto win : windows) win->onResize();
 }
 void Compositor::refresh() {
-  // hack, causes flickering
-  ::refresh();
-  ::clear();
+  // // hack, causes flickering
+  ::erase();
   for (auto win : windows) win->refresh();
   update();
 }
@@ -165,7 +165,7 @@ void Compositor::run() {
           break;
       }
     }
-    update();
+    refresh();
   }
 }
 
@@ -175,13 +175,11 @@ void Compositor::bindWindow(shared_ptr<NWindow>& window,
   window = instance;
   this->addWindow(window);
   if (setActive) this->setActiveWindow(window);
-  this->refresh();
 }
 
 void Compositor::destroyWindow(shared_ptr<NWindow> window) {
   if (window) {
     this->removeWindow(window);
-    this->refresh();
   }
 };
 

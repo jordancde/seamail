@@ -20,8 +20,14 @@ protected:
     int zindex;
     size_t _wx, _wy;
     size_t _x, _y, _w, _h;
+    short fg, bg;
+
+    static int _cp;
+    int cp;
 public:
-    NWindow(int zindex = 0) : zindex(zindex) {
+    NWindow(int zindex = 0, short fg = COLOR_WHITE, short bg = COLOR_BLACK) : zindex(zindex), fg(fg), bg(bg) {
+        cp = _cp++;
+        init_pair(cp, fg, bg);
         reframe(0,0,0,0,0,0);
         resize(0, 0);
     }

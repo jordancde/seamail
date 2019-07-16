@@ -54,6 +54,6 @@ bool Toolbar::onInput(int key) {
 }
 
 void Toolbar::onResize()  {
-    resize(maxx(), 1);    
+    resize(maxx(), maxy());    
     reframe(0,line,0,0,maxx(),1);
 }
