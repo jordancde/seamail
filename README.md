@@ -17,7 +17,7 @@ All keyboard shortcuts are available in the `Help` toolbar item.
 
 ## Demo
 
-
+![Jul-16-2019 12-07-28](https://user-images.githubusercontent.com/13714501/61310729-dc1ea280-a7c2-11e9-9d42-cc82507d2c98.gif)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
