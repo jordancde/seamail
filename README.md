@@ -23,6 +23,9 @@ All keyboard shortcuts are available in the `Help` toolbar item.
 
 ![Class Diagram with UML Notation (1)](https://user-images.githubusercontent.com/13714501/61317411-ea73bb00-a7d0-11e9-972d-3fe3fb6a851b.png)
 
+## Design and Documentation
+[Link](https://docs.google.com/document/d/1aRG6bk0ndHn-uaV9Qw-Lv6icFetbinvgX35gob8dRUY/edit?usp=sharing)
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
