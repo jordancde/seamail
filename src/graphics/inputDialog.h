@@ -17,8 +17,9 @@ class InputDialog : public Dialog {
    public:
     InputDialog(std::string title, std::string message,
                 std::function<void(void)> dialogClosedHandler,
-                std::function<void(std::string)> dialogSubmitHandler)
-        : Dialog(title, message, dialogClosedHandler),
+                std::function<void(std::string)> dialogSubmitHandler,
+                WindowColor color = WindowColor{})
+        : Dialog(title, message, dialogClosedHandler, 7, 100, color),
           input{""},
           tabIndex{0},
           dialogSubmitHandler{dialogSubmitHandler} {}

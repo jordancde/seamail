@@ -1,5 +1,4 @@
 
-#include <clocale>
 #include <cstdio>
 #include <fstream>
 #include <iostream>
@@ -34,6 +33,7 @@ shared_ptr<NWindow> myActiveFolderView;
 shared_ptr<NWindow> myToolbar;
 shared_ptr<NWindow> myAccountUpsertWindow;
 shared_ptr<NWindow> myActiveDialog;
+shared_ptr<NWindow> myActiveInputDialog;
 shared_ptr<NWindow> myActiveThreadView;
 
 LocalState localState;
@@ -45,21 +45,23 @@ void makeDialog(string title, string message, int height = 7, int width = 100) {
   com.bindWindow(myActiveDialog,
                  myActiveDialog = make_shared<Dialog>(
                      title, message, [&] { com.destroyWindow(myActiveDialog); },
-                     height, width),
+                     height, width, localState.colors["dialog"]),
                  true);
 }
 
 // Creates an input dialog, automatically binding it to the Compositor
 void makeInputDialog(string title, string message,
                      std::function<void(string)> inputHandler) {
-  com.bindWindow(myActiveDialog,
-                 make_shared<InputDialog>(
-                     title, message, [&] { com.destroyWindow(myActiveDialog); },
-                     [&, inputHandler](string input) {
-                       inputHandler(input);
-                       com.destroyWindow(myActiveDialog);
-                     }),
-                 true);
+  com.bindWindow(
+      myActiveInputDialog,
+      make_shared<InputDialog>(title, message,
+                               [&] { com.destroyWindow(myActiveInputDialog); },
+                               [&, inputHandler](string input) {
+                                 inputHandler(input);
+                                 com.destroyWindow(myActiveInputDialog);
+                               },
+                               localState.colors["input_dialog"]),
+      true);
 }
 
 void logoutActiveAccount(bool remove = true) {
@@ -86,10 +88,10 @@ void replyEmailHandler(Email e) {
 }
 
 void selectedThreadChangedHandler(string threadId) {
-  com.bindWindow(
-      myActiveThreadView,
-      make_shared<ThreadView>(activeAccount, threadId, displayEmailHandler,
-                              replyEmailHandler));
+  com.bindWindow(myActiveThreadView,
+                 make_shared<ThreadView>(activeAccount, threadId,
+                                         displayEmailHandler, replyEmailHandler,
+                                         localState.colors["thread_view"]));
 }
 
 void selectedFolderChangedHandler(string folderPath) {
@@ -103,7 +105,8 @@ void selectedFolderChangedHandler(string folderPath) {
                                        [&, inputReceivedHandler](string input) {
                                          inputReceivedHandler(input);
                                        });
-                     }));
+                     },
+                     localState.colors["folder_view"]));
 }
 
 void changeActiveAccount(Account& acc) {
@@ -113,9 +116,9 @@ void changeActiveAccount(Account& acc) {
   activeAccount = acc;
   activeAccount.loggedIn = true;
 
-  com.bindWindow(
-      myAccountView,
-      make_shared<AccountView>(activeAccount, selectedFolderChangedHandler));
+  com.bindWindow(myAccountView, make_shared<AccountView>(
+                                    activeAccount, selectedFolderChangedHandler,
+                                    localState.colors["account_view"]));
 };
 
 void registerAccount(string username, string password) {
@@ -150,13 +153,14 @@ void loginAccount(string username, string password) {
 
 int main() {
   srand(time(0));
-  setlocale(LC_ALL, "en_US.utf8");
 
   ifstream stateFileIn(STATE_FILE);
   if (stateFileIn.good()) stateFileIn >> localState;
 
   myToolbar = make_shared<Toolbar>(
-      0, list<string>{"Accounts", "Login", "Logout", "Exit", "Compose", "Help"},
+      0,
+      list<string>{"Accounts", "Login", "Logout", "Exit", "Compose", "Theme",
+                   "Help"},
       [&](string selected) {
         if (selected == "Accounts") {
           if (localState.getAccounts().size() < 1) {
@@ -168,7 +172,7 @@ int main() {
                                [&](Account& selectedAccount) {
                                  changeActiveAccount(selectedAccount);
                                  com.destroyWindow(myAccountSelectWindow);
-                               }),
+                               },localState.colors["input_dialog"]),
                            true);
           }
         } else if (selected == "Login") {
@@ -183,7 +187,7 @@ int main() {
                         loginAccount(username, password);
                     }
                     com.destroyWindow(myAccountUpsertWindow);
-                  }),
+                  },localState.colors["input_dialog"]),
               true);
         } else if (selected == "Logout") {
           logoutActiveAccount();
@@ -195,6 +199,35 @@ int main() {
           string line;
           while (getline(helpFile, line)) message += line + "\n  ";
           makeDialog("Help", message, 23, 100);
+        } else if (selected == "Theme") {
+          makeInputDialog("Themes", "Select theme (plain/ocean/spicy)",
+                          [&](std::string theme) {
+                            auto& color = localState.colors;
+                            if (theme == "ocean") {
+                              color["dialog"] = {COLOR_WHITE,COLOR_CYAN};
+                              color["input_dialog"] = {COLOR_WHITE,COLOR_CYAN};
+                              color["toolbar"] = {COLOR_WHITE,COLOR_BLUE};
+                              color["account_view"] = {COLOR_WHITE,COLOR_BLUE};
+                              color["folder_view"] = {COLOR_WHITE,COLOR_BLUE};
+                              color["thread_view"] = {COLOR_WHITE,COLOR_BLUE};
+                            } else if (theme == "spicy") {
+                              color["dialog"] = {COLOR_WHITE,COLOR_MAGENTA};
+                              color["input_dialog"] = {COLOR_WHITE,COLOR_MAGENTA};
+                              color["toolbar"] = {COLOR_WHITE,COLOR_RED};
+                              color["account_view"] = {COLOR_WHITE,COLOR_RED};
+                              color["folder_view"] = {COLOR_WHITE,COLOR_RED};
+                              color["thread_view"] = {COLOR_WHITE,COLOR_RED};
+                            } else {
+                              color["dialog"] = WindowColor{};
+                              color["input_dialog"] = WindowColor{}; 
+                              color["toolbar"] = WindowColor{};
+                              color["account_view"] = WindowColor{};
+                              color["folder_view"] = WindowColor{};
+                              color["thread_view"] = WindowColor{};
+                            }
+                            makeDialog("Restart",
+                                       "Restart the program to apply changes.");
+                          });
         } else if (selected == "Compose") {
           if (activeAccount.loggedIn) {
             activeAccount.sendEmail(com.runExternalProgram<Email>([&] {
@@ -209,7 +242,7 @@ int main() {
           throw exception{};
         }
       },
-      -2);
+      -2, localState.colors["toolbar"]);
 
   com.addWindow(myToolbar);
 

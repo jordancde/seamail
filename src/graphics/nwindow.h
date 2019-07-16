@@ -3,7 +3,25 @@
 
 #include <cstdlib>
 #include <ncurses.h>
+#include <nlohmann/json.hpp>
 
+struct WindowColor {
+    short fg;
+    short bg;
+
+    WindowColor(short fg = COLOR_WHITE, short bg = COLOR_BLACK) : fg(fg), bg(bg) {}
+    bool operator==(const WindowColor& o){ return fg == o.fg && bg == o.bg;}
+
+    friend void to_json(nlohmann::json& json, const WindowColor& o){
+        json["fg"] = o.fg;
+        json["bg"] = o.bg;
+    }
+
+    friend void from_json(const nlohmann::json& json, WindowColor& o){
+        o.fg = json["fg"];
+        o.bg = json["bg"];
+    }
+};
 class NWindow {
     void swap(NWindow&) noexcept;
 
@@ -20,14 +38,19 @@ protected:
     int zindex;
     size_t _wx, _wy;
     size_t _x, _y, _w, _h;
-    short fg, bg;
 
-    static int _cp;
+    static std::vector<WindowColor> colors;
     int cp;
 public:
-    NWindow(int zindex = 0, short fg = COLOR_WHITE, short bg = COLOR_BLACK) : zindex(zindex), fg(fg), bg(bg) {
-        cp = _cp++;
-        init_pair(cp, fg, bg);
+    NWindow(int zindex = 0, WindowColor color = WindowColor{}) : zindex(zindex)  {
+        auto it = std::find(colors.begin(), colors.end(), color);
+        if(it != colors.end()){
+            cp = std::distance(colors.begin(), it) +1;
+        } else {
+            colors.push_back(color);
+            cp = colors.size();
+            init_pair(cp, color.fg, color.bg);
+        }
         reframe(0,0,0,0,0,0);
         resize(0, 0);
     }

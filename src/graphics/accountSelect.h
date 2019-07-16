@@ -16,8 +16,9 @@ class AccountSelect : public NWindow {
 
 public:
     AccountSelect(std::vector<Account>& accounts, 
-        std::function<void(Account&)> accountSelectedHandler) 
-        : NWindow(10), accounts(accounts), accountSelectedHandler(accountSelectedHandler) {
+        std::function<void(Account&)> accountSelectedHandler,
+        WindowColor color = WindowColor{}) 
+        : NWindow(10,color), accounts(accounts), accountSelectedHandler(accountSelectedHandler) {
         selectedAccount = accounts.begin();
     } 
     

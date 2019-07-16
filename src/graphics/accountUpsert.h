@@ -3,29 +3,30 @@
 
 #include <vector>
 
-#include "graphics/nwindow.h"
 #include "account/account.h"
+#include "graphics/nwindow.h"
 
 class AccountUpsert : public NWindow {
+  typedef std::function<void(std::string username, std::string password,
+                             bool newAccount)>
+      auth_handler_t;
+  auth_handler_t authHandler;
 
-    typedef std::function<void(std::string username, std::string password, bool newAccount)> auth_handler_t;
-    auth_handler_t authHandler;
+  int tabIndex = 0;
+  std::string username;
+  std::string password;
+  bool newAccount = false;
 
-    int tabIndex = 0;
-    std::string username;
-    std::string password;
-    bool newAccount = false;
+  void selectNextItem();
+  void selectPreviousItem();
 
-    void selectNextItem();
-    void selectPreviousItem();
-    
-public:
-    AccountUpsert(auth_handler_t authHandler) : NWindow(10), authHandler(authHandler) {}
+ public:
+  AccountUpsert(auth_handler_t authHandler, WindowColor color = WindowColor{})
+      : NWindow(10, color), authHandler(authHandler) {}
 
-    void onDraw(bool isActive) const;
-    bool onInput(int key);
-    void onResize();
-
+  void onDraw(bool isActive) const;
+  bool onInput(int key);
+  void onResize();
 };
 
 #endif

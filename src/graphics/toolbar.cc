@@ -2,13 +2,6 @@
 #include "graphics/toolbar.h"
 #include <iostream>
 
-Toolbar::Toolbar(size_t line, 
-    std::list<std::string> menuItems, std::function<void(std::string)> handler, int zindex) 
-    : NWindow(zindex), line(line), menuItems(std::move(menuItems)),
-        handler(handler) {
-    selected = this->menuItems.begin();
-}
-
 void Toolbar::onDraw(bool isActive) const {
     wmove(win, 0, 0);
     if(isActive)

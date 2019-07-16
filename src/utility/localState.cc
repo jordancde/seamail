@@ -7,10 +7,12 @@ using namespace std;
 void LocalState::serialize(nlohmann::json& state) const {
     state["accounts"] = accounts;
     state["localProvider"] = *localProvider;
+    state["colors"] = colors;
 }
 
 void LocalState::deserialize(const nlohmann::json& state) {
     accounts = state["accounts"].get<vector<Account>>();
+    colors = state["colors"].get<map<string, WindowColor>>();
     localProvider = make_shared<LocalEmailProvider>(
         state["localProvider"].get<LocalEmailProvider>());
 

@@ -6,7 +6,7 @@
 
 #include "graphics/compositor.h"
 
-int NWindow::_cp = 1;
+std::vector<WindowColor> NWindow::colors;
 
 NWindow::~NWindow() {
     if(win) {
