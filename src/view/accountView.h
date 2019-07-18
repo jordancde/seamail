@@ -3,7 +3,6 @@
 #define ACCOUNT_VIEW_H_
 
 #include <map>
-#include <optional>
 #include <string>
 
 #include "account/account.h"

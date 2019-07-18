@@ -1,7 +1,7 @@
 BIN 		:= seamail
 
 DEV_FLAGS 	:= -g
-FLAGS		:= -Wall -std=c++17 -MMD $(DEV_FLAGS)
+FLAGS		:= -Wall -std=c++14 -MMD $(DEV_FLAGS)
 
 SDIR 		:= src
 DDIR		:= dep
